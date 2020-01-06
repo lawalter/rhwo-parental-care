@@ -109,6 +109,7 @@ ggplot(data = prov_prop, aes(reorder(Brood_ID, Number), proportion, fill = Sex))
   geom_col(width=0.75) +
   geom_hline(yintercept = 0.50, linetype = "dashed") +
   labs(title = "Figure 4",
+       
        y = "Provisioning proportion", 
        x = "Brood ID") + 
   theme_classic() +
