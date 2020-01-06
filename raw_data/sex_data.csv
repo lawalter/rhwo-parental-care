@@ -1,0 +1,93 @@
+Band_number,RR,LL,Color_combo,Sex,Method,Year Sent,2016_Roost_ID,2017_Nest_ID,2018_Nest_ID,2018_Resight
+1352-94301,SU,BG,SUBG,female,DNA,2017,RB7,na,na,na
+1352-94302,SU,BO,SUBO,not sent,na,na,R18C,na,na,na
+1352-94303,SG,GG,SGGG,male,DNA,2017,RA1,na,na,na
+1352-94304,SU,BR,SUBR,male,inferred,na,RB11,RB11,5B6,5B6
+1352-94305,SB,UG,SBUG,female,DNA,2018,RB11,na,na,na
+1352-94306,SG,UO,SGUO,female,DNA,2017,RB14,na,na,na
+1352-94307,SB,RU,SBRU,female,DNA,2018,RB18,na,na,na
+1352-94308,SO,YU,SOYU,female,DNA,2017,RB31,na,na,na
+1352-94309,SR,UG,SRUG,male,DNA,2017,R9B,na,na,na
+1352-94310,SB,GY,SBGY,female,DNA,2018,RB1,na,na,na
+1352-94311,SR,UO,SRUO,male,DNA,2018,RB32,NB 5B3,na,NB 5B3
+1352-94312,SY,BG,SYBG,male,DNA,2017,RB33,na,na,na
+1352-94313,RS,OG,RSOG,female,DNA,2017,RB36 ALT,na,na,na
+1352-94314,SR,UU,SRUU,female,DNA,2017,RAL1,na,na,na
+1352-94315,OS,UY,OSUY,male,DNA,2017,RB21,na,na,"5B, oak snag sav south of NB 5B6"
+1352-94316,SR,OY,SROY,male,DNA,2017,PN1,PN1,na,RB11
+1352-94317,SY,YY,SYYY,male,DNA,2017,RB39,na,na,"near NB 5B3, maybe RB39?"
+1352-94318,SR,RR,SRRR,not sent,na,na,RA1,na,na,na
+1352-94319,SU,UU,SUUU,male,DNA,2017,na,NB 5B4,na,na
+1352-94320,SG,BU,SGBU,female,inferred,na,na,PN1,na,na
+1352-94321,YS,YU,YSYU,female,DNA,2018,na,PN17 5B R1,na,NB 5B3
+1352-94322,SB,GO,SBGO,male,DNA,2017,na,NB 18C4,NB 18C4,NB 18C4
+1352-94323,SO,RO,SORO,female,DNA,2017,na,RB23,RB36 ALT,RB36 ALT
+1352-94324,SR,OB,SROB,male,DNA,2017,na,PNA 5A1b,na,na
+1352-94325,SU,RO,SURO,female,inferred,na,na,NB 5A4,na,na
+1352-94326,UR,SU,URSU,male,DNA,2017,na,NB 5A,na,on NB 5A
+1352-94327,SY,YG,SYYG,female,inferred,na,na,NB 5A,na,na
+1352-94328,YO,SO,YOSO,female,inferred,na,na,NB 5B4,na,near 5B NB4
+1352-94329,UG,SG,UGSG,male,DNA,2017,na,NB 5A5,na,near NB 5A
+1352-94330,SU,RY,SURY,male,DNA,2018,na,NB 5B6,na,5B
+1352-94331,YY,SR,YYSR,male,DNA,2017,na,A1,na,na
+1352-94332,SU,OB,SUOB,female,inferred,na,na,PN17 REC1,,REC
+1352-94333,RY,BS,RYBS,female,inferred,na,na,NB 5B6,na,south of NB 5B6
+1352-94334,SO,GY,SOGY,female,inferred,na,na,NB 5A5,na,na
+1352-94335,SR,GG,SRGG,female,DNA,2017,na,N17 REC3,,REC2
+1352-94336,SB,OB,SBOB,female,DNA,2017,na,NB 18C,na,na
+1352-94337,RR,SO,RRSO,female,DNA,2018,na,na,na,na
+1352-94338,SO,OO,SOOO,not sent,na,na,na,PN17 5B R1,na,na
+1352-94339,YO,US,YOUS,male,inferred,na,na,na,18C Houdini,18C
+1352-94340,OS,GR,OSGR,male,DNA,2017,na,NB 5B5,na,na
+1352-94341,SR,UB,SRUB,female,DNA,2017,na,N17 18CA2,,N17 18CA2
+1352-94342,BU,SY,BUSY,male,inferred,na,na,N17 18CA2,N17 18CA2,N17 18CA2
+1352-94343,YG,SR,YGSR,female,inferred,na,na,NB 18C4,,NB 18C4
+1352-94344,RO,SO,ROSO,male,DNA,2017,na,18C Tonto,18C Tonto,18C Tonto
+1352-94345,SG,BY,SGBY,female,inferred,na,na,18C Tonto,18C Tonto,"PNB 18CB ""Tonto"""
+1352-94346,RY,SG,RYSG,male,DNA,2017,na,PN17 REC1,,"5B, south of NB 5B6"
+1352-94347,GO,SY,GOSY,female,DNA,2017,na,N17 REC2,na,na
+1352-94348,YS,OG,YSOG,male,inferred,na,na,N17 REC2,,REC4
+1352-94349,RO,SY,ROSY,female,DNA,2017,na,RB11,,5B6
+1352-94350,OO,SG,OOSG,male,DNA,2017,na,NB17 18C,na,na
+1352-94351,OY,SR,OYSR,male,DNA,2017,na,A3,A3b,A3b
+1352-94352,GS,RO,GSRO,female,inferred,na,na,A3,A3b,A3b
+1352-94352,SG,RO,SGRO,female,inferred,na,na,A3,A3b,A3b
+1352-94353,GO,GS,GOGS,male,DNA,2017,na,NR4,na,na
+1352-94354,SU,OR,SUOR,female,DNA,2017,na,18C Catfish,18C Noisy,18C Noisy
+1352-94354,SU,OR,SUOR_17,female,DNA,2017,na,18C Catfish,18C Noisy,18C Noisy
+1352-94354,SU,OR,SUOR_18,female,DNA,2017,na,18C Catfish,18C Noisy,18C Noisy
+1352-94355,OS,UU,OSUU,female,DNA,2017,na,18C Catfish,,na
+1352-94356,UY,SY,UYSY,female,DNA,2017,na,NB 5B3,,na
+1352-94357,GR,GS,GRGS,male,DNA,2017,na,NB 5A4 ,,NB 5A4
+1352-94358,OS,BU,OSBU,male,DNA,2017,na,NB 5A4,na,na
+1352-94359,SU,GR,SUGR,male,inferred,na,na,RB23,na,na
+1352-94360,RS,UU,RSUU,female,DNA,2018,na,na,N17 18CA2,N17 18CA2
+1352-94361,OS,UB,OSUB,female,DNA,2017,na,na,na,na
+1352-94362,SU,BU,SUBU,male,DNA,2018,na,na,18C Gum,near N17 18CA2
+1352-94363,PO,PS,POPS,male,inferred,na,na,na,18C Timber,na
+1352-94364,WO,SP,WOSP,female,DNA,2018,na,na,18C 9,na
+1352-94365,OS,OP,OSOP,female,DNA,2018,na,na,5A Cross,na
+1352-94366,SO,OP,SOOP,male,inferred,na,na,na,18C 9,na
+1352-94367,PY,WS,PYWS,female,DNA,2018,na,na,,na
+1352-94368,WS,PR,WSPR,female,DNA,2018,na,na,18C Timber,na
+1352-94369,WY,RS,WYRS,female,DNA,2018,na,na,5A Cut,na
+1352-94370,WO,WS,WOWS,male,inferred,na,na,na,5A Cross,na
+1352-94371,SY,RP,SYRP,female,inferred,na,na,na,18C Gum,na
+1352-94372,SW,OP,SWOP,female,DNA,2018,na,na,18C Houdini,na
+1352-94373,PY,GS,PYGS,male,inferred,na,na,na,18C Noisy,na
+1352-94374,WS,UP,WSUP,female,DNA,2018,na,na,vagrant,na
+1352-94375,WU,BS,WUBS,male,DNA,2018,na,na,vagrant,na
+1352-94376,PU,BS,PUBS,female,DNA,2018,na,na,vagrant,na
+1352-94377,PU,PS,PUPS,not sent,na,na,na,na,na,na
+1352-94378,BO,PS,BOPS,male,DNA,2018,na,na,vagrant,na
+1352-94379,SW,RY,SWRY,female,DNA,2018,na,na,vagrant,na
+na,na,na,WYRS_mate,male,inferred,na,na,na,5A Cut,na
+na,na,na,YYSR_mate,female,inferred,na,na,A1,na,na
+na,na,na,SRGG_mate,male,inferred,na,na,N17 REC3,na,na
+na,na,na,SBOB_mate,male,inferred,na,na,NB 18C,na,na
+na,na,na,OSGR_mate,female,inferred,na,na,NB 5B5,na,na
+na,na,na,OOSG_mate,female,inferred,na,na,NB17 18C,na,na
+na,na,na,GOGS_mate,female,na,na,na,NR4,na,na
+na,na,na,SROB_mate,female,na,na,na,PNA 5A1b,na,na
+na,na,na,SBGO_mate_18,female,inferred,na,na,na,NB 18C4,na
+na,na,na,SORO_mate_18,male,inferred,na,na,na,RB36 ALT,na
