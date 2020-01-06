@@ -1,0 +1,40 @@
+Observation.id,Sample_size,Egg_count,Usable_length,Video_number,Letter,Part,Date,Month,Day,Year,TA,Selected,Brood_ID,Clutch_laid,Hatch_date,Priority,Nest_ID,Ref_combo_1,Ref_combo_2,With_bpk?,Bpk_status_1,Bpk_status_2,Bpk_status_3,Bpk_status_4,Start_time,Early_or_late,BORIS_Observer,Summary/Notes
+2017-07-07_18C_r4_Catfish_A,Catfish_1,4 eggs,64,84,a,1 of 3,7/7/2017,July,7,2017,18C,Selected,18C_Catfish_brd1,7/6/2017,7/18/2017,Incubating,18C Catfish,SUOR,OOSG,1,SUOR_before,OOSG_with,na,na,943,early,AA,Good video quality
+2017-07-07_18C_r4_Catfish_B,Catfish_1,4 eggs,64,84,b,2 of 3,7/7/2017,July,7,2017,18C,Selected,18C_Catfish_brd1,7/6/2017,7/18/2017,Incubating,18C Catfish,SUOR,OOSG,1,SUOR_before,OOSG_with,na,na,1007,early,AA,
+2017-07-07_18C_r4_Catfish_C,Catfish_1,4 eggs,6,84,c,3 of 3,7/7/2017,July,7,2017,18C,Selected,18C_Catfish_brd1,7/6/2017,7/18/2017,Incubating,18C Catfish,SUOR,OOSG,1,SUOR_before,OOSG_with,na,na,1111,late,AA,
+2017-07-14_18C_r4_Catfish_A,Catfish_1,4 eggs,64,92,a,1 of 4,7/14/2017,July,14,2017,18C,Selected,18C_Catfish_brd1,7/6/2017,7/18/2017,Incubating,18C Catfish,SUOR,OOSG,0,SUOR_before,OOSG_after,na,na,,,AA,
+2017-07-14_18C_r4_Catfish_B,Catfish_1,4 eggs,64,92,b,2 of 4,7/14/2017,July,14,2017,18C,Selected,18C_Catfish_brd1,7/6/2017,7/18/2017,Incubating,18C Catfish,SUOR,OOSG,0,SUOR_before,OOSG_after,na,na,,,AA,
+2017-07-14_18C_r4_Catfish_C,Catfish_1,4 eggs,64,92,c,3 of 4,7/14/2017,July,14,2017,18C,Selected,18C_Catfish_brd1,7/6/2017,7/18/2017,Incubating,18C Catfish,SUOR,OOSG,0,SUOR_before,OOSG_after,na,na,,,AA,
+2017-07-14_18C_r4_Catfish_D,Catfish_1,4 eggs,33,92,d,4 of 4,7/14/2017,July,14,2017,18C,Selected,18C_Catfish_brd1,7/6/2017,7/18/2017,Incubating,18C Catfish,SUOR,OOSG,0,SUOR_before,OOSG_after,na,na,,,AA,
+2017-07-19_5B_r4_A1_brd2_A,A1_2,4 eggs,64,96,a,1 of 3,7/19/2017,July,19,2017,05B,Selected,A1_brd2,yes,na,Incubating,A1,YYSR,unbanded,0,na,na,na,na,,,AA,
+2017-07-19_5B_r4_A1_brd2_B,A1_2,4 eggs,60,96,b,2 of 3,7/19/2017,July,19,2017,05B,Selected,A1_brd2,yes,na,Incubating,A1,YYSR,unbanded,0,na,na,na,na,,,AA,
+2017-07-19_5B_r4_A1_brd2_C,A1_2,4 eggs,1,96,c,3 of 3,7/19/2017,July,19,2017,05B,Selected,A1_brd2,yes,na,Incubating,A1,YYSR,unbanded,0,na,na,na,na,,,AA,
+2018-06-13_5ACross_4e_A,Cross_3,4 eggs,64,123,a,1 of 2,6/13/2018,June,13,2018,05A,Selected,Cross,5/31/2018,6/14/2018,Incubating,5A Cross,OSOP,WOWS,0,WOWS_before,OSOP_before,na,na,1030,early,AA,
+2018-06-13_5ACross_4e_B,Cross_3,4 eggs,56,123,b,2 of 2,6/13/2018,June,13,2018,05A,Selected,Cross,5/31/2018,6/14/2018,Incubating,5A Cross,OSOP,WOWS,0,WOWS_before,OSOP_before,na,na,1134,late,AA,
+2017-07-22_18C_r4_N1718CA2_A,N1718CA2_4,1 or more,64,103,a,1 of 4,7/22/2017,July,22,2017,18C,Selected,N1718CA2_brd2,7/13/2017,na,Incubating,N17 18CA2,SRUB,BUSY,1,BUSY_with,na,na,na,,,AA,
+2017-07-22_18C_r4_N1718CA2_B,N1718CA2_4,1 or more,64,103,b,2 of 4,7/22/2017,July,22,2017,18C,Selected,N1718CA2_brd2,7/13/2017,na,Incubating,N17 18CA2,SRUB,BUSY,1,BUSY_with,na,na,na,,,AA,
+2017-07-22_18C_r4_N1718CA2_C,N1718CA2_4,1 or more,64,103,c,3 of 4,7/22/2017,July,22,2017,18C,Selected,N1718CA2_brd2,7/13/2017,na,Incubating,N17 18CA2,SRUB,BUSY,1,BUSY_with,na,na,na,,,AA,
+2017-07-22_18C_r4_N1718CA2_D,N1718CA2_4,1 or more,44,103,d,4 of 4,7/22/2017,July,22,2017,18C,Selected,N1718CA2_brd2,7/13/2017,na,Incubating,N17 18CA2,SRUB,BUSY,1,BUSY_with,na,na,na,,,AA,
+2018-06-08_18C_r4_5e_N1718CA2_A,N1718CA2_5,5 eggs,64,122,a,1 of 4,6/8/2018,June,8,2018,18C,Selected,N1718CA2_18,na,na,Incubating,N17 18CA2,RSUU,BUSY,1,BUSY_with18,na,na,na,748,early,AA,
+2018-06-08_18C_r4_5e_N1718CA2_B,N1718CA2_5,5 eggs,64,122,b,2 of 4,6/8/2018,June,8,2018,18C,Selected,N1718CA2_18,na,na,Incubating,N17 18CA2,RSUU,BUSY,1,BUSY_with18,na,na,na,852,early,AA,
+2018-06-08_18C_r4_5e_N1718CA2_C,N1718CA2_5,5 eggs,64,122,c,3 of 4,6/8/2018,June,8,2018,18C,Selected,N1718CA2_18,na,na,Incubating,N17 18CA2,RSUU,BUSY,1,BUSY_with18,na,na,na,956,early,AA,
+2018-06-08_18C_r4_5e_N1718CA2_D,N1718CA2_5,5 eggs,43,122,d,4 of 4,6/8/2018,June,8,2018,18C,Selected,N1718CA2_18,na,na,Incubating,N17 18CA2,RSUU,BUSY,1,BUSY_with18,na,na,na,1100,late,AA,
+2017-07-12_5A_r4_NB5A4_brd2_A,NB5A4_6,3 eggs,64,87,a,1 of 4,7/12/2017,July,12,2017,05A,Selected,NB5A4_brd2,7/14/2017,7/27/2017,Incubating,NB 5A4,SURO,GRGS,1,SURO_with,na,na,na,827,early,AA,"backpacked SURO excavating cavity to make it larger, badbackpack? *** not coded at first, coded in pt. C "
+2017-07-12_5A_r4_NB5A4_brd2_B,NB5A4_6,3 eggs,64,87,b,2 of 4,7/12/2017,July,12,2017,05A,Selected,NB5A4_brd2,7/14/2017,7/27/2017,Incubating,NB 5A4,SURO,GRGS,1,SURO_with,na,na,na,931,early,AA,
+2017-07-12_5A_r4_NB5A4_brd2_C,NB5A4_6,3 eggs,64,87,c,3 of 4,7/12/2017,July,12,2017,05A,Selected,NB5A4_brd2,7/14/2017,7/27/2017,Incubating,NB 5A4,SURO,GRGS,1,SURO_with,na,na,na,1035,early,AA,"backpacked SURO excavating cavity to make it larger, badbackpack?"
+2017-07-12_5A_r4_NB5A4_brd2_D,NB5A4_6,3 eggs,21,87,d,4 of 4,7/12/2017,July,12,2017,05A,Selected,NB5A4_brd2,7/14/2017,7/27/2017,Incubating,NB 5A4,SURO,GRGS,1,SURO_with,na,na,na,1139,late,AA,
+2018-07-02_NB5B6_A,NB5B6_7,3 or more,64,131,a,1 of 4,7/2/2018,July,2,2018,05B,Selected,NB5B6_18,na,na,Incubating,NB 5B6,SUBR,unbanded,0,na,na,na,na,825,early,AA,
+2018-07-02_NB5B6_B,NB5B6_7,3 or more,64,131,b,2 of 4,7/2/2018,July,2,2018,05B,Selected,NB5B6_18,na,na,Incubating,NB 5B6,SUBR,unbanded,0,na,na,na,na,929,early,AA,
+2018-07-02_NB5B6_C,NB5B6_7,3 or more,64,131,c,3 of 4,7/2/2018,July,2,2018,05B,Selected,NB5B6_18,na,na,Incubating,NB 5B6,SUBR,unbanded,0,na,na,na,na,1033,early,AA,
+2018-07-02_NB5B6_D,NB5B6_7,3 or more,45,131,d,4 of 4,7/2/2018,July,2,2018,05B,Selected,NB5B6_18,na,na,Low,NB 5B6,SUBR,unbanded,0,na,na,na,na,1137,late,AA,
+2017-06-14_5B_r4_NB5B4_A,5B4_8,Presumed eggs,64,33,a,1 of 4,6/14/2017,June,14,2017,05B,No,NB5B4_brd1,na,na,Low,NB 5B4,SUUU,YOSO,1,YOSO_after,SUUU_with,na,na,,,ZG,
+2017-06-14_5B_r4_NB5B4_B,5B4_8,Presumed eggs,64,33,b,2 of 4,6/14/2017,June,14,2017,05B,No,NB5B4_brd1,na,na,Low,NB 5B4,SUUU,YOSO,1,YOSO_after,SUUU_with,na,na,,,ZG,
+2017-06-14_5B_r4_NB5B4_C,5B4_8,Presumed eggs,64,33,c,3 of 4,6/14/2017,June,14,2017,05B,No,NB5B4_brd1,na,na,Low,NB 5B4,SUUU,YOSO,1,YOSO_after,SUUU_with,na,na,,,ZG,Blurry but usable
+2017-06-14_5B_r4_NB5B4_D,5B4_8,Presumed eggs,36,33,d,4 of 4,6/14/2017,June,14,2017,05B,No,NB5B4_brd1,na,na,Low,NB 5B4,SUUU,YOSO,1,YOSO_after,SUUU_with,na,na,,,ZG,Blurry but usable
+2017-05-18_SROY_5B_r4_PN1_A,PN1_9,Presumed eggs,64,2,a,1 of 3,5/18/2017,May,1/17/1900,2017,05B,No,PN1_brd1,5/18/2017,5/31/2017,Low,PN1,SROY,SGBU,0,na,na,na,na,830,early,LAW,SROY incubating and perching outside of cavity
+2017-05-18_SROY_5B_r4_PN1_B,PN1_9,Presumed eggs,64,2,b,2 of 3,5/18/2017,May,1/17/1900,2017,05B,No,PN1_brd1,5/18/2017,5/31/2017,Low,PN1,SROY,SGBU,0,na,na,na,na,934,early,LAW,SROY incubating and perching outside of cavity
+2017-05-18_SROY_5B_r4_PN1_C,PN1_9,Presumed eggs,3,2,c,3 of 3,5/18/2017,May,1/17/1900,2017,05B,No,PN1_brd1,5/18/2017,5/31/2017,Low,PN1,SROY,SGBU,0,na,na,na,na,1038,early,LAW,SROY incubating and perching outside of cavity
+2017-06-13_REC_r4_PN17REC1_A,REC1_10,Presumed eggs,62,32,a,1 of 6,6/13/2017,June,13,2017,REC,No,REC1_brd1,6/6/2017,6/19/2017,Low,PN17 REC1,RYSG,SUOB,1,SUOB_with,RYSG_before,na,na,,,LAW,
+2017-06-13_REC_r4_PN17REC1_B,REC1_10,Presumed eggs,64,32,b,2 of 6,6/13/2017,June,13,2017,REC,No,REC1_brd1,6/6/2017,6/19/2017,Low,PN17 REC1,RYSG,SUOB,1,SUOB_with,RYSG_before,na,na,,,LAW,
+2017-06-13_REC_r4_PN17REC1_C,REC1_10,Presumed eggs,64,32,c,3 of 6,6/13/2017,June,13,2017,REC,No,REC1_brd1,6/6/2017,6/19/2017,Low,PN17 REC1,RYSG,SUOB,1,SUOB_with,RYSG_before,na,na,,,LAW,
+2017-06-13_REC_r4_PN17REC1_D,REC1_10,Presumed eggs,13,32,d,4 of 6,6/13/2017,June,13,2017,REC,No,REC1_brd1,6/6/2017,6/19/2017,Low,PN17 REC1,RYSG,SUOB,1,SUOB_with,RYSG_before,na,na,,,LAW,
