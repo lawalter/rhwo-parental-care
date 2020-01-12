@@ -1,5 +1,14 @@
+# libraries ---------------------------------------------------------------
+
+library(tidyverse)
 library(reshape2)
-library(dplyr)
+
+# data --------------------------------------------------------------------
+
+bbyvid <- read_csv("clean_data/bbyvid.csv")
+
+
+# script ------------------------------------------------------------------
 
 # Rates
 bbyvid_wrates <- bbyvid
@@ -102,48 +111,54 @@ ggplot(data = prov_prop, aes(reorder(Brood_ID, Number), proportion, fill = Sex))
                             "NB18C4_18_brd1" = "NB18C4_2018"))
 
 ## B&W for manuscript:
-## Export as pdf, 3.5 in x 4 in, use Cairo service
-png("plots/provisioning_individual.png", width = 3.5, height = 4, units = "in", res = 600)
+## Export as 3.5 in x 4 in
+prov_bar_fig <-
+  ggplot(data = prov_prop, aes(reorder(Brood_ID, Number), proportion, fill = Sex)) +
+    geom_col(width=0.75) +
+    geom_hline(yintercept = 0.50, linetype = "dashed") +
+    labs(title = "Figure 4",
+         y = "Provisioning proportion", 
+         x = "Brood ID") + 
+    theme_classic() +
+    theme(axis.title.x = element_text(size=11), 
+          axis.title.y = element_text(size=11),
+          axis.text.y = element_text(size=9),
+          axis.text.x = element_text(size=9),
+          legend.text = element_text(size=10),
+          legend.title = element_text(size=11),
+          legend.position="bottom") +
+    coord_flip() + 
+    scale_fill_grey(start = 0.6, end = 0.3) +
+    guides(fill = guide_legend(reverse = TRUE)) +
+    scale_x_discrete(labels=c("A3_brd2" = "A3_2017", 
+                              "Timber_brd1" = "Timber_brood1_2018",
+                              "N17REC3_brd2" = "Rec3_2017",
+                              "NB5A4_brd1" = "NB5A4_2017",
+                              "Timber_brd2" = "Timber_brood2_2018",
+                              "N1718CA2_18" = "18CA2_2018",
+                              "N17REC2_brd1" = "Rec2_2017",
+                              "Gum" = "Gum_2018",
+                              "Tonto_brd1" = "Tonto_2017",
+                              "REC1_brd1" = "Rec1_2017",
+                              "Houdini" = "Houdini_2018",
+                              "Tonto18_brd1" = "Tonto_2018",
+                              "18C_Catfish_brd1" = "Catfish_2017",
+                              "5A Cut_brd2" = "Cut_2018",
+                              "RB23_brd2" = "RB23_2017",
+                              "Cross" = "Cross_2018",
+                              "NB5B5_brd1" = "NB5B5_2017",
+                              "RB36alt_brd2_18" = "RB36alt_2018",
+                              "Noisy" = "Noisy_2018",
+                              "N1718CA2_brd1" = "18CA2_2017",
+                              "NB18C4_18_brd1" = "NB18C4_2018"))
+ggplot2::ggsave(
+       file = "provisioning_individual_fig.pdf",
+       plot = prov_bar_fig,
+       path ="plots/",
+       width = 3.5,
+       units = "in",
+       dpi = 300)
 
-ggplot(data = prov_prop, aes(reorder(Brood_ID, Number), proportion, fill = Sex)) +
-  geom_col(width=0.75) +
-  geom_hline(yintercept = 0.50, linetype = "dashed") +
-  labs(title = "Figure 4",
-       y = "Provisioning proportion", 
-       x = "Brood ID") + 
-  theme_classic() +
-  theme(axis.title.x = element_text(size=11), 
-        axis.title.y = element_text(size=11),
-        axis.text.y = element_text(size=9),
-        axis.text.x = element_text(size=9),
-        legend.text = element_text(size=10),
-        legend.title = element_text(size=11),
-        legend.position="bottom") +
-  coord_flip() + 
-  scale_fill_grey(start = 0.6, end = 0.3) +
-  guides(fill = guide_legend(reverse = TRUE)) +
-  scale_x_discrete(labels=c("A3_brd2" = "A3_2017", 
-                            "Timber_brd1" = "Timber_brood1_2018",
-                            "N17REC3_brd2" = "Rec3_2017",
-                            "NB5A4_brd1" = "NB5A4_2017",
-                            "Timber_brd2" = "Timber_brood2_2018",
-                            "N1718CA2_18" = "18CA2_2018",
-                            "N17REC2_brd1" = "Rec2_2017",
-                            "Gum" = "Gum_2018",
-                            "Tonto_brd1" = "Tonto_2017",
-                            "REC1_brd1" = "Rec1_2017",
-                            "Houdini" = "Houdini_2018",
-                            "Tonto18_brd1" = "Tonto_2018",
-                            "18C_Catfish_brd1" = "Catfish_2017",
-                            "5A Cut_brd2" = "Cut_2018",
-                            "RB23_brd2" = "RB23_2017",
-                            "Cross" = "Cross_2018",
-                            "NB5B5_brd1" = "NB5B5_2017",
-                            "RB36alt_brd2_18" = "RB36alt_2018",
-                            "Noisy" = "Noisy_2018",
-                            "N1718CA2_brd1" = "18CA2_2017",
-                            "NB18C4_18_brd1" = "NB18C4_2018"))
-dev.off()
 
 ## Plot to show ages
 ggplot(data = prov_prop, aes(reorder(Brood_ID, Number), proportion, fill = Sex)) +

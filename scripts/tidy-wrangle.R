@@ -506,4 +506,4 @@ bbyvid$Jdayyr <- paste(bbyvid$Julian_date, bbyvid$Year, sep=".")
 bbyvid <- merge(bbyvid, NOAA_sm, by = "Jdayyr")
 
 # Write as csv
-#write.csv(bbyvid, "final_data_behavior_byvideo.csv")       
+#write.csv(bbyvid, "clean_data/bbyvid.csv")       
