@@ -7,7 +7,6 @@ library(reshape2)
 
 bbyvid <- read_csv("clean_data/bbyvid.csv")
 
-
 # script ------------------------------------------------------------------
 
 # Rates

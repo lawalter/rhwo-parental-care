@@ -1,41 +1,18 @@
-library(sjmisc)
-library(sjPlot)
-library(ggplot2)
+# libraries ---------------------------------------------------------------
+
+library(tidyverse)
+library(reshape2)
 library(glmmTMB)
 
+# data --------------------------------------------------------------------
+
+bbyvid <- read_csv("clean_data/bbyvid.csv")
+
+# script ------------------------------------------------------------------
+
+# Top GLMM
 model4.1x2 <- glmmTMB(feeding ~ I(Exact_age_chick^2)*Std_jdate + Peeped_chick_count + Exact_age_chick + (1|Brood_ID) + (1|Subject)  + offset(log(Usable_video)), data = bbyvid, ziformula = ~1, family = nbinom2(link = "log"))
 
-
-plot_model(plotmodel4.1x, type = "pred", terms = c("Exact_age_chick", "Peeped_chick_count")) + 
-  theme_bw() + 
-  geom_line(size=1)
-
-plot_model(plotmodel4.1x, type = "pred", terms = c("Exact_age_chick", "Std_jdate")) + 
-  theme_bw() + 
-  geom_line(size=1)
-
-plot_model(plotmodel4.1x, type = "int", terms = c("Exact_age_chick", "Std_jdate"),
-           legend.title = "Standard Julian Date") +
-  theme_bw() + 
-  geom_line(size=1)
-
-plot_models(plotmodel4.1x, model4.3x, model4.2x, transform = "exp", 
-            show.p = TRUE, title = "Top 3 provisioning models (dAIC < 2)",
-            axis.labels = c("Brood size 2", "Brood size 3", "Chick age", "Chick age*date", 
-                            "Habitat", "Chick age^2", "Sex", "Julian date"),
-            m.labels = c("Chick age*date + brood", "Chick age*date + brood + habitat", 
-                         "Chick age*date + brood + sex")) + 
-  theme_bw()
-
-plot_model(plotmodel4.1x, transform = "exp", 
-           show.p = TRUE, title = "Top provisioning model", sort.est = TRUE, show.values = TRUE,
-           value.offset = .3, axis.lim = c(0.75, 2),
-           axis.labels = c("Brood size 2", "Brood size 3", "Chick age", "Chick age*date", 
-                           "Chick age^2", "Julian date")) + 
-  theme_bw()
-
-
-##########
 # Generate dataframes with needed model variables to generate prediction
 # https://github.com/glmmTMB/glmmTMB/issues/378
 
@@ -60,25 +37,16 @@ bbyvid$feedingperchkhr <- ((bbyvid$feeding/bbyvid$Peeped_chick_count)/bbyvid$Usa
 bbyvid$Date <- ifelse(bbyvid$Julian_date >= 190, "Late summer", "Early summer")
 
 
-library(ggplot2)
+# plots -------------------------------------------------------------------
+
 # Colors
 colors_sex <- c("female" = "#F47C89", "male" = "#7b758e")
 colors_hab <- c("CC" = "#76d6b0", "Savanna" = "#FFB84D")
 colors_dat <- c("Early summer" = "#6bd2db", "Late summer" = "#fc913a")
 
-# BY BROOD SIZE
-ggplot(preddata, aes(Exact_age_chick, pred.f.per.vid)) +
-  stat_smooth(method = glm, formula = y ~ x + I(x^2), 
-              aes(y = pred.f.per.vid, color=as.factor(Peeped_chick_count), 
-                  fill=as.factor(Peeped_chick_count)), alpha = 0.2,
-              se = TRUE, level = 0.95, fullrange = TRUE) +
-  labs(x = "Chick age (day)", y = "Predicted provisioning (count)") + 
-  guides(color=guide_legend("Brood Size"), fill = FALSE) +
-  theme_classic() +
-  theme(text=element_text(size=12, family="mono"), legend.position = "bottom") 
+# plots -------------------------------------------------------------------
 
-
-### Brood size prov per hr
+# Brood size prov per hr
 ggplot(preddata, aes(Exact_age_chick, predper_hr), color=as.factor(Peeped_chick_count), 
        fill=as.factor(Peeped_chick_count)) +
   stat_smooth(method = glm, formula = y ~ x + I(x^2), 
@@ -90,7 +58,6 @@ ggplot(preddata, aes(Exact_age_chick, predper_hr), color=as.factor(Peeped_chick_
   theme_classic() +
   theme(text=element_text(size=12, family="mono"), legend.position = "bottom") 
 
-
 ## Overall prov/hr
 ggplot(preddata, aes(Exact_age_chick, predper_hr)) +
   stat_smooth(method = glm, formula = y ~ x + I(x^2), 
@@ -100,7 +67,6 @@ ggplot(preddata, aes(Exact_age_chick, predper_hr)) +
   labs(x = "Chick age (day)", y = "Predicted provisioning (per hour)") +
   theme_classic() +
   theme(text=element_text(size=12, family="mono"), legend.position = "none") 
-
 
 # Overall prov/chk/hr
 ggplot(preddata, aes(Exact_age_chick, predper_chkhr)) +
@@ -112,8 +78,7 @@ ggplot(preddata, aes(Exact_age_chick, predper_chkhr)) +
   theme_classic() +
   theme(text=element_text(size=12, family="mono"), legend.position = "none") 
 
-
-#### Predicted provisioning rate for date
+# Predicted provisioning rate for date
 ggplot(preddata, aes(Exact_age_chick, predper_chkhr)) +
   stat_smooth(method = glm, formula = y ~ x + I(x^2), 
               aes(y = predper_chkhr, color=Date, 
@@ -156,30 +121,33 @@ ggplot(preddata, aes(Exact_age_chick, predper_chkhr)) +
         text = element_text(size=14),
         legend.position = "bottom")
 
-# Poster 1000 x 550
-ggplot(preddata, aes(Exact_age_chick, predper_chkhr)) +
-  stat_smooth(method = glm, formula = y ~ x + I(x^2), 
-              aes(y = predper_chkhr, color=Date, 
-                  fill=Date), alpha = 0.2,
-              se = TRUE, level = 0.95, fullrange = TRUE) +
-  labs(x = "Chick age (day)", y = "Predicted provisioning \n (per chick/hour)") + 
-  guides(color=guide_legend("Date")) +
-  scale_fill_manual(values = colors_dat) +
-  scale_color_manual(values = colors_dat) +
-  theme_classic() +
-  theme(legend.position = "right", text=element_text(size=24)) +
-  guides(size=FALSE)
+# Plot for manuscript
+provisioning_fig <- 
+  ggplot(preddata, aes(Exact_age_chick, predper_chkhr)) +
+    stat_smooth(method = glm, formula = y ~ x + I(x^2), 
+                aes(y = predper_chkhr, color = Date, 
+                    fill = Date, linetype = Date), alpha = 0.2,
+                se = TRUE, level = 0.95, fullrange = TRUE) +
+    labs(title = "Figure 3",
+         x = "Chick age (day)", 
+         y = "Predicted provisioning \n (per chick/hr)") + 
+    guides(color = guide_legend("Date")) +
+    scale_color_grey(start = 0.6, end = 0.3) +
+    scale_fill_grey(start = 0.6, end = 0.3) +
+    theme_classic() +
+    theme(axis.title.x = element_text(size=11), 
+          axis.title.y = element_text(size=11),
+          axis.text.y = element_text(size=9),
+          axis.text.x = element_text(size=9),
+          legend.text = element_text(size=10),
+          legend.title = element_text(size=11),
+          legend.position = "bottom") 
+ggplot2::ggsave(
+  file = "provisioning_fig.pdf",
+  plot = provisioning_fig,
+  path ="plots/",
+  width = 3.5,
+  height = 3,
+  units = "in",
+  dpi = 300)
 
-### Grayscale significant model chickage*Jdate plot RATE  
-ggplot(
-  bbyvid, aes(x=Exact_age_chick, y=feedingperchkhr, color=Date, fill=Date)) + 
-  geom_point(aes(colour=Date, shape=Date)) + 
-  labs(x = "Chick age (day)", 
-       y = "Provisioning (per chick/hour)") + 
-  geom_smooth(method=glm, formula = y ~ x + I(x^2), aes(y=feedingperchkhr, 
-                                                        color=as.factor(Date), fill=as.factor(Date)),
-              se = TRUE, level = 0.95, fullrange = TRUE, alpha = 0.2) +
-  scale_color_grey(start = 0.4, end = 0.7) +
-  scale_fill_grey(start = 0.3, end = 0.8) +
-  theme_bw() +
-  theme(text=element_text(size=12, family="mono"), legend.position = "bottom") 

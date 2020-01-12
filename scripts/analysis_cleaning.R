@@ -50,8 +50,7 @@ cleaning_fig <-
   ggplot(
     bbyvid, aes(x=Sex, y=Cleaning_rate_perchk, fill=Sex)) + 
     geom_boxplot() + 
-    labs(title = "",
-         x = "Sex", 
+    labs(x = "Sex", 
          y = "Cleaning (per chick/hr)") +
     scale_fill_grey(start = 0.6, end = 0.3) +
     theme_classic() +

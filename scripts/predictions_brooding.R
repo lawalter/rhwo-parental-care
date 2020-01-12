@@ -6,9 +6,17 @@
 
 ### BEST VERSION
 
+# libraries ---------------------------------------------------------------
 
+library(tidyverse)
+library(reshape2)
 library(glmmTMB)
-library(ggplot2)
+
+# data --------------------------------------------------------------------
+
+bbyvid <- read_csv("clean_data/bbyvid.csv")
+
+# script ------------------------------------------------------------------
 
 # Calculate standardized temperatures
 bbyvid$Std_TMAX <- (bbyvid$TMAX - mean(bbyvid$TMAX))/sd(bbyvid$TMAX)
@@ -50,6 +58,38 @@ ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color=Sex, fill=Sex)) +
   guides(color=guide_legend("Sex")) +
   theme_classic() +
   theme(legend.position = "bottom", text=element_text(size=12)) 
+
+# B&W by sex for manuscript
+brooding_sex_fig <-
+  ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color=Sex, fill=Sex)) +
+    stat_smooth(method = glm, formula = y ~ x, 
+                aes(y = pred.b.per.hr, color = as.factor(Sex), 
+                    fill = as.factor(Sex), linetype = Sex), alpha = 0.2,
+                se = TRUE, level = 0.95, fullrange = TRUE) +
+    geom_point(aes(color=Sex, shape=Sex)) +
+    coord_cartesian(ylim=c(0,40)) + 
+    labs(title = "Figure 2a",
+         x = "Chick age (day)", 
+         y = "Predicted brooding (min/hr)") + 
+    guides(color=guide_legend("Sex")) +
+    scale_color_grey(start = 0.6, end = 0.3) +
+    scale_fill_grey(start = 0.6, end = 0.3) +
+    theme_classic() +
+    theme(axis.title.x = element_text(size=11), 
+          axis.title.y = element_text(size=11),
+          axis.text.y = element_text(size=9),
+          axis.text.x = element_text(size=9),
+          legend.text = element_text(size=10),
+          legend.title = element_text(size=11),
+          legend.position = "bottom") 
+ggplot2::ggsave(
+  file = "brooding_sex_fig.png",
+  plot = brooding_sex_fig,
+  path ="plots/",
+  width = 3.5,
+  height = 3,
+  units = "in",
+  dpi = 300)
 
 ## Poster 700x500
 ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color=Sex, fill=Sex)) +
@@ -96,6 +136,37 @@ ggplot(predbrood, aes(Tmax, pred.b.per.hr, fill=Tmax, color = Tmax)) +
   scale_color_manual(values = colors_bw) +
   scale_x_discrete(labels=c("Warm\n(23.9 - 31.5 C)","Hot\n(31.5 - 35.6 C)")) +
   theme(legend.position = "none")
+
+
+# B&W temp violin plot for manuscript
+brooding_temp_fig <-
+  ggplot(predbrood, aes(Tmax, pred.b.per.hr, fill = Tmax, color = Tmax)) +
+    geom_violin(lwd = 0) +
+    labs(title = "Figure 2b",
+         x = "Maximum air temperature", 
+         y = "Predicted brooding (min/hr)") +
+    scale_x_discrete(
+      labels=c("Warm\n(23.9 - 31.5 C)",
+               "Hot\n(31.5 - 35.6 C)")) +
+    theme(legend.position = "none") +
+    scale_color_grey(start = 0.6, end = 0.3) +
+    scale_fill_grey(start = 0.6, end = 0.3) +
+    theme_classic() +
+    theme(axis.title.x = element_text(size=11), 
+          axis.title.y = element_text(size=11),
+          axis.text.y = element_text(size=9),
+          axis.text.x = element_text(size=9),
+          legend.text = element_text(size=10),
+          legend.title = element_text(size=11),
+          legend.position = "none") 
+ggplot2::ggsave(
+  file = "brooding_temp_fig.pdf",
+  plot = brooding_temp_fig,
+  path ="plots/",
+  width = 3.5,
+  height = 3,
+  units = "in",
+  dpi = 300)
 
 ## Poster export 775x400
 ggplot(predbrood, aes(Tmax, pred.b.per.hr, fill=Tmax, color = Tmax)) +
