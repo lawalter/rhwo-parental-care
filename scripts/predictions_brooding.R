@@ -66,12 +66,12 @@ predbrood <-
   predbrood %>%
   mutate(stderr = sd(pred.b.per.hr)/sqrt(length(pred.b.per.hr)))
 
-# Grayscale by sex for manuscript
+# B&W by sex for manuscript
 brooding_sex_fig <-
   ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color = Sex, fill = Sex)) +
   stat_smooth(method = glm, formula = y ~ x, 
               aes(y = pred.b.per.hr, color = as.factor(Sex), 
-                  fill = as.factor(Sex), linetype = Sex), alpha = 0.2,
+                  fill = as.factor(Sex), linetype = Sex), size = 0.5, 
               se = TRUE, level = 0.95, fullrange = TRUE) +
   geom_point(aes(color=Sex, shape=Sex)) +
   coord_cartesian(ylim=c(0,40)) + 
@@ -79,7 +79,9 @@ brooding_sex_fig <-
        x = "Chick age (day)", 
        y = "Predicted brooding (min/hr)") + 
   guides(color=guide_legend("Sex")) +
+  scale_shape_manual(values = c(17, 1)) +
   scale_color_manual(values = c("female" = "black", "male" = "black")) +
+  scale_fill_grey(start = 0.6, end = 0.3) +
   theme_classic() +
   theme(axis.title.x = element_text(size=11), 
         axis.title.y = element_text(size=11),
