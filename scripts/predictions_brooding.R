@@ -22,7 +22,12 @@ bbyvid <- read_csv("clean_data/bbyvid.csv")
 bbyvid$Std_TMAX <- (bbyvid$TMAX - mean(bbyvid$TMAX))/sd(bbyvid$TMAX)
 bbyvid$brood_perhr <- (bbyvid$brooding_min/bbyvid$Usable_video)*60
 
-Brood_pred_mod <- glmmTMB(brooding_min ~ Exact_age_chick*Sex + Peeped_chick_count + Std_TMAX + (1|Brood_ID) + offset(log(Usable_video)), data = bbyvid, ziformula = ~., family = "truncated_nbinom1")
+Brood_pred_mod <- glmmTMB(brooding_min ~ Exact_age_chick*Sex + 
+                            Peeped_chick_count + Std_TMAX + 
+                            (1|Brood_ID) + offset(log(Usable_video)), 
+                          data = bbyvid, 
+                          ziformula = ~., 
+                          family = "truncated_nbinom1")
 
 summary(Brood_pred_mod)
 
@@ -35,8 +40,6 @@ predbrood$pred.b.per.hr <- (predbrood$pred.b.per.unit/predbrood$Usable_video)*60
 predbrood$brood_per_hr <- (predbrood$brooding_min/predbrood$Usable_video)*60
 predbrood$Tmax <- ifelse(predbrood$Std_TMAX > 0.12, "Hot", "Cool")
 
-library(ggplot2)
-library(ggpmisc)
 # Colors
 colors_sex <- c("female" = "#F47C89", "male" = "#7b758e")
 colors_tem <- c("Cool" = "#6bd2db", "Hot" = "#fc913a")
@@ -59,8 +62,43 @@ ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color=Sex, fill=Sex)) +
   theme_classic() +
   theme(legend.position = "bottom", text=element_text(size=12)) 
 
-# B&W by sex for manuscript
+predbrood <-
+  predbrood %>%
+  mutate(stderr = sd(pred.b.per.hr)/sqrt(length(pred.b.per.hr)))
+
+# Grayscale by sex for manuscript
 brooding_sex_fig <-
+  ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color = Sex, fill = Sex)) +
+  stat_smooth(method = glm, formula = y ~ x, 
+              aes(y = pred.b.per.hr, color = as.factor(Sex), 
+                  fill = as.factor(Sex), linetype = Sex), alpha = 0.2,
+              se = TRUE, level = 0.95, fullrange = TRUE) +
+  geom_point(aes(color=Sex, shape=Sex)) +
+  coord_cartesian(ylim=c(0,40)) + 
+  labs(title = "Figure 2a",
+       x = "Chick age (day)", 
+       y = "Predicted brooding (min/hr)") + 
+  guides(color=guide_legend("Sex")) +
+  scale_color_manual(values = c("female" = "black", "male" = "black")) +
+  theme_classic() +
+  theme(axis.title.x = element_text(size=11), 
+        axis.title.y = element_text(size=11),
+        axis.text.y = element_text(size=9),
+        axis.text.x = element_text(size=9),
+        legend.text = element_text(size=10),
+        legend.title = element_text(size=11),
+        legend.position = "bottom") 
+ggplot2::ggsave(
+  file = "brooding_sex_fig.png",
+  plot = brooding_sex_fig,
+  path ="plots/",
+  width = 3.5,
+  height = 3,
+  units = "in",
+  dpi = 300)
+
+# Grayscale by sex for manuscript
+brooding_sex_grayscale <-
   ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color=Sex, fill=Sex)) +
     stat_smooth(method = glm, formula = y ~ x, 
                 aes(y = pred.b.per.hr, color = as.factor(Sex), 
@@ -82,14 +120,6 @@ brooding_sex_fig <-
           legend.text = element_text(size=10),
           legend.title = element_text(size=11),
           legend.position = "bottom") 
-ggplot2::ggsave(
-  file = "brooding_sex_fig.png",
-  plot = brooding_sex_fig,
-  path ="plots/",
-  width = 3.5,
-  height = 3,
-  units = "in",
-  dpi = 300)
 
 ## Poster 700x500
 ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color=Sex, fill=Sex)) +
