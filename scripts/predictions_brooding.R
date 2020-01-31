@@ -47,6 +47,9 @@ colors_bw <- c("Cool" = "#ABABAB", "Hot" = "#333333")
 
 predbrood_conditional <- predbrood %>% filter(pred.b.per.unit > 1)
 
+
+# color plot --------------------------------------------------------------
+
 # *** Final linear prov plot By Sex (min per hr)
 ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color=Sex, fill=Sex)) +
   stat_smooth(method = glm, formula = y ~ x, 
@@ -62,9 +65,8 @@ ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color=Sex, fill=Sex)) +
   theme_classic() +
   theme(legend.position = "bottom", text=element_text(size=12)) 
 
-predbrood <-
-  predbrood %>%
-  mutate(stderr = sd(pred.b.per.hr)/sqrt(length(pred.b.per.hr)))
+
+# black and white plot ----------------------------------------------------
 
 # B&W by sex for manuscript
 brooding_sex_fig <-
@@ -81,7 +83,7 @@ brooding_sex_fig <-
   guides(color=guide_legend("Sex")) +
   scale_shape_manual(values = c(17, 1)) +
   scale_color_manual(values = c("female" = "black", "male" = "black")) +
-  scale_fill_grey(start = 0.6, end = 0.3) +
+  scale_fill_grey(start = 0.6, end = 0.6) +
   theme_classic() +
   theme(axis.title.x = element_text(size=11), 
         axis.title.y = element_text(size=11),
@@ -97,9 +99,9 @@ ggplot2::ggsave(
   width = 3.5,
   height = 3,
   units = "in",
-  dpi = 300)
+  dpi = 600)
 
-# Grayscale by sex for manuscript
+# Grayscale by sex
 brooding_sex_grayscale <-
   ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color=Sex, fill=Sex)) +
     stat_smooth(method = glm, formula = y ~ x, 
@@ -170,8 +172,40 @@ ggplot(predbrood, aes(Tmax, pred.b.per.hr, fill=Tmax, color = Tmax)) +
   theme(legend.position = "none")
 
 
+# violin plots ------------------------------------------------------------
+
 # B&W temp violin plot for manuscript
 brooding_temp_fig <-
+  ggplot(predbrood, aes(Tmax, pred.b.per.hr, fill = Tmax, color = Tmax)) +
+  geom_violin(lwd = 0) +
+  labs(title = "Figure 2b",
+       x = "Maximum air temperature", 
+       y = "Predicted brooding (min/hr)") +
+  scale_x_discrete(
+    labels=c("Warm\n(23.9 - 31.5 C)",
+             "Hot\n(31.5 - 35.6 C)")) +
+  theme(legend.position = "none") +
+  scale_color_manual(values = c("Cool" = "black", "Hot" = "black")) +
+  scale_fill_manual(values = c("Cool" = "black", "Hot" = "black")) +
+  theme_classic() +
+  theme(axis.title.x = element_text(size=11), 
+        axis.title.y = element_text(size=11),
+        axis.text.y = element_text(size=9),
+        axis.text.x = element_text(size=9),
+        legend.text = element_text(size=10),
+        legend.title = element_text(size=11),
+        legend.position = "none") 
+ggplot2::ggsave(
+  file = "brooding_temp_fig.pdf",
+  plot = brooding_temp_fig,
+  path ="plots/",
+  width = 3.5,
+  height = 3,
+  units = "in",
+  dpi = 600)
+
+# Grayscale violin plot 
+brooding_violin_fig <-
   ggplot(predbrood, aes(Tmax, pred.b.per.hr, fill = Tmax, color = Tmax)) +
     geom_violin(lwd = 0) +
     labs(title = "Figure 2b",
@@ -191,14 +225,27 @@ brooding_temp_fig <-
           legend.text = element_text(size=10),
           legend.title = element_text(size=11),
           legend.position = "none") 
-ggplot2::ggsave(
-  file = "brooding_temp_fig.pdf",
-  plot = brooding_temp_fig,
-  path ="plots/",
-  width = 3.5,
-  height = 3,
-  units = "in",
-  dpi = 300)
+
+# Boxplot
+ggplot(predbrood, aes(Tmax, pred.b.per.hr, fill = Tmax, color = Tmax)) +
+  geom_boxplot() +
+  labs(title = "Figure 2b",
+       x = "Maximum air temperature", 
+       y = "Predicted brooding (min/hr)") +
+  scale_x_discrete(
+    labels=c("Warm\n(23.9 - 31.5 C)",
+             "Hot\n(31.5 - 35.6 C)")) +
+  theme(legend.position = "none") +
+  scale_color_grey(start = 0.6, end = 0.3) +
+  scale_fill_grey(start = 0.6, end = 0.3) +
+  theme_classic() +
+  theme(axis.title.x = element_text(size=11), 
+        axis.title.y = element_text(size=11),
+        axis.text.y = element_text(size=9),
+        axis.text.x = element_text(size=9),
+        legend.text = element_text(size=10),
+        legend.title = element_text(size=11),
+        legend.position = "none") 
 
 ## Poster export 775x400
 ggplot(predbrood, aes(Tmax, pred.b.per.hr, fill=Tmax, color = Tmax)) +

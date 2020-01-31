@@ -151,3 +151,33 @@ ggplot2::ggsave(
   units = "in",
   dpi = 300)
 
+# B&W plot for manuscript
+provisioning_fig <- 
+  ggplot(preddata, aes(Exact_age_chick, predper_chkhr)) +
+  stat_smooth(method = glm, formula = y ~ x + I(x^2), 
+              aes(y = predper_chkhr, color = Date, 
+                  fill = Date, linetype = Date), size = 0.5, 
+              se = TRUE, level = 0.95, fullrange = TRUE) +
+  labs(title = "Figure 3",
+       x = "Chick age (day)", 
+       y = "Predicted provisioning \n (per chick/hr)") + 
+  guides(color = guide_legend("Date")) +
+  scale_shape_manual(values = c(17, 1)) +
+  scale_color_manual(values = c("Early summer" = "black", "Late summer" = "black")) +
+  scale_fill_grey(start = 0.6, end = 0.6) +
+  theme_classic() +
+  theme(axis.title.x = element_text(size=11), 
+        axis.title.y = element_text(size=11),
+        axis.text.y = element_text(size=9),
+        axis.text.x = element_text(size=9),
+        legend.text = element_text(size=10),
+        legend.title = element_text(size=11),
+        legend.position = "bottom") 
+ggplot2::ggsave(
+  file = "provisioning_fig.pdf",
+  plot = provisioning_fig,
+  path ="plots/",
+  width = 3.5,
+  height = 3,
+  units = "in",
+  dpi = 600)
