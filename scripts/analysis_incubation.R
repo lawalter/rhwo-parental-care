@@ -8,26 +8,22 @@ library(lubridate)
 library(reshape2)
 library(car)
 library(tidyverse)
+library(psych)
 
-read_rds('cleaned_data/incubation.rds') %>%
+read_rds('clean_data/incubation.rds') %>%
   list2env(envir = .GlobalEnv)
 
 # WRANGLING BEHAVIORS -------------------------------------------------------
 
 # Get  video_number, subject, sex, jdate, tmax, incubation_rate in one df
 
-video_data %>%
-  select(video_key, Video_number, Usable_length, Date) %>%
-  group_by(Video_number) %>%
-  mutate(Usable_length = sum(Usable_length))
-
 behavior_data <-
   boris_data %>% 
   left_join(
-    sexes %>%
-      select(rhwo_key, Subject, Sex),
+    sex_data %>%
+      select(rhwo_key, subject, Sex),
     by = 'rhwo_key') %>%
-  filter(Behavior %in% c('in cavity')) %>%
+  filter(behavior %in% c('in cavity')) %>%
   mutate_if(
     is.character, 
     str_replace_all, 
@@ -35,40 +31,48 @@ behavior_data <-
     replacement = 'incubating') %>%
   left_join(
     video_data %>%
-      select(video_key, Video_number, Usable_length, Date) %>%
-      group_by(Video_number) %>%
-      mutate(Usable_length_total = sum(Usable_length)),
+      select(video_key, video_number, usable_length, Date) %>%
+      group_by(video_number) %>%
+      mutate(usable_length_total = sum(usable_length)),
     by = 'video_key'
   ) %>%
-  group_by(Video_number, Subject) %>%
+  group_by(video_number, subject) %>%
   mutate(
-    incubation_rate_min = sum(Duration_sec[Behavior == 'incubating'])/60,
+    incubation_rate_min = sum(Duration_sec[behavior == 'incubating'])/60,
     incubation_rate = ifelse(
       is.nan(incubation_rate_min), 
       0, 
-      (incubation_rate_min*60)/first(Usable_length_total))
+      (incubation_rate_min*60)/first(usable_length_total))
   ) %>%
   filter(row_number() == first(row_number())) %>%
   ungroup() %>%
   # Remove incubation events (2) done by unidentified parents
-  filter(!str_detect(Subject, 'unknown')) %>%
+  filter(!str_detect(subject, 'unknown')) %>%
   left_join(
     NOAA_data %>%
       select(Date = DATE, TMAX),
     by = 'Date') %>%
   mutate(Date = yday(Date)) %>%
-  select(Video_number, Subject, Sex, Date, TMAX, incubation_rate, Usable_length_total)
+  select(video_number, subject, Sex, Date, TMAX, incubation_rate, usable_length_total)
 
 behavior_data %>%
-  select(Usable_length_total) %>%
+  select(usable_length_total) %>%
   distinct() %>%
+  sort(usable_length_total) %>%
   describe()
+
+video_data %>%
+  select(video_key, video_number, usable_length, Date) %>%
+  group_by(video_number) %>%
+  mutate(usable_length = sum(usable_length)) %>%
+  select(video_number, usable_length) %>%
+  distinct 
 
 # T-TESTS BY SEX ----------------------------------------------------------
 
 # Incubation rates
 incubation_sex <- 
-  dcast(behavior_data, Video_number ~ Sex, value.var = "incubation_rate")
+  dcast(behavior_data, video_number ~ Sex, value.var = "incubation_rate")
 
 shapiro.test(incubation_sex$female) #normal
 shapiro.test(incubation_sex$male) #normal
