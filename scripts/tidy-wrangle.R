@@ -17,58 +17,88 @@
 
 library(gsheet)
 library(magrittr)
-library(dplyr)
+library(tidyverse)
 library(lubridate)
+library(reshape2)
 library(sp)
 
 # import data -------------------------------------------------------------
 
-# Import all data from google drive links
+# Import from csv:
 
-sex_url <- 
-  paste0('https://drive.google.com/', 
-         'open?id=1E-BLyxQ-7hMJN7JVMbKbAftsBCQxjFB-ZVDEisfNc5c')
-
-video_data_prov_url <- 
-  paste0('https://drive.google.com/', 
-         'open?id=1ifQrZegnwghLtEJKEHiLDzZUTyvVB3TN3jA6SYt2lbk')
-
-boris_preyproofed_url <- 
-  paste0('https://drive.google.com/', 
-         'open?id=1m2KZvIUixReKW531jUFiW1FVXAZb-iLjCArnv8Sj4kg')
-
-# Define an import function
-
-data.get <- 
-  function(url){
-    read.csv(
-      text=gsheet2text(url, format='csv'), 
-      stringsAsFactors=FALSE, 
-      na.strings = c("", "na", "NA"))
-    }
-
-sex_data <- 
-  data.get(sex_url) %>%
+sex_data <-
+  read_csv('raw_data/sex_data.csv', na = c("", "na", "NA")) %>%
   set_names(
     names(.) %>% 
-      tolower()) %>%
-  as_tibble()
+      tolower()) 
 
 video_data_initial <- 
-  data.get(video_data_prov_url) %>%
+  read_csv('raw_data/provisioning_video_data.csv', na = c("", "na", "NA")) %>%
   set_names(
     names(.) %>% 
-      tolower()) %>%
-  as_tibble()
+      tolower()) 
 
 boris_data <- 
-  data.get(boris_preyproofed_url) %>%
+  read_csv('raw_data/boris_provisioning_preyproofed_bestdata.csv', 
+           na = c("", "na", "NA")) %>%
   set_names(
     names(.) %>% 
       tolower()) %>%
-  as_tibble() %>%
   arrange(observation.id, start_sec)
 
+
+# old reader --------------------------------------------------------------
+
+
+# Import all data from google drive links
+
+# sex_url <- 
+#   paste0('https://drive.google.com/', 
+#          'open?id=1E-BLyxQ-7hMJN7JVMbKbAftsBCQxjFB-ZVDEisfNc5c')
+# 
+# video_data_prov_url <- 
+#   paste0('https://drive.google.com/', 
+#          'open?id=1ifQrZegnwghLtEJKEHiLDzZUTyvVB3TN3jA6SYt2lbk')
+# 
+# boris_preyproofed_url <- 
+#   paste0('https://drive.google.com/', 
+#          'open?id=1m2KZvIUixReKW531jUFiW1FVXAZb-iLjCArnv8Sj4kg')
+# 
+# # Define an import function
+# 
+# data.get <- 
+#   function(url){
+#     read.csv(
+#       text=gsheet2text(url, format='csv'), 
+#       stringsAsFactors=FALSE, 
+#       na.strings = c("", "na", "NA"))
+#     }
+# 
+# sex_data_g <- 
+#   data.get(sex_url) %>%
+#   set_names(
+#     names(.) %>% 
+#       tolower()) %>%
+#   as_tibble()
+# 
+# video_data_initial_g <- 
+#   data.get(video_data_prov_url) %>%
+#   set_names(
+#     names(.) %>% 
+#       tolower()) %>%
+#   as_tibble()
+# 
+# boris_data_g <- 
+#   data.get(boris_preyproofed_url) %>%
+#   set_names(
+#     names(.) %>% 
+#       tolower()) %>%
+#   as_tibble() %>%
+#   arrange(observation.id, start_sec)
+# 
+# identical(boris_data, boris_data_g)
+# identical(sex_data, sex_data_g)
+# identical(video_data_initial, video_data_initial_g)
 
 # tidying -----------------------------------------------------------------
 

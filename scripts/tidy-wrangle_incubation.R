@@ -2,7 +2,6 @@
 ## By: Lynn Abigail Walter
 ## git push origin master
 
-library(gsheet)
 library(stringr)
 library(lubridate)
 library(reshape2)
@@ -11,28 +10,30 @@ library(tidyverse)
 
 # IMPORT DATA -------------------------------------------------------------
 
-c('https://drive.google.com/open?id=1E-BLyxQ-7hMJN7JVMbKbAftsBCQxjFB-ZVDEisfNc5c',
-  'https://docs.google.com/spreadsheets/d/1Y5mKHQvY03K8YGkt5nvh3NAj93UiVhInpIx1NjBpH6M/edit?usp=sharing',
-  'https://docs.google.com/spreadsheets/d/1KhdKjy8Fy4KrejdrwkJXj1ARfzpgg35g2-a9I1b6vw4/edit?usp=sharing',
-  'https://drive.google.com/open?id=1hKlT1dcAO6jA1DkgFUhQ61ZZsCLMhsfN12oiXzfj6go') %>%
+c('raw_data/sex_data.csv', 
+  'raw_data/incubation_video.csv',
+  'raw_data/boris_incubation_data.csv',
+  'raw_data/NOAA_weather_data.csv') %>%
   map(
     function(x){
       read_csv(
-        file = gsheet2text(x, format='csv'),
+        #file = gsheet2text(x, format='csv'),
+        x,
         na = c("", "na", "NA", "not sent")) %>%
         set_names(str_replace_all(names(.), '\\?', '')) %>%
         set_names(str_replace_all(names(.), '\\/', '_')) %>%
-        # Dates for the video data:
+        set_names(names(.) %>% tolower()) %>%
+        # dates for the video data:
         {if(str_detect(x, 'BpH6M')) {
           mutate_at(
             .,
-            vars(Date, Clutch_laid, Hatch_date),
+            vars(date, clutch_laid, hatch_date),
             function(y) as.Date(y, "%m/%d/%Y")) %>%
-            select(-c(Month, Day, Year, Early_or_late))
+            select(-c(month, day, year, early_or_late))
         } else .} %>%
-        # Remove Stop_sec:
+        # Remove stop_sec:
         {if(str_detect(x, '1KhdK')) {
-          select(., -c(Stop_sec))
+          select(., -c(stop_sec))
         } else .}
     }) %>% 
   set_names(c('sex_data', 'video_data_initial', 'boris_data', 'NOAA_data')) %>%
@@ -41,23 +42,33 @@ c('https://drive.google.com/open?id=1E-BLyxQ-7hMJN7JVMbKbAftsBCQxjFB-ZVDEisfNc5c
 
 # DATA TIDYING ------------------------------------------------------------
 
+sex_data <-
+  sex_data %>%
+  rename(
+    subject = color_combo,
+    year_sent = `year sent`,
+    roost_id_2016 = `2016_roost_id`,
+    nest_id_2017 = `2017_nest_id`,
+    nest_id_2018 = `2018_nest_id`,
+    resight_2018 = `2018_resight`)
+
 sexes <-
   sex_data %>%
-  select(Band_number, Subject = Color_combo, Sex, Method, Year_sent = `Year Sent`) %>%
-  filter(Subject != "GSRO") %>%
+  select(band_number, subject, sex, method, year_sent, roost_id_2016, 
+         nest_id_2017, nest_id_2018, resight_2018) %>%
+  filter(subject != "GSRO") %>%
   mutate(
-    Subject = ifelse(
-      !str_detect(Subject, 'mate'),
-      str_replace_all(Subject, '[1-9|_]', ''),
-      Subject
-    )) %>%
+    subject = ifelse(
+      !str_detect(subject, 'mate'),
+      str_replace_all(subject, '[1-9|_]', ''),
+      subject)) %>%
   distinct %>%
   mutate(rhwo_key = paste0('rhwo_', row_number())) %>%
-  select(rhwo_key, Subject, Band_number, Sex: Year_sent)
+  select(rhwo_key, subject, band_number, sex:year_sent)
 
 locations <-
   sex_data %>%
-  select('2016_Roost_ID', '2017_Nest_ID', '2018_Nest_ID', '2018_Resight') %>%
+  select('roost_id_2016', 'resight_2018', 'nest_id_2017', 'nest_id_2018') %>%
   stack() %>%
   select(locations = values) %>%
   na.omit() %>%
@@ -65,125 +76,124 @@ locations <-
   mutate(location_key = paste0('loc_', row_number())) %>%
   select(location_key, locations) 
 
+
+#### This has an error - fix
 bird_locations <-
   map_dfr(
-    c('2016_Roost_ID', '2018_Resight', '2017_Nest_ID', '2018_Nest_ID'),
+    c('roost_id_2016', 'resight_2018', 'nest_id_2017', 'nest_id_2018'),
     function(x){
       sex_data %>%
         mutate(
           year = str_extract(x, '^[0-9]{1,4}') %>%
             as.numeric())      %>%
         mutate(id = str_replace_all(x, '[0-9|_]', '')) %>%
-        select(Band_number, year, id, x) %>%
+        select(band_number, year, id, x) %>%
         na.omit() %>%
         set_names(
-          'Band_number',
+          'band_number',
           'year',
           'id',
           str_replace_all(x, '[0-9|_]', '')
         )}) %>%
   mutate(
-    locations = paste(RoostID, Resight, NestID) %>%
+    locations = paste(roostID, resight, nestID) %>%
       str_replace_all( 'NA', '') %>%
       str_trim()) %>%
   left_join(., locations) %>%
-  select(-c(RoostID, NestID, Resight)) %>%
+  select(-c(roostID, nestID, resight)) %>%
   distinct() %>%
-  dcast(., Band_number + year ~ id, value.var = "location_key", 
-        fun.aggregate=function(x) paste(x, collapse = " ")) %>% 
+  dcast(., band_number + year ~ id, value.var = "location_key", 
+        fun.aggregate= function(x) {paste(x, collapse = " ")}) %>% 
   mutate_all(na_if,"") %>%
   as_tibble() %>%
-  arrange(Band_number, year) %>%
+  arrange(band_number, year) %>%
   left_join(., sexes) %>%
   mutate(bird_loc_key = paste0('birdloc_', row_number())) %>%
-  select(c(bird_loc_key, rhwo_key, RoostID, NestID, Resight, year))
+  select(c(bird_loc_key, rhwo_key, roostID, nestID, resight, year))
 
 bpk_data <-
   video_data_initial %>%
-  select(Ref_combo = Ref_combo_1, Date, Bpk_status = Bpk_status_1) %>%
+  select(ref_combo = ref_combo_1, date, bpk_status = bpk_status_1) %>%
   bind_rows(
     video_data_initial %>%
-      select(Ref_combo = Ref_combo_2, Date, Bpk_status = Bpk_status_2)
+      select(ref_combo = ref_combo_2, date, bpk_status = bpk_status_2)
   ) %>%
   distinct() %>%
   mutate(
-    Bpk_status = case_when(
-      str_detect(Bpk_status, 'before') ~ 'before',
-      str_detect(Bpk_status, 'after') ~ 'after',
-      str_detect(Bpk_status, 'with') ~ 'with',
-      TRUE ~ Bpk_status)
+    bpk_status = case_when(
+      str_detect(bpk_status, 'before') ~ 'before',
+      str_detect(bpk_status, 'after') ~ 'after',
+      str_detect(bpk_status, 'with') ~ 'with',
+      TRUE ~ bpk_status)
   ) %>%
   left_join(
     sexes %>%
-      select(rhwo_key, Subject),
-    by = c('Ref_combo' = 'Subject')
+      select(rhwo_key, subject),
+    by = c('ref_combo' = 'subject')
   ) %>%
-  mutate(Bpk_key = paste0('bpk_', row_number())) %>%
-  select(Bpk_key, rhwo_key, Date, Bpk_status)
+  mutate(bpk_key = paste0('bpk_', row_number())) %>%
+  select(bpk_key, rhwo_key, date, bpk_status)
 
 brood_data <-
   video_data_initial %>%
-  select(Brood_ID, Nest_ID, TA, Hatch_date, Clutch_laid, Egg_count) %>%
+  select(brood_id, nest_id, ta, hatch_date, clutch_laid, egg_count) %>%
   distinct() %>%
-  mutate(Brood_key = paste0('brood_', row_number())) %>%
-  select(Brood_key, Brood_ID:Egg_count) %>%
+  mutate(brood_key = paste0('brood_', row_number())) %>%
+  select(brood_key, brood_id:egg_count) %>%
   distinct()
 
 nest_parents <-
   video_data_initial %>%
-  select(Brood_ID, Ref_combo_1, Ref_combo_2) %>% 
-  mutate(Ref_combo_2 = ifelse(
-    Ref_combo_2 == 'unbanded',
-    paste0(Ref_combo_1, '_mate'),
-    Ref_combo_2
+  select(brood_id, ref_combo_1, ref_combo_2) %>% 
+  mutate(ref_combo_2 = ifelse(
+    ref_combo_2 == 'unbanded',
+    paste0(ref_combo_1, '_mate'),
+    ref_combo_2
   )) %>%
-  gather('rc', 'Subject', Ref_combo_1:Ref_combo_2) %>%
+  gather('rc', 'subject', ref_combo_1:ref_combo_2) %>%
   select(-rc) %>%
   distinct() %>% 
-  arrange(Brood_ID) %>%
-  mutate(Parent_ID = paste0('parent_', row_number())) %>%
-  left_join(sexes %>%
-              select(Subject, rhwo_key)) %>%
-  select(Parent_ID, rhwo_key, Brood_ID) %>%
+  arrange(brood_id) %>%
+  mutate(parent_id = paste0('parent_', row_number())) %>%
+  left_join(
+    sexes %>%
+      select(subject, rhwo_key),
+    by = "subject") %>%
+  select(parent_id, rhwo_key, brood_id) %>%
   left_join(
     brood_data %>%
-      select(Brood_key, Brood_ID),
-    by  = 'Brood_ID'
+      select(brood_key, brood_id),
+    by = 'brood_id'
   ) %>%
-  select(-Brood_ID)
+  select(-brood_id)
 
 video_data <-
   video_data_initial %>%
-  select(Observation.id, Usable_length,Video_number, Part, Date, Brood_ID, Start_time:Summary_Notes) %>%
+  select(observation.id, usable_length, video_number, part, date, brood_id, 
+         start_time:summary_notes) %>%
   left_join(
     brood_data %>%
-      select(Brood_key, Brood_ID), 
-    by = 'Brood_ID') %>%
-  select(-Brood_ID) %>%
+      select(brood_key, brood_id), 
+    by = 'brood_id') %>%
+  select(-brood_id) %>%
   mutate(
     video_key = paste0('video_', row_number())) %>%
-  select(video_key, Brood_key, Observation.id:Summary_Notes)
+  select(video_key, brood_key, observation.id:summary_notes)
 
-boris_data <-
+boris <-
   boris_data %>%
-  left_join(video_data %>%
-              select(video_key, Observation.id)) %>%
-  left_join(sexes %>%
-              select(rhwo_key, Subject)) %>%
+  left_join(
+    video_data,
+    by = c('video_key', 'observation.id')) %>%
   mutate(boris_key = paste0('boriskey_', row_number())) %>%
-  select(boris_key, video_key, rhwo_key, Behavior:Duration_sec) 
+  select(boris_key, video_key:duration_sec) 
 
-# Write tidy tables to rds
+# write tidy tables to rds ------------------------------------------------
 
 list(
-  bird_locations = bird_locations,
-  boris_data = boris_data,
-  bpk_data = bpk_data,
-  brood_data = brood_data,
-  locations = locations,
-  nest_parents = nest_parents,
-  NOAA_data = NOAA_data,
-  sex_data = sexes,
-  video_data = video_data
-) %>%
+  bird_locations, boris, bpk_data, brood_data, locations, nest_parents,
+  NOAA_data, sexes, video_data) %>%
+  set_names(c('bird_locations', 'boris_data', 'bpk_data', 'brood_data',
+              'locations', 'nest_parents', 'NOAA_data', 'sex_data',
+              'video_data')) %>%
   write_rds('cleaned_data/incubation.rds')
