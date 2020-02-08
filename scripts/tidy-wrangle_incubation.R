@@ -1,6 +1,9 @@
-## Red-headed Woodpecker incubation analysis 
-## By: Lynn Abigail Walter
-## git push origin master
+# intro -------------------------------------------------------------------
+
+# Red-headed Woodpecker incubation data tidying 
+# by: Lynn Abigail Walter
+
+# libraries ---------------------------------------------------------------
 
 library(stringr)
 library(lubridate)
@@ -8,7 +11,7 @@ library(reshape2)
 library(car)
 library(tidyverse)
 
-# IMPORT DATA -------------------------------------------------------------
+# import data -------------------------------------------------------------
 
 c('raw_data/sex_data.csv', 
   'raw_data/incubation_video.csv',
@@ -42,8 +45,7 @@ c('raw_data/sex_data.csv',
               'NOAA_data')) %>%
   list2env(envir = .GlobalEnv)
 
-
-# DATA TIDYING ------------------------------------------------------------
+# tidying -----------------------------------------------------------------
 
 sex_data <-
   sex_data %>%
@@ -198,8 +200,13 @@ boris <-
     video_data %>%
       select(video_key, observation.id),
     by = c('observation.id')) %>%
+  left_join(
+    sexes %>%
+      select(subject, rhwo_key),
+    by = 'subject') %>%
   mutate(boris_key = paste0('boriskey_', row_number())) %>%
-  select(boris_key, video_key, observation.id:duration_sec) 
+  select(boris_key, video_key, rhwo_key, observation.id, 
+         behavior:duration_sec) 
 
 # write tidy tables to rds ------------------------------------------------
 

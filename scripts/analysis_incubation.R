@@ -1,7 +1,9 @@
-## Red-headed Woodpecker incubation analysis 
-## By: Lynn Abigail Walter
+# intro -------------------------------------------------------------------
 
-# SETUP -------------------------------------------------------------------
+# Red-headed Woodpecker incubation analysis 
+# by: Lynn Abigail Walter
+
+# setup -------------------------------------------------------------------
 
 library(stringr)
 library(lubridate)
@@ -10,18 +12,20 @@ library(car)
 library(tidyverse)
 library(psych)
 
+# read rds ----------------------------------------------------------------
+
 read_rds('clean_data/incubation.rds') %>%
   list2env(envir = .GlobalEnv)
 
-# WRANGLING BEHAVIORS -------------------------------------------------------
+# script ------------------------------------------------------------------
 
-# Get  video_number, subject, sex, jdate, tmax, incubation_rate in one df
+# Get video_number, subject, sex, jdate, tmax, incubation_rate in one table:
 
 behavior_data <-
   boris_data %>% 
   left_join(
     sex_data %>%
-      select(rhwo_key, subject, Sex),
+      select(subject, rhwo_key, sex),
     by = 'rhwo_key') %>%
   filter(behavior %in% c('in cavity')) %>%
   mutate_if(
@@ -31,66 +35,87 @@ behavior_data <-
     replacement = 'incubating') %>%
   left_join(
     video_data %>%
-      select(video_key, video_number, usable_length, Date) %>%
+      select(video_key, video_number, usable_length, date) %>%
       group_by(video_number) %>%
       mutate(usable_length_total = sum(usable_length)),
-    by = 'video_key'
-  ) %>%
+    by = 'video_key') %>%
   group_by(video_number, subject) %>%
   mutate(
-    incubation_rate_min = sum(Duration_sec[behavior == 'incubating'])/60,
-    incubation_rate = ifelse(
-      is.nan(incubation_rate_min), 
-      0, 
-      (incubation_rate_min*60)/first(usable_length_total))
-  ) %>%
+    incubation_rate_min = sum(duration_sec[behavior == 'incubating'])/60,
+    incubation_rate = 
+      ifelse(
+        is.nan(incubation_rate_min), 
+        0, 
+        (incubation_rate_min*60)/first(usable_length_total)),
+    date = mdy(date)) %>%
   filter(row_number() == first(row_number())) %>%
   ungroup() %>%
   # Remove incubation events (2) done by unidentified parents
-  filter(!str_detect(subject, 'unknown')) %>%
+  filter(!str_detect(subject, 'unknown')) %>% 
   left_join(
     NOAA_data %>%
-      select(Date = DATE, TMAX),
-    by = 'Date') %>%
-  mutate(Date = yday(Date)) %>%
-  select(video_number, subject, Sex, Date, TMAX, incubation_rate, usable_length_total)
+      select(date, tmax),
+    by = 'date') %>%
+  mutate(jdate = yday(date)) %>%
+  select(video_number, subject, sex, date, tmax, incubation_rate, 
+         usable_length_total)
+
+# quick summaries ---------------------------------------------------------
 
 behavior_data %>%
   select(usable_length_total) %>%
   distinct() %>%
-  sort(usable_length_total) %>%
+  arrange(usable_length_total) %>%
   describe()
 
 video_data %>%
-  select(video_key, video_number, usable_length, Date) %>%
+  select(video_key, video_number, usable_length, date) %>%
   group_by(video_number) %>%
   mutate(usable_length = sum(usable_length)) %>%
   select(video_number, usable_length) %>%
   distinct 
 
-# T-TESTS BY SEX ----------------------------------------------------------
+# sex t-test --------------------------------------------------------------
 
-# Incubation rates
+# Incubation rates table by sex:
+
 incubation_sex <- 
-  dcast(behavior_data, video_number ~ Sex, value.var = "incubation_rate")
+  behavior_data %>%
+  pivot_wider(video_number,
+               names_from = 'sex', 
+               values_from = 'incubation_rate')
+
+# Testing distributions for normality:
 
 shapiro.test(incubation_sex$female) #normal
 shapiro.test(incubation_sex$male) #normal
 
-leveneTest(incubation_rate ~ Sex, data = behavior_data) #not equal
+# Testing for equality of variance:
+
+leveneTest(incubation_rate ~ as.factor(sex), 
+           data = behavior_data) #not equal
+
+# T-test of incubation rate by sex:
 
 t.test(incubation_sex$female, incubation_sex$male, 
        alternative = c('two.sided'),
        paired = TRUE,
        var.equal = FALSE,
        conf.level = 0.95)
-# p = 0.05
+       # p = 0.048
+
+# sex plots ---------------------------------------------------------------
+
+# Define color scheme:
 
 colors_sex <- c("female" = "#F47C89", "male" = "#7b758e")
+
+# Boxplot:
+
 ggplot(
-  behavior_data, aes(x=Sex, y=incubation_rate, fill=Sex)) + 
+  behavior_data, aes(x=sex, y=incubation_rate, fill=sex)) + 
   geom_boxplot() + 
-  labs(x = "Sex", 
+  labs(x = "sex", 
        y = "Incubating (min/hr)") +
   scale_fill_manual(values = colors_sex) +
   theme_classic() +
@@ -100,10 +125,12 @@ ggplot(
         text = element_text(size=24), 
         legend.position = "none") 
 
+# Violin plot:
+
 ggplot(
-  behavior_data, aes(x=Sex, y=incubation_rate, fill=Sex)) + 
+  behavior_data, aes(x=sex, y=incubation_rate, fill=sex)) + 
   geom_violin() + 
-  labs(x = "Sex", 
+  labs(x = "sex", 
        y = "Incubating (min/hr)") +
   scale_fill_manual(values = colors_sex) +
   theme_classic() +
@@ -112,27 +139,19 @@ ggplot(
         axis.title.y = element_text(size=24), 
         text = element_text(size=24), 
         legend.position = "none") 
+
+# tmax regression ---------------------------------------------------------
 
 # Testing TMAX
-lm_tmax <- lm(incubation_rate ~ TMAX, data = behavior_data)
+lm_tmax <- lm(incubation_rate ~ tmax, data = behavior_data)
 summary(lm_tmax)
+  # p: 0.368
+  # t: -0.92
 
 ggplot(
-  behavior_data, aes(x=TMAX, y=incubation_rate)) +
+  behavior_data, aes(x = tmax, y = incubation_rate)) +
   geom_point()
 
 ggplot(
-  behavior_data, aes(x=TMAX, y=incubation_rate, color=Sex)) +
-  geom_point()
-
-# Testing date
-lm_date <- lm(incubation_rate ~ Date, data = behavior_data)
-summary(lm_date)
-
-ggplot(
-  behavior_data, aes(x=Date, y=incubation_rate)) +
-  geom_point()
-
-ggplot(
-  behavior_data, aes(x=Date, y=incubation_rate, color=Sex)) +
+  behavior_data, aes(x = tmax, y = incubation_rate, color = sex)) +
   geom_point()
