@@ -36,7 +36,10 @@ c('raw_data/sex_data.csv',
           select(., -c(stop_sec))
         } else .}
     }) %>% 
-  set_names(c('sex_data', 'video_data_initial', 'boris_data', 'NOAA_data')) %>%
+  set_names(c('sex_data', 
+              'video_data_initial', 
+              'boris_data', 
+              'NOAA_data')) %>%
   list2env(envir = .GlobalEnv)
 
 
@@ -66,50 +69,55 @@ sexes <-
   mutate(rhwo_key = paste0('rhwo_', row_number())) %>%
   select(rhwo_key, subject, band_number, sex:year_sent)
 
-locations <-
+snag_locations <-
   sex_data %>%
-  select('roost_id_2016', 'resight_2018', 'nest_id_2017', 'nest_id_2018') %>%
+  select('roost_id_2016', 
+         'resight_2018', 
+         'nest_id_2017', 
+         'nest_id_2018') %>%
   stack() %>%
-  select(locations = values) %>%
-  na.omit() %>%
+  select(location = values) %>%
+  filter(!is.na(location)) %>%
   distinct() %>%
-  mutate(location_key = paste0('loc_', row_number())) %>%
-  select(location_key, locations) 
+  arrange(location) %>%
+  mutate(snag_key = paste0('snag_', row_number()),
+         latitude = NA,
+         longitude = NA) %>%
+  select(snag_key, location, latitude, longitude) %>%
+  as_tibble()
 
-
-#### This has an error - fix
 bird_locations <-
   map_dfr(
     c('roost_id_2016', 'resight_2018', 'nest_id_2017', 'nest_id_2018'),
     function(x){
       sex_data %>%
         mutate(
-          year = str_extract(x, '^[0-9]{1,4}') %>%
-            as.numeric())      %>%
-        mutate(id = str_replace_all(x, '[0-9|_]', '')) %>%
+          year = str_extract(x, '[0-9]{4}') %>%
+            as.numeric(),
+          id = str_replace_all(x, '[0-9|_]', '')) %>%
         select(band_number, year, id, x) %>%
         na.omit() %>%
         set_names(
           'band_number',
           'year',
-          'id',
+          'type',
           str_replace_all(x, '[0-9|_]', '')
         )}) %>%
   mutate(
-    locations = paste(roostID, resight, nestID) %>%
+    location = paste(roostid, resight, nestid) %>%
       str_replace_all( 'NA', '') %>%
-      str_trim()) %>%
-  left_join(., locations) %>%
-  select(-c(roostID, nestID, resight)) %>%
+      str_trim()) %>% 
+  select(-c(roostid, nestid, resight)) %>%
+  left_join(snag_locations, by = 'location') %>%
   distinct() %>%
-  dcast(., band_number + year ~ id, value.var = "location_key", 
+  dcast(., band_number + year ~ type, value.var = "snag_key", 
         fun.aggregate= function(x) {paste(x, collapse = " ")}) %>% 
   mutate_all(na_if,"") %>%
   as_tibble() %>%
   arrange(band_number, year) %>%
   left_join(., sexes) %>%
   mutate(bird_loc_key = paste0('birdloc_', row_number())) %>%
-  select(c(bird_loc_key, rhwo_key, roostID, nestID, resight, year))
+  select(c(bird_loc_key, rhwo_key, roostid, nestid, resight, year))
 
 bpk_data <-
   video_data_initial %>%
@@ -136,11 +144,15 @@ bpk_data <-
 
 brood_data <-
   video_data_initial %>%
-  select(brood_id, nest_id, ta, hatch_date, clutch_laid, egg_count) %>%
+  select(brood_id, location = nest_id, ta, hatch_date, clutch_laid, 
+         egg_count) %>%
   distinct() %>%
+  left_join(
+    snag_locations %>%
+      select(snag_key, location),
+    by = 'location') %>%
   mutate(brood_key = paste0('brood_', row_number())) %>%
-  select(brood_key, brood_id:egg_count) %>%
-  distinct()
+  select(brood_key, snag_key, brood_id:egg_count) 
 
 nest_parents <-
   video_data_initial %>%
@@ -183,17 +195,32 @@ video_data <-
 boris <-
   boris_data %>%
   left_join(
-    video_data,
-    by = c('video_key', 'observation.id')) %>%
+    video_data %>%
+      select(video_key, observation.id),
+    by = c('observation.id')) %>%
   mutate(boris_key = paste0('boriskey_', row_number())) %>%
-  select(boris_key, video_key:duration_sec) 
+  select(boris_key, video_key, observation.id:duration_sec) 
 
 # write tidy tables to rds ------------------------------------------------
 
 list(
-  bird_locations, boris, bpk_data, brood_data, locations, nest_parents,
-  NOAA_data, sexes, video_data) %>%
-  set_names(c('bird_locations', 'boris_data', 'bpk_data', 'brood_data',
-              'locations', 'nest_parents', 'NOAA_data', 'sex_data',
-              'video_data')) %>%
-  write_rds('cleaned_data/incubation.rds')
+  bird_locations, 
+  boris, 
+  bpk_data, 
+  brood_data, 
+  snag_locations, 
+  nest_parents,
+  NOAA_data, 
+  sexes, 
+  video_data) %>%
+  set_names(
+    c('bird_locations', 
+      'boris_data', 
+      'bpk_data', 
+      'brood_data',
+      'snag_locations', 
+      'nest_parents', 
+      'NOAA_data', 
+      'sex_data',
+      'video_data')) %>%
+  write_rds('clean_data/incubation.rds')
