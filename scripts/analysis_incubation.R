@@ -19,8 +19,6 @@ read_rds('clean_data/incubation.rds') %>%
 
 # script ------------------------------------------------------------------
 
-# Get video_number, subject, sex, jdate, tmax, incubation_rate in one table:
-
 behavior_data <-
   boris_data %>% 
   left_join(
@@ -37,11 +35,19 @@ behavior_data <-
     video_data %>%
       select(video_key, video_number, usable_length, date) %>%
       group_by(video_number) %>%
-      mutate(usable_length_total = sum(usable_length)),
+      mutate(usable_length_total = sum(usable_length)) %>%
+      ungroup(),
     by = 'video_key') %>%
+  # Below filter added 2/8/2020 in accordance with methods:
+  filter(duration_sec > 179) %>%
+  # Sum incubation per parent by video_number. This is so that incubation
+  # events spanning two videos are not divided and incorrectly analyzed as
+  # two separate (shorter) events:
   group_by(video_number, subject) %>%
   mutate(
+    # Calculate incubation rate as a total duration (mins):
     incubation_rate_min = sum(duration_sec[behavior == 'incubating'])/60,
+    # Calculate incubation rate as standard minutes per usable length:
     incubation_rate = 
       ifelse(
         is.nan(incubation_rate_min), 
@@ -93,16 +99,16 @@ shapiro.test(incubation_sex$male) #normal
 # Testing for equality of variance:
 
 leveneTest(incubation_rate ~ as.factor(sex), 
-           data = behavior_data) #not equal
+           data = behavior_data) #equal
 
 # T-test of incubation rate by sex:
 
 t.test(incubation_sex$female, incubation_sex$male, 
        alternative = c('two.sided'),
        paired = TRUE,
-       var.equal = FALSE,
+       var.equal = TRUE,
        conf.level = 0.95)
-       # p = 0.048
+       # p = 0.047
 
 # sex plots ---------------------------------------------------------------
 
@@ -139,6 +145,56 @@ ggplot(
         axis.title.y = element_text(size=24), 
         text = element_text(size=24), 
         legend.position = "none") 
+
+
+# number of cavity entries ------------------------------------------------
+
+# TO DO:
+
+# Count how many times each sex went into their cavity:
+# Also, count how many of these entries were < 180 sec per sex:
+
+cavity_entries <-
+  boris_data %>% 
+  left_join(
+    sex_data %>%
+      select(subject, rhwo_key, sex),
+    by = 'rhwo_key') %>%
+  filter(behavior %in% c('in cavity')) %>%
+  mutate_if(
+    is.character, 
+    str_replace_all, 
+    pattern = 'in cavity', 
+    replacement = 'incubating') %>%
+  left_join(
+    video_data %>%
+      select(video_key, video_number, usable_length, date) %>%
+      group_by(video_number) %>%
+      mutate(usable_length_total = sum(usable_length)) %>%
+      ungroup(),
+    by = 'video_key') %>%
+  # Below filter added 2/8/2020 in accordance with methods:
+  filter(duration_sec > 179) %>%
+  group_by(video_number, subject) %>%
+  mutate(
+    incubation_rate_min = sum(duration_sec[behavior == 'incubating'])/60,
+    incubation_rate = 
+      ifelse(
+        is.nan(incubation_rate_min), 
+        0, 
+        (incubation_rate_min*60)/first(usable_length_total)),
+    date = mdy(date)) %>%
+  filter(row_number() == first(row_number())) %>%
+  ungroup() %>%
+  # Remove incubation events (2) done by unidentified parents
+  filter(!str_detect(subject, 'unknown')) %>% 
+  left_join(
+    NOAA_data %>%
+      select(date, tmax),
+    by = 'date') %>%
+  mutate(jdate = yday(date)) %>%
+  select(video_number, subject, sex, date, tmax, incubation_rate, 
+         usable_length_total)
 
 # tmax regression ---------------------------------------------------------
 
