@@ -198,11 +198,31 @@ cavity_entries <-
 
 # tmax regression ---------------------------------------------------------
 
-# Testing TMAX
-lm_tmax <- lm(incubation_rate ~ tmax, data = behavior_data)
-summary(lm_tmax)
-  # p: 0.368
-  # t: -0.92
+# Testing TMAX - females
+behavior_data_f <- 
+  behavior_data %>%
+  filter(sex == 'female')
+
+lm_tmax_f <- lm(incubation_rate ~ tmax, data = behavior_data_f)
+summary(lm_tmax_f)
+  # p: 0.4
+  # t: -0.9
+  # SE: 1.6
+  # df: 8
+  # adj R = -0.03
+
+# Testing TMAX - males
+behavior_data_m <- 
+  behavior_data %>%
+  filter(sex == 'male')
+
+lm_tmax_m <- lm(incubation_rate ~ tmax, data = behavior_data_m)
+summary(lm_tmax_m)
+  # p: 0.5
+  # t: -0.8
+  # SE: 1.0
+  # df: 9
+  # adj R > -0.05
 
 ggplot(
   behavior_data, aes(x = tmax, y = incubation_rate)) +
