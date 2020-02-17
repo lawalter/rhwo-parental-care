@@ -11,30 +11,35 @@ bbyvid <- read_csv("clean_data/bbyvid.csv")
 # script ------------------------------------------------------------------
 
 # Top GLMM
-model4.1x2 <- glmmTMB(feeding ~ I(Exact_age_chick^2)*Std_jdate + Peeped_chick_count + Exact_age_chick + (1|Brood_ID) + (1|Subject)  + offset(log(Usable_video)), data = bbyvid, ziformula = ~1, family = nbinom2(link = "log"))
+model4.1x2 <- glmmTMB(feeding ~ I(exact_age_chick^2)*Std_jdate + peeped_chick_count + exact_age_chick + (1|brood_id) + (1|subject)  + offset(log(usable_video)), data = bbyvid, ziformula = ~1, family = nbinom2(link = "log"))
 
 # Generate dataframes with needed model variables to generate prediction
 # https://github.com/glmmTMB/glmmTMB/issues/378
 
-preddata <- bbyvid[c("Video_number", "feeding", "Subject", "Brood_ID", "Exact_age_chick", "Habitat", 
-                     "Julian_date", "Std_jdate", "Usable_video", "Peeped_chick_count")]
-preddata <- preddata[!duplicated(preddata$Video_number), ]
+preddata <- 
+  bbyvid %>%
+  select(video_number, feeding, subject, brood_id, exact_age_chick,
+         habitat, julian_date, Std_jdate, usable_video, 
+         peeped_chick_count)
+
+preddata <- preddata[!duplicated(preddata$video_number), ]
+
 # Removing duplicates because there is no difference bw sexes
 
 ## Feeding per min
 initial <- predict(model4.1x2, preddata, type="response")
 preddata$pred.f.per.vid <- initial
-preddata$per_min <- preddata$feeding/preddata$Usable_video
+preddata$per_min <- preddata$feeding/preddata$usable_video
 preddata$per_hr <- preddata$per_min*60
-preddata$predper_min <- preddata$pred.f.per.vid/preddata$Usable_video
+preddata$predper_min <- preddata$pred.f.per.vid/preddata$usable_video
 preddata$predper_hr <- preddata$predper_min*60
-preddata$predper_chkhr <- preddata$predper_hr/preddata$Peeped_chick_count
-preddata$Date <- ifelse(preddata$Julian_date >= 190, "Late summer", "Early summer")
+preddata$predper_chkhr <- preddata$predper_hr/preddata$peeped_chick_count
+preddata$Date <- ifelse(preddata$julian_date >= 190, "Late summer", "Early summer")
 
-bbyvid$provrate <- (bbyvid$feeding/bbyvid$Usable_video)*60
-bbyvid$cleanrate <- (bbyvid$cleaning/bbyvid$Usable_video)*60
-bbyvid$feedingperchkhr <- ((bbyvid$feeding/bbyvid$Peeped_chick_count)/bbyvid$Usable_video)*60
-bbyvid$Date <- ifelse(bbyvid$Julian_date >= 190, "Late summer", "Early summer")
+bbyvid$provrate <- (bbyvid$feeding/bbyvid$usable_video)*60
+bbyvid$cleanrate <- (bbyvid$cleaning/bbyvid$usable_video)*60
+bbyvid$feedingperchkhr <- ((bbyvid$feeding/bbyvid$peeped_chick_count)/bbyvid$usable_video)*60
+bbyvid$Date <- ifelse(bbyvid$julian_date >= 190, "Late summer", "Early summer")
 
 
 # plots -------------------------------------------------------------------
@@ -153,7 +158,7 @@ ggplot2::ggsave(
 
 # B&W plot for manuscript
 provisioning_fig <- 
-  ggplot(preddata, aes(Exact_age_chick, predper_chkhr)) +
+  ggplot(preddata, aes(exact_age_chick, predper_chkhr)) +
   stat_smooth(method = glm, formula = y ~ x + I(x^2), 
               aes(y = predper_chkhr, color = Date, 
                   fill = Date, linetype = Date), size = 0.5, 
@@ -163,7 +168,8 @@ provisioning_fig <-
        y = "Predicted provisioning \n (per chick/hr)") + 
   guides(color = guide_legend("Date")) +
   scale_shape_manual(values = c(17, 1)) +
-  scale_color_manual(values = c("Early summer" = "black", "Late summer" = "black")) +
+  scale_color_manual(values = c("Early summer" = "black", 
+                                "Late summer" = "black")) +
   scale_fill_grey(start = 0.6, end = 0.6) +
   theme_classic() +
   theme(axis.title.x = element_text(size=11), 
