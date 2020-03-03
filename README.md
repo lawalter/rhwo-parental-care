@@ -6,11 +6,29 @@ Research conducted with the Bulluck Avian Ecology Lab at Virginia Commonwealth U
 
 ## Introduction
 
-This repository is a collection of Red-headed Woodpecker (RHWO) parental care behavior data. These data were used for my Master's thesis at Virginia Commonwealth University and for a manuscript in progress for publication. Behaviors investigated include incubation durations, brooding durations, nestling provisioning rates, and nest cleaning rates for individually marked RHWO.
+This repository is a collection of data related to a study on Red-headed Woodpecker (RHWO) parental care behavior. These data were used for my Master's thesis at Virginia Commonwealth University and for a manuscript in progress for publication. We investigated incubation durations, brooding durations, nestling provisioning rates, and nest cleaning rates for individually marked RHWO.
 
 ### About this repository
 
+<b>Program:</b> R version 3.5.2+
+<b>Packages:</b> tidyverse, glmmTMB, AICtab
+
 R scripts included are for wrangling, tidying, analyzing, and plotting these data.   
+
+## Using the respository
+
+### Incubation
+
+1. Run 
+2. To analyze the final table, run 
+
+### Brooding, provisioning, and nest cleaning
+
+1. Run
+2. To model brooding durations, run
+3. To model provisioning rates, run
+4. To assess individual variation in nestling provisioning rates, run
+5. To test nest cleaning rates, run
 
 ## Data collection methods
 
