@@ -116,34 +116,57 @@ t.test(incubation_sex$female, incubation_sex$male,
 
 colors_sex <- c("female" = "#F47C89", "male" = "#7b758e")
 
-# Boxplot:
+# Boxplot of incubation by sex (color)
 
 ggplot(
-  behavior_data, aes(x=sex, y=incubation_rate, fill=sex)) + 
+  behavior_data, aes(x = sex, y = incubation_rate, fill = sex)) + 
   geom_boxplot() + 
-  labs(x = "sex", 
+  labs(x = "Sex", 
        y = "Incubating (min/hr)") +
   scale_fill_manual(values = colors_sex) +
   theme_classic() +
   theme_classic() +
-  theme(axis.title.x = element_text(size=24), 
-        axis.title.y = element_text(size=24), 
-        text = element_text(size=24), 
+  theme(axis.title.x = element_text(size = 12), 
+        axis.title.y = element_text(size = 12), 
+        text = element_text(size = 12), 
         legend.position = "none") 
+
+# Boxplot of incubation by sex (black & white)
+
+ggplot(
+  behavior_data, aes(x = sex, y = incubation_rate, fill = NA)) + 
+  geom_boxplot() + 
+  labs(x = "Sex", 
+       y = "Incubation duration (min/hr)",
+       title = "Figure 2") +
+  scale_fill_manual(values = colors_sex) +
+  theme_classic() +
+  theme_classic() +
+  theme(axis.title.x = element_text(size = 12), 
+        axis.title.y = element_text(size = 12), 
+        text = element_text(size = 12), 
+        legend.position = "none") +
+  ggsave(
+    file = "incubation_fig.png",
+    path ="plots/",
+    width = 3.5,
+    height = 3,
+    units = "in",
+    dpi = 600)
 
 # Violin plot:
 
 ggplot(
-  behavior_data, aes(x=sex, y=incubation_rate, fill=sex)) + 
+  behavior_data, aes(x = sex, y = incubation_rate, fill = sex)) + 
   geom_violin() + 
-  labs(x = "sex", 
+  labs(x = "Sex", 
        y = "Incubating (min/hr)") +
   scale_fill_manual(values = colors_sex) +
   theme_classic() +
   theme_classic() +
-  theme(axis.title.x = element_text(size=24), 
-        axis.title.y = element_text(size=24), 
-        text = element_text(size=24), 
+  theme(axis.title.x = element_text(size = 12), 
+        axis.title.y = element_text(size = 12), 
+        text = element_text(size = 12), 
         legend.position = "none") 
 
 
