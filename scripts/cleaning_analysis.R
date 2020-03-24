@@ -60,7 +60,7 @@ ggplot(
   geom_boxplot() + 
   labs(x = "Sex", 
        y = "Cleaning rate (per chick/hr)",
-       title = "Figure 5") +
+       title = "Figure 6") +
   scale_fill_grey(start = 0.6, end = 0.3) +
   theme_classic() +
   theme(axis.title.x = element_text(size=11), 
@@ -71,7 +71,7 @@ ggplot(
         legend.title = element_text(size=11),
         legend.position = "none") +
   ggsave(
-  file = "cleaning_fig.png",
+  file = "cleaning_fig.pdf",
   path ="plots/",
   width = 3.5,
   height = 3,
