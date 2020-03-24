@@ -92,16 +92,13 @@ ggplot(brooding_predictions,
 brooding_sex <-
   ggplot(brooding_predictions, 
        aes(x = exact_age_chick, 
-           y = predicted_brood_per_hr, 
-           color = sex, 
-           fill = sex)) +
+           y = predicted_brood_per_hr)) +
   stat_smooth(
     method = glm, 
     formula = y ~ x, 
     aes(y = predicted_brood_per_hr, 
-        color = as.factor(sex),
-        fill = as.factor(sex), 
-        linetype = sex), 
+        linetype = sex,
+        color = sex), 
     size = 0.5, 
     se = TRUE, 
     level = 0.95, 
@@ -111,7 +108,9 @@ brooding_sex <-
   labs(title = "Figure 3a",
        x = "Chick age (day)", 
        y = "Predicted brooding (min/hr)") + 
-  guides(color = guide_legend("Sex")) +
+  guides(color = guide_legend("Sex"), 
+         shape = guide_legend("Sex"),
+         linetype = guide_legend("Sex")) +
   scale_shape_manual(values = c(17, 1)) +
   scale_color_manual(values = c("female" = "black", "male" = "black")) +
   scale_fill_grey(start = 0.6, end = 0.6) +
@@ -125,7 +124,7 @@ brooding_sex <-
         legend.position = "bottom") +
   ggsave(
   file = "brooding_sex_fig.pdf",
-  path ="plots/",
+  path ="plots/brooding/",
   width = 3.5,
   height = 3,
   units = "in",
@@ -159,8 +158,8 @@ brooding_violin <-
         legend.title = element_text(size = 11),
         legend.position = "none") +
   ggsave(
-    file = "brooding_T_fig.png",
-    path ="plots/",
+    file = "brooding_T_fig.pdf",
+    path ="plots/brooding/",
     width = 3.5,
     height = 3,
     units = "in",
@@ -172,8 +171,8 @@ ggpubr::ggarrange(brooding_sex, brooding_violin,
           labels = c("A", "B"),
           ncol = 1, nrow = 2) +
   ggsave(
-    file = "brooding_plots_pair.png",
-    path ="plots/",
+    file = "brooding_plots_pair.pdf",
+    path ="plots/brooding",
     width = 3.5,
     height = 3,
     units = "in",
