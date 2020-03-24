@@ -5,35 +5,43 @@ library(reshape2)
 
 # data --------------------------------------------------------------------
 
-bbyvid <- read_csv("clean_data/bbyvid.csv")
+bbyvid <- read.csv("clean_data/bbyvid.csv", stringsAsFactors = FALSE)
 
 # script ------------------------------------------------------------------
 
 # Cleaning
-bbyvid$Cleaning_rate <- (bbyvid$cleaning/bbyvid$Usable_video)*60
-bbyvid$Cleaning_rate_perchk <- (bbyvid$Cleaning_rate)/(bbyvid$Peeped_chick_count)
+bbyvid <-
+  bbyvid %>%
+  mutate(
+    cleaning_rate = (cleaning/usable_video)*60,
+    cleaning_rate_perchk = cleaning_rate/peeped_chick_count)
 
-cleaning_male <- bbyvid %>% filter(Sex == "male")
-cleaning_female <- bbyvid %>% filter(Sex == "female")
+cleaning_male <- bbyvid %>% filter(sex == "male")
+cleaning_female <- bbyvid %>% filter(sex == "female")
 
-shapiro.test(cleaning_male$Cleaning_rate_perchk) #not normal
-shapiro.test(cleaning_female$Cleaning_rate_perchk) #not normal
+shapiro.test(cleaning_male$cleaning_rate_perchk) #not normal
+shapiro.test(cleaning_female$cleaning_rate_perchk) #not normal
 
-cleaning_test <- wilcox.test(byob_final_female$Cleaning_rate_perchk, byob_final_male$Cleaning_rate_perchk, 
-                             paired = TRUE, exact=FALSE, alternative = c("two.sided"), conf.level = 0.95)
+cleaning_test <- 
+  wilcox.test(cleaning_female$cleaning_rate_perchk, 
+              cleaning_male$cleaning_rate_perchk, 
+              paired = TRUE, 
+              exact = FALSE, 
+              alternative = c("two.sided"), 
+              conf.level = 0.95)
 cleaning_test
 
-Zstat<-qnorm(cleaning_test$p.value/2)
-Zstat
+zstat <- qnorm(cleaning_test$p.value/2)
+zstat
 
 
 # plot --------------------------------------------------------------------
 
 colors_sex <- c("female" = "#F47C89", "male" = "#7b758e")
 
-# Signficiant cleaning 
+# Signficiant cleaning by sex (color)
 ggplot(
-  bbyvid, aes(x=Sex, y=Cleaning_rate_perchk, fill=Sex)) + 
+  bbyvid, aes(x = sex, y = cleaning_rate_perchk, fill = sex)) + 
   geom_boxplot() + 
   labs(x = "Sex", 
        y = "Cleaning (per chick/hr)") +
@@ -48,7 +56,7 @@ ggplot(
 # B&W cleaning 
 cleaning_fig <-
   ggplot(
-    bbyvid, aes(x=Sex, y=Cleaning_rate_perchk, fill=Sex)) + 
+    bbyvid, aes(x = sex, y = cleaning_rate_perchk, fill = sex)) + 
     geom_boxplot() + 
     labs(x = "Sex", 
          y = "Cleaning (per chick/hr)") +
@@ -67,7 +75,7 @@ ggplot2::ggsave(
   path ="plots/",
   width = 3.5,
   units = "in",
-  dpi = 300)
+  dpi = 600)
 
 # Poster 
 ggplot(
