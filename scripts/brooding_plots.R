@@ -167,9 +167,9 @@ brooding_violin <-
 
 # stacked brooding plots --------------------------------------------------
 
-ggpubr::ggarrange(brooding_sex, brooding_violin, 
-          labels = c("A", "B"),
-          ncol = 1, nrow = 2) +
+cowplot::plot_grid(brooding_sex, brooding_violin, 
+          labels = 'AUTO',
+          nrow = 2, ncol = 2) +
   ggsave(
     file = "brooding_plots_pair.pdf",
     path ="plots/brooding",
@@ -232,23 +232,36 @@ ggplot(bbyvid,
 
 # graphs to compare hurdle and non-hurdle models --------------------------
 
-nonhurdle <- glmmTMB(brooding_min ~ Exact_age_chick + as.factor(Peeped_chick_count) + (1|Brood_ID) + (1|Subject) + offset(log(Usable_video)), data = bbyvid, ziformula = ~1, family = gaussian())
+nonhurdle <- 
+  glmmTMB(brooding_min ~ exact_age_chick + as.factor(peeped_chick_count) +
+            (1|brood_id) + (1|subject) + offset(log(usable_video)), 
+          data = bbyvid, ziformula = ~1, family = gaussian())
 
-predbrood_nh <- bbyvid[c("brooding_min", "Subject", "Brood_ID", "Exact_age_chick", "Sex",
-                         "Std_TMAX", "Usable_video", "Peeped_chick_count")]
+predbrood_nh <- 
+  bbyvid %>%
+  select(brooding_min, subject, brood_id, exact_age_chick, sex,
+         std_tmax, usable_video, peeped_chick_count)
 
-predbrood_nh$pred.b.per.unit <- stats::predict(nonhurdle, predbrood_nh, type="response")
-predbrood_nh$pred.b.per.hr <- (predbrood_nh$pred.b.per.unit/predbrood_nh$Usable_video)*60
-predbrood_nh$brood_per_hr <- (predbrood_nh$brooding_min/predbrood_nh$Usable_video)*60
+predbrood_nh <-
+  predbrood_nh %>%
+  mutate(
+    predicted_brood_per_unit = 
+      stats::predict(nonhurdle, predbrood_nh, type="response"),
+    predicted_brood_per_hr = (predicted_brood_per_unit/usable_video)*60,
+    brood_per_hr = (brooding_min/usable_video)*60)
 
-ggplot(data = predbrood, aes(x = brooding_min, y= pred.b.per.hr)) +
+ggplot(data = brooding_predictions, 
+       aes(x = brooding_min, 
+           y = predicted_brood_per_hr)) +
   geom_point() +
-  labs(main = "Hurdle model predictions", x = "Brooding (min/hr)", y = "Predicted brooding (min/hr") + 
+  labs(main = "Hurdle model predictions", 
+       x = "Brooding (min/hr)", 
+       y = "Predicted brooding (min/hr") + 
   theme_classic()
 
-plot(predbrood$brooding_min, predbrood$pred.b.per.hr)
+plot(predbrood$brooding_min, predbrood$predicted_brood_per_hr)
 title(main = "Hurdle model predictions")
 ylab(main = "Brooding (min/hr)")
 
-plot(predbrood_nh$brooding_min, predbrood_nh$pred.b.per.hr) 
+plot(predbrood_nh$brooding_min, predbrood_nh$predicted_brood_per_hr) 
 title(main = "Zero-inflated gaussian model predictions")
