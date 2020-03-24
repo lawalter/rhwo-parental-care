@@ -14,73 +14,104 @@ library(glmmTMB)
 
 # data --------------------------------------------------------------------
 
-bbyvid <- read_csv("clean_data/bbyvid.csv")
+bbyvid <- 
+  read.csv("clean_data/bbyvid.csv", stringsAsFactors = FALSE) %>%
+  as_tibble() %>%
+  # Calculate standardized temperatures
+  mutate(
+    std_tmax = (tmax - mean(tmax))/sd(tmax),
+    brood_perhr = (brooding_min/usable_video)*60)
 
 # script ------------------------------------------------------------------
 
-# Calculate standardized temperatures
-bbyvid$Std_TMAX <- (bbyvid$TMAX - mean(bbyvid$TMAX))/sd(bbyvid$TMAX)
-bbyvid$brood_perhr <- (bbyvid$brooding_min/bbyvid$Usable_video)*60
+# Run best model
+brood_mod <- 
+  glmmTMB(brooding_min ~ exact_age_chick*sex + 
+            peeped_chick_count + std_tmax + 
+            (1|brood_id) + offset(log(usable_video)), 
+          data = bbyvid, 
+          ziformula = ~., 
+          family = "truncated_nbinom1")
 
-Brood_pred_mod <- glmmTMB(brooding_min ~ Exact_age_chick*Sex + 
-                            Peeped_chick_count + Std_TMAX + 
-                            (1|Brood_ID) + offset(log(Usable_video)), 
-                          data = bbyvid, 
-                          ziformula = ~., 
-                          family = "truncated_nbinom1")
-
-summary(Brood_pred_mod)
+summary(brood_mod)
 
 # Generate dataframes with needed model variables to generate prediction
-predbrood <- bbyvid[c("brooding_min", "Subject", "Brood_ID", "Exact_age_chick", "Sex", "Habitat",
-                      "Std_TMAX", "Usable_video", "Peeped_chick_count")]
-## Brooding per min
-predbrood$pred.b.per.unit <- stats::predict(Brood_pred_mod, predbrood, type="response")
-predbrood$pred.b.per.hr <- (predbrood$pred.b.per.unit/predbrood$Usable_video)*60
-predbrood$brood_per_hr <- (predbrood$brooding_min/predbrood$Usable_video)*60
-predbrood$Tmax <- ifelse(predbrood$Std_TMAX > 0.12, "Hot", "Cool")
+brooding_predictions <- 
+  bbyvid %>%
+  select(brooding_min, subject, brood_id, exact_age_chick, sex, habitat,
+         std_tmax, usable_video, peeped_chick_count) 
+
+# Calculate brooding rate (brooding per minute)
+brooding_predictions <-
+  brooding_predictions %>%
+  mutate(
+    predicted_brood_per_unit = 
+      stats::predict(brood_mod, brooding_predictions, type = "response"),
+    predicted_brood_per_hr =
+      (predicted_brood_per_unit/usable_video)*60,
+    brood_per_hr = (brooding_min/usable_video)*60,
+    tmax = ifelse(std_tmax > 0.12, "Hot", "Cool"))
 
 # Colors
 colors_sex <- c("female" = "#F47C89", "male" = "#7b758e")
 colors_tem <- c("Cool" = "#6bd2db", "Hot" = "#fc913a")
 colors_bw <- c("Cool" = "#ABABAB", "Hot" = "#333333")
 
-predbrood_conditional <- predbrood %>% filter(pred.b.per.unit > 1)
+predbrood_conditional <- 
+  brooding_predictions %>% 
+  filter(predicted_brood_per_unit > 1)
 
+# linear plots ------------------------------------------------------------
 
-# color plot --------------------------------------------------------------
-
-# *** Final linear prov plot By Sex (min per hr)
-ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color=Sex, fill=Sex)) +
-  stat_smooth(method = glm, formula = y ~ x, 
-              aes(y = pred.b.per.hr, color=as.factor(Sex), 
-                  fill=as.factor(Sex)), alpha = 0.2,
-              se = TRUE, level = 0.95, fullrange = TRUE) +
-  geom_point(aes(color=Sex, shape=Sex)) +
-  coord_cartesian(ylim=c(0,40)) + 
+# Final brooding plot - by sex (color)
+ggplot(brooding_predictions, 
+       aes(x = exact_age_chick, 
+           y = predicted_brood_per_hr, 
+           color = sex, 
+           fill = sex)) +
+  stat_smooth(method = glm, 
+              formula = y ~ x, 
+              aes(y = predicted_brood_per_hr, 
+                  color = as.factor(sex), 
+                  fill = as.factor(sex)), 
+              alpha = 0.2,
+              se = TRUE, 
+              level = 0.95, 
+              fullrange = TRUE) +
+  geom_point(aes(color = sex, shape = sex)) +
+  coord_cartesian(ylim = c(0,40)) + 
   labs(x = "Chick age (day)", y = "Predicted brooding (min/hr)") + 
   scale_fill_manual(values = colors_sex) +
   scale_color_manual(values = colors_sex) + 
-  guides(color=guide_legend("Sex")) +
+  guides(color = guide_legend("Sex")) +
   theme_classic() +
-  theme(legend.position = "bottom", text=element_text(size=12)) 
+  theme(legend.position = "bottom", 
+        text = element_text(size = 12)) 
 
-
-# black and white plot ----------------------------------------------------
-
-# B&W by sex for manuscript
-brooding_sex_fig <-
-  ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color = Sex, fill = Sex)) +
-  stat_smooth(method = glm, formula = y ~ x, 
-              aes(y = pred.b.per.hr, color = as.factor(Sex), 
-                  fill = as.factor(Sex), linetype = Sex), size = 0.5, 
-              se = TRUE, level = 0.95, fullrange = TRUE) +
-  geom_point(aes(color=Sex, shape=Sex)) +
-  coord_cartesian(ylim=c(0,40)) + 
-  labs(title = "Figure 2a",
+# Final brooding plot - by sex (black & white)
+brooding_sex <-
+  ggplot(brooding_predictions, 
+       aes(x = exact_age_chick, 
+           y = predicted_brood_per_hr, 
+           color = sex, 
+           fill = sex)) +
+  stat_smooth(
+    method = glm, 
+    formula = y ~ x, 
+    aes(y = predicted_brood_per_hr, 
+        color = as.factor(sex),
+        fill = as.factor(sex), 
+        linetype = sex), 
+    size = 0.5, 
+    se = TRUE, 
+    level = 0.95, 
+    fullrange = TRUE) +
+  geom_point(aes(color = sex, shape = sex)) +
+  coord_cartesian(ylim = c(0,40)) + 
+  labs(title = "Figure 3a",
        x = "Chick age (day)", 
        y = "Predicted brooding (min/hr)") + 
-  guides(color=guide_legend("Sex")) +
+  guides(color = guide_legend("Sex")) +
   scale_shape_manual(values = c(17, 1)) +
   scale_color_manual(values = c("female" = "black", "male" = "black")) +
   scale_fill_grey(start = 0.6, end = 0.6) +
@@ -91,195 +122,116 @@ brooding_sex_fig <-
         axis.text.x = element_text(size=9),
         legend.text = element_text(size=10),
         legend.title = element_text(size=11),
-        legend.position = "bottom") 
-ggplot2::ggsave(
-  file = "brooding_sex_fig.png",
-  plot = brooding_sex_fig,
+        legend.position = "bottom") +
+  ggsave(
+  file = "brooding_sex_fig.pdf",
   path ="plots/",
   width = 3.5,
   height = 3,
   units = "in",
   dpi = 600)
 
-# Grayscale by sex
-brooding_sex_grayscale <-
-  ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color=Sex, fill=Sex)) +
-    stat_smooth(method = glm, formula = y ~ x, 
-                aes(y = pred.b.per.hr, color = as.factor(Sex), 
-                    fill = as.factor(Sex), linetype = Sex), alpha = 0.2,
-                se = TRUE, level = 0.95, fullrange = TRUE) +
-    geom_point(aes(color=Sex, shape=Sex)) +
-    coord_cartesian(ylim=c(0,40)) + 
-    labs(title = "Figure 2a",
-         x = "Chick age (day)", 
-         y = "Predicted brooding (min/hr)") + 
-    guides(color=guide_legend("Sex")) +
-    scale_color_grey(start = 0.6, end = 0.3) +
-    scale_fill_grey(start = 0.6, end = 0.3) +
-    theme_classic() +
-    theme(axis.title.x = element_text(size=11), 
-          axis.title.y = element_text(size=11),
-          axis.text.y = element_text(size=9),
-          axis.text.x = element_text(size=9),
-          legend.text = element_text(size=10),
-          legend.title = element_text(size=11),
-          legend.position = "bottom") 
+# violin plots ------------------------------------------------------------
 
-## Poster 700x500
-ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color=Sex, fill=Sex)) +
-  stat_smooth(method = glm, formula = y ~ x, 
-              aes(y = pred.b.per.hr, color=as.factor(Sex), 
-                  fill=as.factor(Sex)), alpha = 0.2,
-              se = TRUE, level = 0.95, fullrange = TRUE) +
-  geom_point(aes(color=Sex, shape=Sex, size = 1.5)) +
-  coord_cartesian(ylim=c(0,40)) + 
-  labs(x = "Chick age (day)", y = "Predicted brooding\n(min/hr)") + 
-  scale_fill_manual(values = colors_sex) +
-  scale_color_manual(values = colors_sex) + 
-  guides(color=guide_legend("Sex")) +
+# Violin plot - by temperature (black & white)
+brooding_violin <- 
+  ggplot(brooding_predictions, 
+       aes(tmax, 
+           predicted_brood_per_hr, 
+           fill = tmax, 
+           color = tmax)) +
+  geom_violin(lwd = 0) +
+  labs(title = "Figure 3b",
+       x = "Maximum daily air temperature", 
+       y = "Predicted brooding (min/hr)") +
+  scale_x_discrete(
+    labels=c("Warm\n(23.9 - 31.5°C)",
+             "Hot\n(31.5 - 35.6°C)")) +
+  theme(legend.position = "none") +
+  scale_color_manual(values = c("Cool" = "#333333", "Hot" = "#333333")) +
+  scale_fill_manual(values = c("Cool" = "#333333", "Hot" = "#333333")) +
   theme_classic() +
-  theme(legend.position = "bottom", text=element_text(size=24)) +
-  guides(size=FALSE)
+  theme(axis.title.x = element_text(size = 11), 
+        axis.title.y = element_text(size = 11),
+        axis.text.y = element_text(size = 9, color = 'black'),
+        axis.text.x = element_text(size = 9, color = 'black'),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 11),
+        legend.position = "none") +
+  ggsave(
+    file = "brooding_T_fig.png",
+    path ="plots/",
+    width = 3.5,
+    height = 3,
+    units = "in",
+    dpi = 600)
 
+# stacked brooding plots --------------------------------------------------
 
-# Actual brooding data
-formula_lm <- y ~ x
-ggplot(bbyvid, aes(Exact_age_chick, brooding_min, color=Sex, fill=Sex)) +
-  geom_point(aes(color=Sex, shape=Sex)) +
-  stat_smooth(method = glm, formula = y ~ x, 
-              aes(y = brooding_min, color=as.factor(Sex), 
-                  fill=as.factor(Sex)), alpha = 0.2,
-              se = TRUE, level = 0.95) +
-  coord_cartesian(ylim=c(0,40)) + 
+ggpubr::ggarrange(brooding_sex, brooding_violin, 
+          labels = c("A", "B"),
+          ncol = 1, nrow = 2) +
+  ggsave(
+    file = "brooding_plots_pair.png",
+    path ="plots/",
+    width = 3.5,
+    height = 3,
+    units = "in",
+    dpi = 600)
+
+# comparison --------------------------------------------------------------
+  
+# Comparing interactions b/w temp and chick age
+ggplot(brooding_predictions, 
+       aes(exact_age_chick, 
+           predicted_brood_per_hr, 
+           color = tmax, 
+           fill = tmax)) +
+  stat_smooth(method = glm, 
+              formula = y ~ x, 
+              aes(y = predicted_brood_per_hr, 
+                  color = as.factor(tmax), 
+                  fill = as.factor(tmax)), 
+              alpha = 0.2,
+              se = TRUE, 
+              level = 0.95, 
+              fullrange = TRUE) +
+  geom_point(aes(color = tmax, shape = tmax)) +
+  coord_cartesian(ylim = c(0,40)) + 
+  labs(x = "Chick age (day)", y = "Predicted brooding (min/hr)") + 
+  scale_fill_manual(values = colors_tem) +
+  scale_color_manual(values = colors_tem) + 
+  guides(color = guide_legend("Tmax")) +
+  theme_classic() +
+  theme(legend.position = "bottom") 
+
+# actual brooding data plot -----------------------------------------------
+
+# Plotting real values, not predictions
+ggplot(bbyvid, 
+       aes(exact_age_chick, 
+           brooding_min, 
+           color = sex, 
+           fill = sex)) +
+  geom_point(aes(color = sex, shape = sex)) +
+  stat_smooth(method = glm, 
+              formula = y ~ x, 
+              aes(y = brooding_min, 
+                  color = as.factor(sex), 
+                  fill = as.factor(sex)), 
+              alpha = 0.2,
+              se = TRUE, 
+              level = 0.95) +
+  coord_cartesian(ylim = c(0,40)) + 
   labs(x = "Chick age (day)", y = "Actual brooding (min)") + 
   scale_fill_manual(values = colors_sex) +
   scale_color_manual(values = colors_sex) + 
   guides(color=guide_legend("Sex"), fill = FALSE) +
   theme_classic() +
-  theme(text=element_text(size=12, family="mono"), legend.position = "bottom") +
-  stat_poly_eq(aes(label = ..rr.label..), rr.digits = 1, formula = formula_lm, parse = TRUE, label.y.npc = 0.8)
+  theme(text=element_text(size=12, family="mono"), 
+        legend.position = "bottom") 
 
-
-
-# *** Final linear prov plot By Tmax (min per hr)
-ggplot(predbrood, aes(Tmax, pred.b.per.hr, fill=Tmax, color = Tmax)) +
-  geom_violin(alpha = 0.5, lwd=1) +
-  labs(x = "Maximum air temperature", y = "Predicted brooding (min/hr)") +
-  theme_classic() +
-  scale_fill_manual(values = colors_bw) +
-  scale_color_manual(values = colors_bw) +
-  scale_x_discrete(labels=c("Warm\n(23.9 - 31.5 C)","Hot\n(31.5 - 35.6 C)")) +
-  theme(legend.position = "none")
-
-
-# violin plots ------------------------------------------------------------
-
-# B&W temp violin plot for manuscript
-brooding_temp_fig <-
-  ggplot(predbrood, aes(Tmax, pred.b.per.hr, fill = Tmax, color = Tmax)) +
-  geom_violin(lwd = 0) +
-  labs(title = "Figure 2b",
-       x = "Maximum air temperature", 
-       y = "Predicted brooding (min/hr)") +
-  scale_x_discrete(
-    labels=c("Warm\n(23.9 - 31.5 C)",
-             "Hot\n(31.5 - 35.6 C)")) +
-  theme(legend.position = "none") +
-  scale_color_manual(values = c("Cool" = "black", "Hot" = "black")) +
-  scale_fill_manual(values = c("Cool" = "black", "Hot" = "black")) +
-  theme_classic() +
-  theme(axis.title.x = element_text(size=11), 
-        axis.title.y = element_text(size=11),
-        axis.text.y = element_text(size=9),
-        axis.text.x = element_text(size=9),
-        legend.text = element_text(size=10),
-        legend.title = element_text(size=11),
-        legend.position = "none") 
-ggplot2::ggsave(
-  file = "brooding_temp_fig.pdf",
-  plot = brooding_temp_fig,
-  path ="plots/",
-  width = 3.5,
-  height = 3,
-  units = "in",
-  dpi = 600)
-
-# Grayscale violin plot 
-brooding_violin_fig <-
-  ggplot(predbrood, aes(Tmax, pred.b.per.hr, fill = Tmax, color = Tmax)) +
-    geom_violin(lwd = 0) +
-    labs(title = "Figure 2b",
-         x = "Maximum air temperature", 
-         y = "Predicted brooding (min/hr)") +
-    scale_x_discrete(
-      labels=c("Warm\n(23.9 - 31.5 C)",
-               "Hot\n(31.5 - 35.6 C)")) +
-    theme(legend.position = "none") +
-    scale_color_grey(start = 0.6, end = 0.3) +
-    scale_fill_grey(start = 0.6, end = 0.3) +
-    theme_classic() +
-    theme(axis.title.x = element_text(size=11), 
-          axis.title.y = element_text(size=11),
-          axis.text.y = element_text(size=9),
-          axis.text.x = element_text(size=9),
-          legend.text = element_text(size=10),
-          legend.title = element_text(size=11),
-          legend.position = "none") 
-
-# Boxplot
-ggplot(predbrood, aes(Tmax, pred.b.per.hr, fill = Tmax, color = Tmax)) +
-  geom_boxplot() +
-  labs(title = "Figure 2b",
-       x = "Maximum air temperature", 
-       y = "Predicted brooding (min/hr)") +
-  scale_x_discrete(
-    labels=c("Warm\n(23.9 - 31.5 C)",
-             "Hot\n(31.5 - 35.6 C)")) +
-  theme(legend.position = "none") +
-  scale_color_grey(start = 0.6, end = 0.3) +
-  scale_fill_grey(start = 0.6, end = 0.3) +
-  theme_classic() +
-  theme(axis.title.x = element_text(size=11), 
-        axis.title.y = element_text(size=11),
-        axis.text.y = element_text(size=9),
-        axis.text.x = element_text(size=9),
-        legend.text = element_text(size=10),
-        legend.title = element_text(size=11),
-        legend.position = "none") 
-
-## Poster export 775x400
-ggplot(predbrood, aes(Tmax, pred.b.per.hr, fill=Tmax, color = Tmax)) +
-  geom_violin() +
-  labs(x = "Maximum air temperature", y = "Predicted brooding\n(min/hr)") +
-  theme_classic() +
-  scale_fill_manual(values = colors_bw) +
-  scale_color_manual(values = colors_bw) +
-  scale_x_discrete(labels=c("Warm\n(23.9 - 31.5 C)","Hot\n(31.5 - 35.6 C)")) +
-  theme(legend.position = "none", text=element_text(size=24)) 
-
-hot <- bbyvid %>% filter(Std_TMAX > 0.12)
-hotnot <- bbyvid %>% filter(Std_TMAX < 0.12)
-
-# Comparing interactions b/w Temp and Chick Age
-ggplot(predbrood, aes(Exact_age_chick, pred.b.per.hr, color=Tmax, fill=Tmax)) +
-  stat_smooth(method = glm, formula = y ~ x, 
-              aes(y = pred.b.per.hr, color=as.factor(Tmax), 
-                  fill=as.factor(Tmax)), alpha = 0.2,
-              se = TRUE, level = 0.95, fullrange = TRUE) +
-  geom_point(aes(color=Tmax, shape=Tmax)) +
-  coord_cartesian(ylim=c(0,40)) + 
-  labs(x = "Chick age (day)", y = "Predicted brooding (min/hr)") + 
-  scale_fill_manual(values = colors_tem) +
-  scale_color_manual(values = colors_tem) + 
-  guides(color=guide_legend("Tmax")) +
-  theme_classic() +
-  theme(legend.position = "bottom") 
-
-
-
-##############################################################
-# Graphs to compare hurdle and non-hurdle versions
-# put these at end of slideshow
+# graphs to compare hurdle and non-hurdle models --------------------------
 
 nonhurdle <- glmmTMB(brooding_min ~ Exact_age_chick + as.factor(Peeped_chick_count) + (1|Brood_ID) + (1|Subject) + offset(log(Usable_video)), data = bbyvid, ziformula = ~1, family = gaussian())
 
