@@ -54,26 +54,26 @@ ggplot(
         legend.position = "none") 
 
 # B&W cleaning 
-cleaning_fig <-
-  ggplot(
-    bbyvid, aes(x = sex, y = cleaning_rate_perchk, fill = sex)) + 
-    geom_boxplot() + 
-    labs(x = "Sex", 
-         y = "Cleaning (per chick/hr)") +
-    scale_fill_grey(start = 0.6, end = 0.3) +
-    theme_classic() +
-    theme(axis.title.x = element_text(size=11), 
-          axis.title.y = element_text(size=11),
-          axis.text.y = element_text(size=9),
-          axis.text.x = element_text(size=9),
-          legend.text = element_text(size=10),
-          legend.title = element_text(size=11),
-          legend.position = "none") 
-ggplot2::ggsave(
+ggplot(
+  bbyvid, 
+  aes(x = sex, y = cleaning_rate_perchk, fill = NULL)) + 
+  geom_boxplot() + 
+  labs(x = "Sex", 
+       y = "Cleaning rate (per chick/hr)") +
+  scale_fill_grey(start = 0.6, end = 0.3) +
+  theme_classic() +
+  theme(axis.title.x = element_text(size=11), 
+        axis.title.y = element_text(size=11),
+        axis.text.y = element_text(size=9),
+        axis.text.x = element_text(size=9),
+        legend.text = element_text(size=10),
+        legend.title = element_text(size=11),
+        legend.position = "none") +
+  ggsave(
   file = "cleaning_fig.pdf",
-  plot = cleaning_fig,
   path ="plots/",
   width = 3.5,
+  height = 3,
   units = "in",
   dpi = 600)
 
