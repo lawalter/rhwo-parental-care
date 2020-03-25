@@ -63,12 +63,12 @@ ggplot(
        title = "Figure 6") +
   scale_fill_grey(start = 0.6, end = 0.3) +
   theme_classic() +
-  theme(axis.title.x = element_text(size=11), 
-        axis.title.y = element_text(size=11),
-        axis.text.y = element_text(size=9),
-        axis.text.x = element_text(size=9),
-        legend.text = element_text(size=10),
-        legend.title = element_text(size=11),
+  theme(axis.title.x = element_text(size = 11), 
+        axis.title.y = element_text(size = 11),
+        axis.text.y = element_text(size = 9),
+        axis.text.x = element_text(size = 9),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 11),
         legend.position = "none") +
   ggsave(
   file = "cleaning_fig.pdf",
