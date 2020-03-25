@@ -148,8 +148,8 @@ ggplot(
         axis.text.x = element_text(size = 9),
         legend.position = "none")  +
   ggsave(
-    file = "incubation_fig.pdf",
-    path ="plots/",
+    file = "incubation_fig_bw.pdf",
+    path ="plots/bw/",
     width = 3.5,
     height = 3,
     units = "in",

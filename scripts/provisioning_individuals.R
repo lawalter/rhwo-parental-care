@@ -33,7 +33,7 @@ cast_agemeans <-
         fun.aggregate = mean) %>%
   as_tibble() %>%
   select(brood_id, mean_chick_age = female) %>% 
-  mutate_if(is.numeric, round, digits = 1)
+  mutate_if(is.numeric, round, digits = 0)
 
 cast_m_prop <- 
   cast_broodprov %>%
@@ -52,9 +52,19 @@ cast_f_prop <-
 prov_prop <- 
   bind_rows(cast_f_prop, cast_m_prop) %>%
   left_join(cast_agemeans, by = 'brood_id') %>%
-  mutate(mean_chick_age = ifelse(sex == 'male', NA, mean_chick_age))
-
-Brood_ID_2 <- c("")
+  #mutate(mean_chick_age = ifelse(sex == 'male', NA, mean_chick_age)) %>%
+  left_join(
+    bbyvid %>%
+      as_tibble() %>%
+      select(brood_id, subject, sex) %>%
+      distinct() %>%
+      pivot_wider(names_from = sex, values_from = subject),
+    by = 'brood_id') %>%
+  mutate(
+    male = ifelse(sex == 'male', male, NA),
+    female = ifelse(sex =='female', female, NA),
+    parent = ifelse(!is.na(male), male, female)) %>%
+  select(-c(male, female))
 
 # plots -------------------------------------------------------------------
 
@@ -251,20 +261,46 @@ ggplot(
     dpi = 600)
 
 
-# plot with color per bird ------------------------------------------------
+# plot with symbols for individuals ---------------------------------------
 
-ggplot(data = prov_prop, 
+# Parent repeats
+parent_repeats <-
+  prov_prop %>%
+  select(parent) %>%
+  group_by(parent) %>%
+  filter(n() > 1) %>%
+  distinct() %>%
+  arrange(parent) %>%
+  pull()
+
+prov_prop_repeats <- 
+  prov_prop %>%
+  mutate(
+    repeat_m = 
+      ifelse(parent %in% parent_repeats & sex == 'male', parent, NA),
+    repeat_f = 
+      ifelse(parent %in% parent_repeats & sex == 'female', parent, NA))
+
+# Plot for individuals with repeat parents (color)
+ggplot(data = prov_prop_repeats, 
        aes(x = reorder(brood_id, number), 
            y = proportion, 
            fill = sex)) +
   geom_col(width = 0.75) +
+  geom_text(
+    aes(label = repeat_m), 
+    size = 2, 
+    position = position_stack(vjust = 0)) +
+  geom_text(
+    aes(label = repeat_f), 
+    size = 2, 
+    position = position_stack(vjust = 1)) +
   geom_hline(yintercept = 0.50, linetype = "dashed") +
   labs(y = "Provisioning proportion", 
        x = "Brood ID",
        title = "Figure 5") + 
   theme_classic() +
-  theme(legend.text = element_text(size = 10),
-        legend.position = "bottom") +
+  theme(legend.position = 'none') +
   coord_flip() + 
   scale_fill_manual(values = colors_sex) +
   guides(fill = guide_legend(reverse = TRUE)) +
@@ -288,20 +324,111 @@ ggplot(data = prov_prop,
                             "RB36alt_brd2_18" = "R",
                             "Noisy" = "S",
                             "N1718CA2_brd1" = "T",
-                            "NB18C4_18_brd1" = "U")) +
-  ggsave(
-    file = "provisioning_individual_fig_simple_color.pdf",
-    path ="plots/color/",
-    width = 3.5,
-    units = "in",
-    dpi = 600)
+                            "NB18C4_18_brd1" = "U")) 
+# +
+#   ggsave(
+#     file = "provisioning_individual_fig_simple_color.pdf",
+#     path ="plots/color/",
+#     width = 3.5,
+#     units = "in",
+#     dpi = 600)
 
+
+# plot with colors for individuals ----------------------------------------
+
+prov_prop_color_repeats <- 
+  prov_prop %>%
+  mutate(
+    sex = ifelse(parent == 'SUOR', 'female2', sex),
+    sex = ifelse(parent == 'SORO', 'female3', sex),
+    sex = ifelse(parent == 'SGBY', 'female4', sex),
+    sex = ifelse(parent == 'WSPR', 'female5', sex),
+    sex = ifelse(parent == 'BUSY', 'male2', sex),
+    sex = ifelse(parent == 'ROSO', 'male3', sex),
+    sex = ifelse(parent == 'POPS', 'male4', sex),
+    repeat_m = 
+      ifelse(parent %in% parent_repeats & sex == 'male', parent, NA),
+    repeat_f = 
+      ifelse(parent %in% parent_repeats & sex == 'female', parent, NA))
+
+# Repeat parent colors
+colors_sex_repeats <-
+  c("female" = "#DCDCDC", 
+    "male" = "#989aa0",
+    'female2' = '#F47C89', #repeat female, red
+    'female3' = '#f694cf', #repeat female, pink
+    'female4' = '#f29f64', #repeat female, orange
+    'female5' = '#f4ea7c', #repeat female, yellow
+    'male2' = '#35df44', #repeat male, green
+    'male3' = '#7cccf4', #repeat male, light blue
+    'male4' = '#b67cf4') #repeat male, purple
+
+# Plot for individuals with repeat parents (color)
+ggplot(data = prov_prop_color_repeats, 
+       aes(x = reorder(brood_id, number), 
+           y = proportion, 
+           fill = sex)) +
+  geom_col(width = 0.75) +
+  geom_text(
+    aes(label = repeat_m), 
+    size = 2, 
+    position = position_stack(vjust = 0)) +
+  geom_text(
+    aes(label = repeat_f), 
+    size = 2, 
+    position = position_stack(vjust = 1)) +
+  geom_text(aes(label = prov_prop$mean_chick_age), 
+            size = 3.5,
+            position = position_fill(),
+            hjust = 0,
+            show.legend = FALSE) +
+  geom_hline(yintercept = 0.50, linetype = "dashed") +
+  labs(y = "Provisioning proportion", 
+       x = "Brood ID",
+       title = "Figure 5") + 
+  theme_classic() +
+  theme(legend.position = 'none') +
+  coord_flip() + 
+  scale_fill_manual(values = colors_sex_repeats) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  scale_x_discrete(labels=c("A3_brd2" = "A", 
+                            "Timber_brd1" = "B",
+                            "N17REC3_brd2" = "C",
+                            "NB5A4_brd1" = "D",
+                            "Timber_brd2" = "E",
+                            "N1718CA2_18" = "F",
+                            "N17REC2_brd1" = "G",
+                            "Gum" = "H",
+                            "Tonto_brd1" = "I",
+                            "REC1_brd1" = "J",
+                            "Houdini" = "K",
+                            "Tonto18_brd1" = "L",
+                            "18C_Catfish_brd1" = "M",
+                            "5A Cut_brd2" = "N",
+                            "RB23_brd2" = "O",
+                            "Cross" = "P",
+                            "NB5B5_brd1" = "Q",
+                            "RB36alt_brd2_18" = "R",
+                            "Noisy" = "S",
+                            "N1718CA2_brd1" = "T",
+                            "NB18C4_18_brd1" = "U")) 
+# +
+#   ggsave(
+#     file = "provisioning_individual_fig_simple_color.pdf",
+#     path ="plots/color/",
+#     width = 3.5,
+#     units = "in",
+#     dpi = 600)
 
 # plot with mean chick ages -----------------------------------------------
 
 ## Plot to show ages
-ggplot(data = prov_prop, aes(reorder(brood_id, number), proportion, fill = sex)) +
-  geom_col(width=0.75) +
+ggplot(
+  data = prov_prop, 
+  aes(x = reorder(brood_id, number), 
+      y = proportion, 
+      fill = sex)) +
+  geom_col(width = 0.75) +
   geom_hline(yintercept = 0.50, linetype = "dashed") +
   labs(y = "Provisioning proportion", 
        x = "Brood ID") + 
@@ -338,22 +465,27 @@ ggplot(data = prov_prop, aes(reorder(brood_id, number), proportion, fill = sex))
                             "N1718CA2_brd1" = "18CA2_2017",
                             "NB18C4_18_brd1" = "NB18C4_2018"))
 
-## Plot to show ages in groups
-prov_prop_cats$`Age Group` <- ifelse(prov_prop_cats$Mean_age > 12, "Old \u2265 13", "Young < 13")
+# age groups plot ---------------------------------------------------------
 
-ggplot(data = prov_prop_cats, aes(reorder(Brood_ID, Number), proportion, fill = Sex)) +
-  geom_col(width=0.75) +
+prov_prop <-
+  prov_prop %>%
+  mutate(
+    age_group = 
+      ifelse(mean_chick_age > 12, 'Old \u2265 13', 'Young < 13')
+  )
+
+ggplot(data = prov_prop, 
+       aes(
+         x = reorder(brood_id, number), 
+         y = proportion, 
+         fill = sex)) +
+  geom_col(width = 0.75) +
   geom_hline(yintercept = 0.50, linetype = "dashed") +
   labs(y = "Provisioning proportion", 
        x = "Brood ID") + 
   theme_classic() +
-  theme(legend.text = element_text(size=10),
+  theme(legend.text = element_text(size = 10),
         legend.position="bottom") +
-  geom_text(aes(label = prov_prop$Mean_age), 
-            size = 3.5,
-            position = position_fill(),
-            hjust = 0,
-            show.legend = FALSE) +
   coord_flip() + 
   scale_fill_manual(values = colors_sex) +
   guides(fill = guide_legend(reverse = TRUE)) +
@@ -378,17 +510,4 @@ ggplot(data = prov_prop_cats, aes(reorder(Brood_ID, Number), proportion, fill = 
                             "Noisy" = "Noisy_2018",
                             "N1718CA2_brd1" = "18CA2_2017",
                             "NB18C4_18_brd1" = "NB18C4_2018")) +
-  facet_grid(~`Age Group`)
-
-
-
-ggplot(data = prov_prop, aes(reorder(Brood_ID, Number), proportion, fill = Sex)) +
-  geom_bar(stat = "identity") +
-  geom_hline(yintercept = 0.50, linetype = "dashed") +
-  labs(y = "Provisioning proportion", 
-       x = "Brood ID") + 
-  theme_classic() +
-  theme(legend.position="bottom") +
-  scale_fill_manual(values = colors_sex) 
-
-
+  facet_grid(~age_group)
