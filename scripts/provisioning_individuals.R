@@ -52,7 +52,6 @@ cast_f_prop <-
 prov_prop <- 
   bind_rows(cast_f_prop, cast_m_prop) %>%
   left_join(cast_agemeans, by = 'brood_id') %>%
-  #mutate(mean_chick_age = ifelse(sex == 'male', NA, mean_chick_age)) %>%
   left_join(
     bbyvid %>%
       as_tibble() %>%
@@ -66,202 +65,12 @@ prov_prop <-
     parent = ifelse(!is.na(male), male, female)) %>%
   select(-c(male, female))
 
-# plots -------------------------------------------------------------------
+# plot colors -------------------------------------------------------------
 
 colors_sex <- c("female" = "#F47C89", "male" = "#7b758e")
+colors_sex_bw <- c("female" = "#c4c6ce", "male" = "#888a90")
 
-# Individual provisioning plot (color)
-ggplot(data = prov_prop, 
-       aes(x = reorder(brood_id, number), 
-           y = proportion, 
-           fill = sex)) +
-  geom_col(width = 0.75) +
-  geom_hline(yintercept = 0.50, linetype = "dashed") +
-  labs(y = "Provisioning proportion", 
-       x = "Brood ID",
-       title = "Figure 5") + 
-  theme_classic() +
-  theme(legend.text = element_text(size = 10),
-        legend.position = "bottom") +
-  coord_flip() + 
-  scale_fill_manual(values = colors_sex) +
-  guides(fill = guide_legend(reverse = TRUE)) +
-  scale_x_discrete(labels=c("A3_brd2" = "A3_2017", 
-                            "Timber_brd1" = "Timber_brood1_2018",
-                            "N17REC3_brd2" = "Rec3_2017",
-                            "NB5A4_brd1" = "NB5A4_2017",
-                            "Timber_brd2" = "Timber_brood2_2018",
-                            "N1718CA2_18" = "18CA2_2018",
-                            "N17REC2_brd1" = "Rec2_2017",
-                            "Gum" = "Gum_2018",
-                            "Tonto_brd1" = "Tonto_2017",
-                            "REC1_brd1" = "Rec1_2017",
-                            "Houdini" = "Houdini_2018",
-                            "Tonto18_brd1" = "Tonto_2018",
-                            "18C_Catfish_brd1" = "Catfish_2017",
-                            "5A Cut_brd2" = "Cut_2018",
-                            "RB23_brd2" = "RB23_2017",
-                            "Cross" = "Cross_2018",
-                            "NB5B5_brd1" = "NB5B5_2017",
-                            "RB36alt_brd2_18" = "RB36alt_2018",
-                            "Noisy" = "Noisy_2018",
-                            "N1718CA2_brd1" = "18CA2_2017",
-                            "NB18C4_18_brd1" = "NB18C4_2018")) +
-  ggsave(
-    file = "provisioning_individual_fig_color.pdf",
-    path ="plots/color/",
-    width = 3.5,
-    units = "in",
-    dpi = 600)
-
-# Individual provisioning plot (black & white)
-ggplot(
-  data = prov_prop, 
-  aes(x = reorder(brood_id, number), 
-      y = proportion, 
-      fill = sex)) +
-  geom_col(width=0.75) +
-  geom_hline(yintercept = 0.50, linetype = "dashed") +
-  labs(y = "Provisioning proportion", 
-       x = "Brood ID",
-       title = "Figure 5") + 
-  theme_classic() +
-  theme(axis.title.x = element_text(size = 11), 
-        axis.title.y = element_text(size = 11),
-        axis.text.y = element_text(size = 9),
-        axis.text.x = element_text(size = 9),
-        legend.text = element_text(size = 10),
-        legend.title = element_text(size = 11),
-        legend.position = "bottom") +
-  coord_flip() + 
-  scale_fill_grey(start = 0.6, end = 0.3) +
-  guides(fill = guide_legend(reverse = TRUE)) +
-  scale_x_discrete(labels=c("A3_brd2" = "A3_2017", 
-                            "Timber_brd1" = "Timber_brood1_2018",
-                            "N17REC3_brd2" = "Rec3_2017",
-                            "NB5A4_brd1" = "NB5A4_2017",
-                            "Timber_brd2" = "Timber_brood2_2018",
-                            "N1718CA2_18" = "18CA2_2018",
-                            "N17REC2_brd1" = "Rec2_2017",
-                            "Gum" = "Gum_2018",
-                            "Tonto_brd1" = "Tonto_2017",
-                            "REC1_brd1" = "Rec1_2017",
-                            "Houdini" = "Houdini_2018",
-                            "Tonto18_brd1" = "Tonto_2018",
-                            "18C_Catfish_brd1" = "Catfish_2017",
-                            "5A Cut_brd2" = "Cut_2018",
-                            "RB23_brd2" = "RB23_2017",
-                            "Cross" = "Cross_2018",
-                            "NB5B5_brd1" = "NB5B5_2017",
-                            "RB36alt_brd2_18" = "RB36alt_2018",
-                            "Noisy" = "Noisy_2018",
-                            "N1718CA2_brd1" = "18CA2_2017",
-                            "NB18C4_18_brd1" = "NB18C4_2018")) +
-  ggsave(
-    file = "provisioning_individual_fig_bw.png",
-    path ="plots/bw/",
-    width = 3.5,
-    units = "in",
-    dpi = 600)
-
-# simplified brood name plots ---------------------------------------------
-
-# Individual provisioning plot (color)
-ggplot(data = prov_prop, 
-       aes(x = reorder(brood_id, number), 
-           y = proportion, 
-           fill = sex)) +
-  geom_col(width = 0.75) +
-  geom_hline(yintercept = 0.50, linetype = "dashed") +
-  labs(y = "Provisioning proportion", 
-       x = "Brood ID",
-       title = "Figure 5") + 
-  theme_classic() +
-  theme(legend.text = element_text(size = 10),
-        legend.position = "bottom") +
-  coord_flip() + 
-  scale_fill_manual(values = colors_sex) +
-  guides(fill = guide_legend(reverse = TRUE)) +
-  scale_x_discrete(labels=c("A3_brd2" = "A", 
-                            "Timber_brd1" = "B",
-                            "N17REC3_brd2" = "C",
-                            "NB5A4_brd1" = "D",
-                            "Timber_brd2" = "E",
-                            "N1718CA2_18" = "F",
-                            "N17REC2_brd1" = "G",
-                            "Gum" = "H",
-                            "Tonto_brd1" = "I",
-                            "REC1_brd1" = "J",
-                            "Houdini" = "K",
-                            "Tonto18_brd1" = "L",
-                            "18C_Catfish_brd1" = "M",
-                            "5A Cut_brd2" = "N",
-                            "RB23_brd2" = "O",
-                            "Cross" = "P",
-                            "NB5B5_brd1" = "Q",
-                            "RB36alt_brd2_18" = "R",
-                            "Noisy" = "S",
-                            "N1718CA2_brd1" = "T",
-                            "NB18C4_18_brd1" = "U")) +
-  ggsave(
-    file = "provisioning_individual_fig_simple_color.pdf",
-    path ="plots/color/",
-    width = 3.5,
-    units = "in",
-    dpi = 600)
-
-# Individual provisioning plot (black & white)
-ggplot(
-  data = prov_prop, 
-  aes(x = reorder(brood_id, number), 
-      y = proportion, 
-      fill = sex)) +
-  geom_col(width=0.75) +
-  geom_hline(yintercept = 0.50, linetype = "dashed") +
-  labs(y = "Provisioning proportion", 
-       x = "Brood ID",
-       title = "Figure 5") + 
-  theme_classic() +
-  theme(axis.title.x = element_text(size = 11), 
-        axis.title.y = element_text(size = 11),
-        axis.text.y = element_text(size = 9),
-        axis.text.x = element_text(size = 9),
-        legend.text = element_text(size = 10),
-        legend.title = element_text(size = 11),
-        legend.position = "bottom") +
-  coord_flip() + 
-  scale_fill_grey(start = 0.6, end = 0.3) +
-  guides(fill = guide_legend(reverse = TRUE)) +
-  scale_x_discrete(labels=c("A3_brd2" = "A", 
-                            "Timber_brd1" = "B",
-                            "N17REC3_brd2" = "C",
-                            "NB5A4_brd1" = "D",
-                            "Timber_brd2" = "E",
-                            "N1718CA2_18" = "F",
-                            "N17REC2_brd1" = "G",
-                            "Gum" = "H",
-                            "Tonto_brd1" = "I",
-                            "REC1_brd1" = "J",
-                            "Houdini" = "K",
-                            "Tonto18_brd1" = "L",
-                            "18C_Catfish_brd1" = "M",
-                            "5A Cut_brd2" = "N",
-                            "RB23_brd2" = "O",
-                            "Cross" = "P",
-                            "NB5B5_brd1" = "Q",
-                            "RB36alt_brd2_18" = "R",
-                            "Noisy" = "S",
-                            "N1718CA2_brd1" = "T",
-                            "NB18C4_18_brd1" = "U")) +
-  ggsave(
-    file = "provisioning_individual_fig_simple_bw.png",
-    path ="plots/bw/",
-    width = 3.5,
-    units = "in",
-    dpi = 600)
-
-
-# plot with symbols for individuals ---------------------------------------
+# plots -------------------------------------------------------------------
 
 # Parent repeats
 parent_repeats <-
@@ -300,7 +109,13 @@ ggplot(data = prov_prop_repeats,
        x = "Brood ID",
        title = "Figure 5") + 
   theme_classic() +
-  theme(legend.position = 'none') +
+  theme(axis.title.x = element_text(size = 11), 
+        axis.title.y = element_text(size = 11),
+        axis.text.y = element_text(size = 9),
+        axis.text.x = element_text(size = 9),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 11),
+        legend.position = "bottom") +
   coord_flip() + 
   scale_fill_manual(values = colors_sex) +
   guides(fill = guide_legend(reverse = TRUE)) +
@@ -324,21 +139,102 @@ ggplot(data = prov_prop_repeats,
                             "RB36alt_brd2_18" = "R",
                             "Noisy" = "S",
                             "N1718CA2_brd1" = "T",
-                            "NB18C4_18_brd1" = "U")) 
-# +
-#   ggsave(
-#     file = "provisioning_individual_fig_simple_color.pdf",
-#     path ="plots/color/",
-#     width = 3.5,
-#     units = "in",
-#     dpi = 600)
+                            "NB18C4_18_brd1" = "U")) +
+  ggsave(
+    file = "provisioning_individual_fig_color.png",
+    path ="plots/color/",
+    width = 3.5,
+    units = "in",
+    dpi = 600)
 
+
+# Individual provisioning plot (black & white)
+ggplot(data = prov_prop_repeats, 
+       aes(x = reorder(brood_id, number), 
+           y = proportion, 
+           fill = sex)) +
+  geom_col(width = 0.75) +
+  geom_text(
+    aes(label = repeat_m), 
+    size = 2, 
+    position = position_stack(vjust = 0)) +
+  geom_text(
+    aes(label = repeat_f), 
+    size = 2, 
+    position = position_stack(vjust = 1)) +
+  geom_hline(yintercept = 0.50, linetype = "dashed") +
+  labs(y = "Provisioning proportion", 
+       x = "Brood ID",
+       title = "Figure 5") + 
+  theme_classic() +
+  theme(axis.title.x = element_text(size = 11), 
+        axis.title.y = element_text(size = 11),
+        axis.text.y = element_text(size = 9),
+        axis.text.x = element_text(size = 9),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 11),
+        legend.position = "bottom") +
+  coord_flip() + 
+  scale_fill_manual(values = colors_sex_bw) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  scale_x_discrete(labels=c("A3_brd2" = "A", 
+                            "Timber_brd1" = "B",
+                            "N17REC3_brd2" = "C",
+                            "NB5A4_brd1" = "D",
+                            "Timber_brd2" = "E",
+                            "N1718CA2_18" = "F",
+                            "N17REC2_brd1" = "G",
+                            "Gum" = "H",
+                            "Tonto_brd1" = "I",
+                            "REC1_brd1" = "J",
+                            "Houdini" = "K",
+                            "Tonto18_brd1" = "L",
+                            "18C_Catfish_brd1" = "M",
+                            "5A Cut_brd2" = "N",
+                            "RB23_brd2" = "O",
+                            "Cross" = "P",
+                            "NB5B5_brd1" = "Q",
+                            "RB36alt_brd2_18" = "R",
+                            "Noisy" = "S",
+                            "N1718CA2_brd1" = "T",
+                            "NB18C4_18_brd1" = "U")) +
+  ggsave(
+    file = "provisioning_individual_fig_bw.pdf",
+    path ="plots/bw/",
+    width = 3.5,
+    units = "in",
+    dpi = 600)
+
+# previous custom labels --------------------------------------------------
+
+# scale_x_discrete(labels=c("A3_brd2" = "A3_2017", 
+#                           "Timber_brd1" = "Timber_brood1_2018",
+#                           "N17REC3_brd2" = "Rec3_2017",
+#                           "NB5A4_brd1" = "NB5A4_2017",
+#                           "Timber_brd2" = "Timber_brood2_2018",
+#                           "N1718CA2_18" = "18CA2_2018",
+#                           "N17REC2_brd1" = "Rec2_2017",
+#                           "Gum" = "Gum_2018",
+#                           "Tonto_brd1" = "Tonto_2017",
+#                           "REC1_brd1" = "Rec1_2017",
+#                           "Houdini" = "Houdini_2018",
+#                           "Tonto18_brd1" = "Tonto_2018",
+#                           "18C_Catfish_brd1" = "Catfish_2017",
+#                           "5A Cut_brd2" = "Cut_2018",
+#                           "RB23_brd2" = "RB23_2017",
+#                           "Cross" = "Cross_2018",
+#                           "NB5B5_brd1" = "NB5B5_2017",
+#                           "RB36alt_brd2_18" = "RB36alt_2018",
+#                           "Noisy" = "Noisy_2018",
+#                           "N1718CA2_brd1" = "18CA2_2017",
+#                           "NB18C4_18_brd1" = "NB18C4_2018")) +
 
 # plot with colors for individuals ----------------------------------------
 
 prov_prop_color_repeats <- 
   prov_prop %>%
   mutate(
+    mean_chick_age = ifelse(sex == 'male', NA, mean_chick_age),
     sex = ifelse(parent == 'SUOR', 'female2', sex),
     sex = ifelse(parent == 'SORO', 'female3', sex),
     sex = ifelse(parent == 'SGBY', 'female4', sex),
@@ -349,7 +245,7 @@ prov_prop_color_repeats <-
     repeat_m = 
       ifelse(parent %in% parent_repeats & sex == 'male', parent, NA),
     repeat_f = 
-      ifelse(parent %in% parent_repeats & sex == 'female', parent, NA))
+      ifelse(parent %in% parent_repeats & sex == 'female', parent, NA)) 
 
 # Repeat parent colors
 colors_sex_repeats <-
@@ -377,11 +273,6 @@ ggplot(data = prov_prop_color_repeats,
     aes(label = repeat_f), 
     size = 2, 
     position = position_stack(vjust = 1)) +
-  geom_text(aes(label = prov_prop$mean_chick_age), 
-            size = 3.5,
-            position = position_fill(),
-            hjust = 0,
-            show.legend = FALSE) +
   geom_hline(yintercept = 0.50, linetype = "dashed") +
   labs(y = "Provisioning proportion", 
        x = "Brood ID",
@@ -435,7 +326,7 @@ ggplot(
   theme_classic() +
   theme(legend.text = element_text(size=10),
         legend.position="bottom") +
-  geom_text(aes(label = prov_prop$mean_chick_age), 
+  geom_text(aes(label = prov_prop_color_repeats$mean_chick_age), 
             size = 3.5,
             position = position_fill(),
             hjust = 0,
@@ -471,8 +362,7 @@ prov_prop <-
   prov_prop %>%
   mutate(
     age_group = 
-      ifelse(mean_chick_age > 12, 'Old \u2265 13', 'Young < 13')
-  )
+      ifelse(mean_chick_age > 12, 'Old \u2265 13', 'Young < 13'))
 
 ggplot(data = prov_prop, 
        aes(
