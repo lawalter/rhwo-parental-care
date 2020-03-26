@@ -158,7 +158,7 @@ ggplot(data = prov_prop_repeats,
        aes(x = reorder(brood_id, number), 
            y = proportion, 
            fill = sex)) +
-  geom_col(width = 0.75) +
+  geom_col(width = 0.75, color = 'white') +
   geom_text(
     aes(label = repeat_m), 
     size = 3, 
@@ -171,7 +171,7 @@ ggplot(data = prov_prop_repeats,
     hjust = 'left') +
   geom_hline(yintercept = 0.50, linetype = "dashed") +
   labs(y = "Provisioning proportion", 
-       x = "Brood ID",
+       x = "Brood",
        title = "Figure 5") + 
   theme_classic() +
   theme(axis.title.x = element_text(size = 11), 
@@ -182,8 +182,14 @@ ggplot(data = prov_prop_repeats,
         legend.title = element_text(size = 11),
         legend.position = "bottom") +
   coord_flip() + 
-  scale_fill_manual(values = colors_sex_bw) +
-  guides(fill = guide_legend(reverse = TRUE)) +
+  # scale_fill_manual(values = colors_sex_bw) + #light
+  # scale_fill_manual(
+  #   values = c('female' = '#6c6c6c', #dark
+  #              'male' = '#333333')) +
+  scale_fill_manual(
+    values =  c('female' = '#858585', #medium
+                'male' = '#4c4c4c')) +
+  guides(fill = guide_legend('Sex', reverse = TRUE)) +
   scale_x_discrete(labels=c("A3_brd2" = "A", 
                             "Timber_brd1" = "B",
                             "N17REC3_brd2" = "C",
@@ -206,7 +212,7 @@ ggplot(data = prov_prop_repeats,
                             "N1718CA2_brd1" = "T",
                             "NB18C4_18_brd1" = "U")) +
   ggsave(
-    file = "provisioning_individual_fig_bw.png",
+    file = "provisioning_individual_fig_bw_med.png",
     path ="plots/bw/",
     width = 3.5,
     units = "in",
