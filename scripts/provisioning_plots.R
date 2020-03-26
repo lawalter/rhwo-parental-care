@@ -6,7 +6,7 @@ library(glmmTMB)
 
 # data --------------------------------------------------------------------
 
-bbyvid <- read_csv("clean_data/bbyvid.csv")
+bbyvid <- read.csv("clean_data/bbyvid.csv", stringsAsFactors = FALSE)
 
 # script ------------------------------------------------------------------
 

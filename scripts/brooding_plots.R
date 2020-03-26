@@ -89,8 +89,7 @@ ggplot(brooding_predictions,
         text = element_text(size = 12)) 
 
 # Final brooding plot - by sex (black & white)
-brooding_sex <-
-  ggplot(brooding_predictions, 
+ggplot(brooding_predictions, 
        aes(x = exact_age_chick, 
            y = predicted_brood_per_hr)) +
   stat_smooth(
@@ -122,9 +121,9 @@ brooding_sex <-
         legend.text = element_text(size=10),
         legend.title = element_text(size=11),
         legend.position = "bottom") +
-  ggsave(
+  ggplot2::ggsave(
   file = "brooding_sex_fig.pdf",
-  path ="plots/brooding/",
+  path ="plots/bw/brooding/",
   width = 3.5,
   height = 3,
   units = "in",
