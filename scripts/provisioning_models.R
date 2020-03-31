@@ -5,7 +5,9 @@ library(bbmle)
 
 # data --------------------------------------------------------------------
 
-bbyvid <- read.csv("clean_data/bbyvid.csv", stringsAsFactors = FALSE)
+bbyvid <- 
+  read.csv("clean_data/bbyvid.csv", stringsAsFactors = FALSE) %>%
+  as_tibble() 
 
 # best distribution fit ---------------------------------------------------
 
@@ -235,9 +237,7 @@ ICtab(model0, model0x,
 
 summary(model4.1x2)
 
-## Note QAIC is not required if the overdispersion in the dataset has been modelled
-#using zero-inflated models, OLREs, or compound probability distributions. Bolker et al.
-#(2009) and Grueber et al. (2011) provide details of how to calculate these criteria.
+# Note QAIC is not required if the overdispersion in the dataset has been modelled using zero-inflated models, OLREs, or compound probability distributions. Bolker et al. (2009) and Grueber et al. (2011) provide details of how to calculate these criteria.
 
 ############################################################
 

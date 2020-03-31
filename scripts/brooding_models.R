@@ -12,6 +12,13 @@ library(tidyverse)
 library(glmmTMB)
 library(bbmle)
 
+
+# read data ---------------------------------------------------------------
+
+bbyvid <- 
+  read.csv("clean_data/bbyvid.csv", stringsAsFactors = FALSE) %>%
+  as_tibble() 
+
 # script ------------------------------------------------------------------
 
 # Calculate standardized temperatures
