@@ -24,6 +24,8 @@ library(sp)
 
 # import data -------------------------------------------------------------
 
+# Sex data for individual Red-headed Woodpeckers
+
 sex_data <-
   read.csv('raw_data/sex_data.csv', 
            na.strings = c('', 'na', 'NA'),
@@ -33,22 +35,30 @@ sex_data <-
     names(.) %>% 
       tolower()) 
 
+# Video data related about recordings
+
 video_data_initial <- 
   read.csv('raw_data/provisioning_video_data.csv', 
            na.strings = c("", "na", "NA"), 
            stringsAsFactors = FALSE) %>%
+  as_tibble() %>%
   set_names(
     names(.) %>% 
       tolower()) 
+
+# Data from videos scored in Boris
 
 boris_data <- 
   read.csv('raw_data/boris_provisioning_preyproofed_bestdata.csv', 
            na.strings = c("", "na", "NA"), 
            stringsAsFactors = FALSE) %>%
+  as_tibble() %>%
   set_names(
     names(.) %>% 
       tolower()) %>%
   arrange(observation.id, start_sec)
+
+# NOAA weather data
 
 NOAA_data <-
   read.csv('raw_data/NOAA_weather_data.csv', 
@@ -65,9 +75,8 @@ total_sample <-
   video_data_initial %>%
   select(observation.id, ref_combo_1, ref_combo_2) %>%
   mutate(
-    ID1 = paste(observation.id, ref_combo_1, sep="."),
-    ID2 = paste(observation.id, ref_combo_2, sep=".")
-  ) %>%
+    ID1 = paste(observation.id, ref_combo_1, sep = '.'),
+    ID2 = paste(observation.id, ref_combo_2, sep = '.')) %>%
   select(-c(observation.id, ref_combo_1, ref_combo_2)) %>%
   gather() %>%
   select(-key, sample = value)
@@ -123,27 +132,39 @@ clean <-
 clean$behavior <- ifelse(clean$duration_sec <= 60, "visit", clean$behavior) 
 
 # Subset visits out and put it back with the main dataframe
-visiting_done <- clean %>% filter(behavior == "visit")
-visiting_done$stop_sec1 <- NULL
-visiting_done$diff_sec <- NULL
-visiting_done$behavior1 <- NULL
-withoutclean <- rbind(withoutclean, visiting_done)
+visiting_done <- 
+  clean %>% 
+  filter(behavior == "visit") %>%
+  select(-c(stop_sec1, diff_sec, behavior1))
+
+withoutclean <- 
+  bind_rows(visiting_done)
 
 # Remove visiting from cleaning df
-clean <- clean %>% filter(behavior != "visit")
-clean$behavior <- ifelse(clean$diff_sec < 1, "poopsearch", clean$behavior) 
-clean$behavior <- ifelse(clean$behavior == "in cavity", "brooding", clean$behavior)  
-clean$behavior <- ifelse(is.na(clean$behavior), "brooding", clean$behavior) 
-clean$stop_sec1 <- NULL
-clean$diff_sec <- NULL
-clean$behavior1 <- NULL
+clean <- 
+  clean %>% 
+  filter(behavior != "visit") %>%
+  mutate(
+    behavior = 
+      case_when(
+        diff_sec < 1 ~ 'poopsearch',
+        behavior == 'in cavity' ~ 'brooding',
+        is.na(behavior), 'brooding',
+        TRUE ~ behavior
+      )
+  ) %>%
+  select(-c(stop_sec1, diff_sec, behavior1))
 
 # Merge final classifications of brooding to initial dataframe
 withoutclean <- rbind(withoutclean, clean)
 boris_data <- withoutclean
 
+# behavior data combined with video/nest data -----------------------------
+
 # Merge boris behavior data and video/nest data
-borisdata_w_nestinfo <- merge.data.frame(boris_data, video_data_initial, by="observation.id")
+borisdata_w_nestinfo <- 
+  boris_data %>%
+  left_join(video_data_initial, by = "observation.id") 
 
 # Make the sex data into 2 columns
 sex_data_sm <- dplyr::select(sex_data, color_combo, sex)
@@ -154,8 +175,8 @@ names(sex_data_sm) <- c("subject", "sex")
 provision_data <- merge.data.frame(borisdata_w_nestinfo, sex_data_sm, by="subject")
 
 
-### DETERMINE JULIAN DATES ###
-library(lubridate)
+# julian dates ------------------------------------------------------------
+
 provision_data$date <- as.Date(provision_data$date, "%m/%d/%Y")
 provision_data$julian_date <- yday(provision_data$date)
 provision_data$clutch_laid <- as.Date(provision_data$clutch_laid, "%m/%d/%Y")
@@ -166,19 +187,13 @@ provision_data$hatch_julian <- yday(provision_data$hatch_date)
 provision_data$fledge_julian <- yday(provision_data$fledge_date)
 
 
-### CALCULATE PERCENTAGES ###
-# Find proportion hatched 
-provision_data$proportion_hatched <- 
-  (provision_data$max_number_chicks)/(provision_data$max_number_eggs)
+# summary percentages -----------------------------------------------------
 
-# Find percent of chick mortality 
-provision_data$percent_chick_mortalities <- 
-  (provision_data$number_chick_mortalities)/(provision_data$max_number_chicks)
-
-# Find the proportion fledged 
-provision_data$proportion_fledged <- 
-  (provision_data$chicks_fledged)/(provision_data$max_number_chicks)
-
+provision_data %>%
+  mutate(
+    proportion_hatched = max_number_chicks/max_number_eggs,
+    percent_chick_mortalities = number_chick_mortalities/max_number_chicks,
+    proportion_fledged = chicks_fledged/max_number_chicks)
 
 ### CALCULATE RATES OF PARENTAL CARE ###
 # Double checked on 2/5/19 using Excel pivot table and they are correct
@@ -539,7 +554,8 @@ names(cast_length)[2] <- c("usable_video")
 allbehaviors_byvid <- merge(allbehaviors_byvid, cast_length, by = "video_number")
 
 # Remove PNA5A1b outlier
-bbyvid <- allbehaviors_byvid %>% 
+bbyvid <- 
+  allbehaviors_byvid %>% 
   filter(brood_id != "PNA5A1b_brd1")
 
 
