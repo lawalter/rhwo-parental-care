@@ -6,7 +6,8 @@
 
 # last updates ------------------------------------------------------------
 
-# Feb 2020: Converted script to using the tidyverse
+# Mar 2020: More modernizing
+# Feb 2020: Modernized script using the tidyverse
 # Jan 2020: Best updated version submitted to github
 # Aug 2019: Corrected line creating bbyvid that averaged brooding by 
 #            parent instead of summing the video parts
@@ -15,7 +16,6 @@
 
 # setup -------------------------------------------------------------------
 
-library(gsheet)
 library(magrittr)
 library(tidyverse)
 library(lubridate)
@@ -24,81 +24,36 @@ library(sp)
 
 # import data -------------------------------------------------------------
 
-# Import from csv:
-
 sex_data <-
-  read_csv('raw_data/sex_data.csv', na = c("", "na", "NA")) %>%
+  read.csv('raw_data/sex_data.csv', 
+           na.strings = c('', 'na', 'NA'),
+           stringsAsFactors = FALSE) %>%
+  as_tibble() %>%
   set_names(
     names(.) %>% 
       tolower()) 
 
 video_data_initial <- 
-  read_csv('raw_data/provisioning_video_data.csv', na = c("", "na", "NA")) %>%
+  read.csv('raw_data/provisioning_video_data.csv', 
+           na.strings = c("", "na", "NA"), 
+           stringsAsFactors = FALSE) %>%
   set_names(
     names(.) %>% 
       tolower()) 
 
 boris_data <- 
-  read_csv('raw_data/boris_provisioning_preyproofed_bestdata.csv', 
-           na = c("", "na", "NA")) %>%
+  read.csv('raw_data/boris_provisioning_preyproofed_bestdata.csv', 
+           na.strings = c("", "na", "NA"), 
+           stringsAsFactors = FALSE) %>%
   set_names(
     names(.) %>% 
       tolower()) %>%
   arrange(observation.id, start_sec)
 
-
-# old reader --------------------------------------------------------------
-
-
-# Import all data from google drive links
-
-# sex_url <- 
-#   paste0('https://drive.google.com/', 
-#          'open?id=1E-BLyxQ-7hMJN7JVMbKbAftsBCQxjFB-ZVDEisfNc5c')
-# 
-# video_data_prov_url <- 
-#   paste0('https://drive.google.com/', 
-#          'open?id=1ifQrZegnwghLtEJKEHiLDzZUTyvVB3TN3jA6SYt2lbk')
-# 
-# boris_preyproofed_url <- 
-#   paste0('https://drive.google.com/', 
-#          'open?id=1m2KZvIUixReKW531jUFiW1FVXAZb-iLjCArnv8Sj4kg')
-# 
-# # Define an import function
-# 
-# data.get <- 
-#   function(url){
-#     read.csv(
-#       text=gsheet2text(url, format='csv'), 
-#       stringsAsFactors=FALSE, 
-#       na.strings = c("", "na", "NA"))
-#     }
-# 
-# sex_data_g <- 
-#   data.get(sex_url) %>%
-#   set_names(
-#     names(.) %>% 
-#       tolower()) %>%
-#   as_tibble()
-# 
-# video_data_initial_g <- 
-#   data.get(video_data_prov_url) %>%
-#   set_names(
-#     names(.) %>% 
-#       tolower()) %>%
-#   as_tibble()
-# 
-# boris_data_g <- 
-#   data.get(boris_preyproofed_url) %>%
-#   set_names(
-#     names(.) %>% 
-#       tolower()) %>%
-#   as_tibble() %>%
-#   arrange(observation.id, start_sec)
-# 
-# identical(boris_data, boris_data_g)
-# identical(sex_data, sex_data_g)
-# identical(video_data_initial, video_data_initial_g)
+NOAA_data <-
+  read.csv('raw_data/NOAA_weather_data.csv', 
+           stringsAsFactors = FALSE) %>%
+  as_tibble()
 
 # tidying -----------------------------------------------------------------
 
@@ -116,7 +71,6 @@ total_sample <-
   select(-c(observation.id, ref_combo_1, ref_combo_2)) %>%
   gather() %>%
   select(-key, sample = value)
-
 
 # cleaning table ----------------------------------------------------------
 
@@ -462,11 +416,7 @@ final_prov_rates <- final[c("sample", "observation.id", "subject", "sex", "feedi
 ###!!! YAY !!!###
 #################
 
-# Write as csv
-# write.csv(final, "final_data_provisioning.csv")            
-
-
-###################################################################################      
+    
 
 #################################      
 ### MAKE A BY-VIDEO DATAFRAME ###
@@ -573,7 +523,7 @@ subset_brooding <- byob_brooding_final %>% dplyr::select(vID, brooding_sec)
 allbehaviors_byvid <- merge(byob_final, subset_brooding, by = "vID", all = FALSE)
 
 # Calculate standardized Julian date
-allbehaviors_byvid$Std_jdate <- 
+allbehaviors_byvid$std_jdate <- 
   (allbehaviors_byvid$julian_date - 
      mean(allbehaviors_byvid$julian_date))/sd(allbehaviors_byvid$julian_date)
 
@@ -592,22 +542,24 @@ allbehaviors_byvid <- merge(allbehaviors_byvid, cast_length, by = "video_number"
 bbyvid <- allbehaviors_byvid %>% 
   filter(brood_id != "PNA5A1b_brd1")
 
-### Import NOAA weather data
-NOAA_url <- 'https://drive.google.com/open?id=1hKlT1dcAO6jA1DkgFUhQ61ZZsCLMhsfN12oiXzfj6go'
-NOAA_data <- data.get(NOAA_url)
+
+# import NOAA weather data ------------------------------------------------
 
 # Calculate Julian dates for the NOAA data
-NOAA_data$good_date <- as.Date(NOAA_data$DATE, "%Y-%m-%d")
-NOAA_data$julian_date <- yday(NOAA_data$good_date)
-NOAA_data$yr <- str_sub(NOAA_data$DATE, 1, 4)
-NOAA_data$jdayyr <- paste(NOAA_data$julian_date, NOAA_data$yr, sep=".")
-NOAA_sm <- select(NOAA_data, tmax = TMAX, jdayyr)
-
+NOAA_data <-
+  NOAA_data %>%
+  mutate(
+    good_date = as.Date(DATE, "%Y-%m-%d"),
+    julian_date = lubridate::yday(good_date),
+    yr = str_sub(DATE, 1, 4),
+    jdayyr = paste(julian_date, yr, sep = '.')) %>%
+  select(tmax = TMAX, jdayyr)
 
 ### Add max day temps to df
-bbyvid$jdayyr <- paste(bbyvid$julian_date, bbyvid$year, sep=".")
-bbyvid <- merge(bbyvid, NOAA_sm, by = "jdayyr")
-
+bbyvid <-
+  bbyvid %>%
+  mutate(jdayyr = paste(julian_date, year, sep = '.')) %>%
+  left_join(NOAA_data, by = 'jdayyr')
 
 # write csv ---------------------------------------------------------------
 
