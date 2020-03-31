@@ -106,7 +106,8 @@ ggplot(preddata, aes(exact_age_chick, predper_chkhr)) +
               aes(y = predper_chkhr, color=Date, 
                   fill=Date), alpha = 0.2,
               se = TRUE, level = 0.95, fullrange = TRUE) +
-  labs(x = "Chick age (day)", 
+  labs(title = "Figure 4",
+       x = "Chick age (day)", 
        y = "Predicted provisioning \n (per chick/hour)") + 
   guides(color=guide_legend("Date")) +
   scale_fill_manual(values = colors_dat) +
@@ -120,7 +121,7 @@ ggplot(preddata, aes(exact_age_chick, predper_chkhr)) +
         legend.title = element_text(size = 11),
         legend.position = "bottom") +
   ggsave(
-    file = "provisioning_fig_color.pdf",
+    file = "provisioning_fig_color.png",
     path ="plots/color/",
     width = 3.5,
     height = 3,
@@ -133,7 +134,7 @@ ggplot(preddata, aes(exact_age_chick, predper_chkhr)) +
                 aes(y = predper_chkhr, color = Date, 
                     fill = Date, linetype = Date), alpha = 0.2,
                 se = TRUE, level = 0.95, fullrange = TRUE) +
-    labs(title = "Figure 3",
+    labs(title = "Figure 4",
          x = "Chick age (day)", 
          y = "Predicted provisioning \n (per chick/hr)") + 
     guides(color = guide_legend("Date")) +
@@ -154,7 +155,7 @@ ggplot(preddata, aes(exact_age_chick, predper_chkhr)) +
               aes(y = predper_chkhr, color = Date, 
                   fill = Date, linetype = Date), size = 0.5, 
               se = TRUE, level = 0.95, fullrange = TRUE) +
-  labs(title = "Figure 3",
+  labs(title = "Figure 4",
        x = "Chick age (day)", 
        y = "Predicted provisioning \n (per chick/hr)") + 
   guides(color = guide_legend("Date")) +
