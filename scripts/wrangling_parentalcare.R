@@ -16,11 +16,9 @@
 
 # setup -------------------------------------------------------------------
 
-library(magrittr)
 library(tidyverse)
 library(lubridate)
 library(reshape2)
-library(sp)
 
 # import data -------------------------------------------------------------
 
@@ -56,7 +54,7 @@ boris_data <-
   set_names(
     names(.) %>% 
       tolower()) %>%
-  arrange(observation.id, start_sec)
+  arrange(observation.id, start_sec) 
 
 # NOAA weather data
 
@@ -83,81 +81,35 @@ total_sample <-
 
 # cleaning table ----------------------------------------------------------
 
-# Remove cleaning and in cavity from the base dataframe 
-
-withoutclean <- 
-  boris_data %>% 
-  filter(behavior != "in cavity" & behavior != "cleaning nest")
-
-# Create a dataframe to look at in cavity and cleaning
-
-clean <- 
-  boris_data %>% 
-  filter(behavior == "in cavity" | behavior == "cleaning nest")
-
 # Calculate the time difference between stop time of in cavity and the 
-# time cleaning happens
+# time of cleaning event
 
-library(DataCombine)
-
-clean <- 
-  slide(clean, 
-        Var = "stop_sec", 
-        GroupVar = "observation.id", 
-        slideBy = 1)
-
-clean$diff_sec <- clean$stop_sec1 - clean$stop_sec
-
-clean <- 
-  slide(clean, 
-        Var = "behavior", 
-        GroupVar = "observation.id", 
-        slideBy = 1)
-
-# Subset cleaning out and put it back with the main dataframe
-cleaning_done <- 
-  clean %>% 
-  filter(behavior == "cleaning nest") %>%
-  select(-c(stop_sec1, diff_sec, behavior1))
-
-withoutclean <- # This is going to be a problem because you use this object name after mult changes
-  bind_rows(withoutclean, cleaning_done)
-
-# Figure out which in_cavity events are brooding or just long-cleaning
-
-clean <- 
-  clean %>% 
-  filter(behavior != "cleaning nest")
-
-clean$behavior <- ifelse(clean$duration_sec <= 60, "visit", clean$behavior) 
-
-# Subset visits out and put it back with the main dataframe
-visiting_done <- 
-  clean %>% 
-  filter(behavior == "visit") %>%
-  select(-c(stop_sec1, diff_sec, behavior1))
-
-withoutclean <- 
-  bind_rows(visiting_done)
-
-# Remove visiting from cleaning df
-clean <- 
-  clean %>% 
-  filter(behavior != "visit") %>%
+#cleaning_new <-
+c <-
+  boris_data %>%
+  select(-c(modifier_general, modifier_specific)) %>%
+  filter(behavior == "in cavity" | behavior == "cleaning nest") %>%
+  group_by(observation.id) %>%
+  mutate(
+    time_lag = lead(stop_sec),
+    diff_sec = time_lag - stop_sec,
+    behavior_lag = lead(behavior)) %>%
+  ungroup %>%
   mutate(
     behavior = 
       case_when(
-        diff_sec < 1 ~ 'poopsearch',
-        behavior == 'in cavity' ~ 'brooding',
-        is.na(behavior), 'brooding',
+        (behavior == "in cavity" & duration_sec <= 60) ~ 'visit',
+        (behavior == 'in cavity' & duration_sec > 60) ~ 'brooding',
+        (behavior != "cleaning nest" & diff_sec < 1) ~ 'poopsearch',
         TRUE ~ behavior
       )
-  ) %>%
-  select(-c(stop_sec1, diff_sec, behavior1))
+  ) %>% 
+  select(-c(time_lag, diff_sec, behavior_lag))
 
-# Merge final classifications of brooding to initial dataframe
-withoutclean <- rbind(withoutclean, clean)
-boris_data <- withoutclean
+# Merge final classifications of cleaning, visiting, brooding, and poopsearch with original data
+boris <- 
+  cleaning %>%
+  bind_rows(boris_data)
 
 # behavior data combined with video/nest data -----------------------------
 
