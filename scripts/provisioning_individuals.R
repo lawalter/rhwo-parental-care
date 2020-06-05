@@ -86,13 +86,22 @@ parent_repeats <-
 prov_prop_repeats <- 
   prov_prop %>%
   mutate(
-    repeat_f = ifelse(parent == 'SUOR', 'α', NA),
-    repeat_f = ifelse(parent == 'SORO', 'ε', repeat_f),
-    repeat_f = ifelse(parent == 'SGBY', 'π', repeat_f),
-    repeat_f = ifelse(parent == 'WSPR', 'ψ', repeat_f),
-    repeat_m = ifelse(parent == 'BUSY', 'β', NA),
-    repeat_m = ifelse(parent == 'ROSO', 'γ', repeat_m),
-    repeat_m = ifelse(parent == 'POPS', 'δ', repeat_m))
+    repeat_f = ifelse(parent == 'SUOR', '⬡', NA),
+    repeat_f = ifelse(parent == 'SORO', '▶', repeat_f),
+    repeat_f = ifelse(parent == 'SGBY', '◼', repeat_f),
+    repeat_f = ifelse(parent == 'WSPR', '◑', repeat_f),
+    repeat_m = ifelse(parent == 'BUSY', '★', NA),
+    repeat_m = ifelse(parent == 'ROSO', '✕', repeat_m),
+    repeat_m2 = ifelse(parent == 'POPS', '⬟', NA)
+  )
+  # mutate(
+  #   repeat_f = ifelse(parent == 'SUOR', 'α', NA),
+  #   repeat_f = ifelse(parent == 'SORO', 'ε', repeat_f),
+  #   repeat_f = ifelse(parent == 'SGBY', 'π', repeat_f),
+  #   repeat_f = ifelse(parent == 'WSPR', 'ψ', repeat_f),
+  #   repeat_m = ifelse(parent == 'BUSY', 'β', NA),
+  #   repeat_m = ifelse(parent == 'ROSO', 'γ', repeat_m),
+  #   repeat_m = ifelse(parent == 'POPS', 'δ', repeat_m))
 
 # Plot for individuals with repeat parents (color)
 ggplot(data = prov_prop_repeats, 
@@ -103,6 +112,11 @@ ggplot(data = prov_prop_repeats,
   geom_text(
     aes(label = repeat_m), 
     size = 3, 
+    position = position_stack(vjust = 0),
+    hjust = 'right') +
+  geom_text(
+    aes(label = repeat_m2), 
+    size = 4, 
     position = position_stack(vjust = 0),
     hjust = 'right') +
   geom_text(
@@ -161,6 +175,11 @@ ggplot(data = prov_prop_repeats,
   geom_col(width = 0.75, color = 'white') +
   geom_text(
     aes(label = repeat_m), 
+    size = 4, 
+    position = position_stack(vjust = 0),
+    hjust = 'right') +
+  geom_text(
+    aes(label = repeat_m2), 
     size = 3, 
     position = position_stack(vjust = 0),
     hjust = 'right') +
@@ -212,7 +231,7 @@ ggplot(data = prov_prop_repeats,
                             "N1718CA2_brd1" = "T",
                             "NB18C4_18_brd1" = "U")) +
   ggsave(
-    file = "provisioning_individual_fig_bw_med.png",
+    file = "provisioning_individual_fig_bw_med.pdf",
     path ="plots/bw/",
     width = 3.5,
     units = "in",
