@@ -1,7 +1,7 @@
 ---
 output:
   pdf_document: default
-    latex_engine: xelatex
+  latex_engine: xelatex
 ---
 
 ```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 3.5, fig.height = 4.25}
