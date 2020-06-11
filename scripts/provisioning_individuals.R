@@ -3,6 +3,7 @@
 library(tidyverse)
 library(reshape2)
 library(emojifont) # for greek letters
+library(Cairo) # helps print unicode
 
 # data --------------------------------------------------------------------
 
@@ -92,7 +93,7 @@ prov_prop_repeats <-
     repeat_f = ifelse(parent == 'WSPR', '◑', repeat_f),
     repeat_m = ifelse(parent == 'BUSY', '★', NA),
     repeat_m = ifelse(parent == 'ROSO', '✕', repeat_m),
-    repeat_m2 = ifelse(parent == 'POPS', '\U2B1F', NA)
+    repeat_m2 = ifelse(parent == 'POPS', '⬟', NA)
   )
 # mutate(
 #   repeat_f = ifelse(parent == 'SUOR', '⬡', NA),
@@ -179,6 +180,7 @@ ggplot(data = prov_prop_repeats,
     file = "provisioning_individual_fig_bw_med.pdf",
     path ="plots/bw/",
     width = 3.5,
+    height = 4,
     units = "in",
     dpi = 600)
 
