@@ -3,11 +3,18 @@
 library(tidyverse)
 library(reshape2)
 library(emojifont) # for greek letters
-library(Cairo) # helps print unicode
 
 # data --------------------------------------------------------------------
 
-bbyvid <- read.csv("clean_data/bbyvid.csv", stringsAsFactors = FALSE)
+# On mac
+# bbyvid <- 
+#   read.csv("~/Desktop/abby_git/rhwo-parental-care/clean_data/bbyvid.csv", 
+#            stringsAsFactors = FALSE)
+
+# On laptop
+bbyvid <-
+  read.csv('~/Desktop/rhwo-parental-care/clean_data/bbyvid.csv',
+           stringsAsFactors = FALSE)
 
 # wrangling ---------------------------------------------------------------
 
@@ -96,17 +103,13 @@ prov_prop_repeats <-
   #   repeat_m2 = ifelse(parent == 'POPS', '⬟', NA)
   # )
   mutate(
-    repeat_f = ifelse(parent == 'SUOR', '⬡', NA),
-    repeat_f = ifelse(parent == 'SORO', '▶', repeat_f),
-    repeat_f = ifelse(parent == 'SGBY', '◼', repeat_f),
-    repeat_f = ifelse(parent == 'WSPR', '◑', repeat_f),
-    repeat_m = ifelse(parent == 'BUSY', '★', NA),
-    repeat_m = ifelse(parent == 'ROSO', '✕', repeat_m),
-<<<<<<< HEAD
-    repeat_m2 = ifelse(parent == 'POPS', '⬟', NA)
-=======
-    repeat_m2 = ifelse(parent == 'POPS', '\u2B1F', NA)
->>>>>>> 8c8b0f9cc7dfb66d586fdd8338d7a36ea6532f4f
+    repeat_f = ifelse(parent == 'SUOR', '\U2B21', NA),
+    repeat_f = ifelse(parent == 'SORO', '\U25B6', repeat_f),
+    repeat_f = ifelse(parent == 'SGBY', '\U25FC', repeat_f),
+    repeat_f = ifelse(parent == 'WSPR', '\U25D1', repeat_f),
+    repeat_m = ifelse(parent == 'BUSY', '\U2605', NA),
+    repeat_m = ifelse(parent == 'ROSO', '\U2715', repeat_m),
+    repeat_m2 = ifelse(parent == 'POPS', '\U2B1F', NA)
   )
   # mutate(
   #   repeat_f = ifelse(parent == 'SUOR', 'α', NA),
@@ -125,12 +128,12 @@ ggplot(data = prov_prop_repeats,
   geom_col(width = 0.75, color = 'white') +
   geom_text(
     aes(label = repeat_m), 
-    size = 3, 
+    size = 4, 
     position = position_stack(vjust = 0),
     hjust = 'right') +
   geom_text(
     aes(label = repeat_m2), 
-    size = 3, 
+    size = 3.5, 
     position = position_stack(vjust = 0),
     hjust = 'right') +
   geom_text(
@@ -184,8 +187,7 @@ ggplot(data = prov_prop_repeats,
     width = 3.5,
     height = 4,
     units = "in",
-    dpi = 600, 
-    device = cairo_pdf)
+    dpi = 600)
 
 
 # other plots -------------------------------------------------------------

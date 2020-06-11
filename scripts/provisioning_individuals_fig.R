@@ -1,15 +1,12 @@
----
-output:
-  html_document:
-    df_print: paged
-  pdf_document: default
----
-
-```{r echo = FALSE, warning = FALSE, message = FALSE, fig.width = 3.5, fig.height = 4.25}
 # libraries ---------------------------------------------------------------
 
 library(tidyverse)
 library(reshape2)
+library(extrafont)
+
+font_import()
+loadfonts()
+fonts()
 
 # data --------------------------------------------------------------------
 
@@ -100,15 +97,6 @@ parent_repeats <-
 
 prov_prop_repeats <- 
   prov_prop %>%
-  # mutate(
-  #   repeat_f = ifelse(parent == 'SUOR', '⬡', NA),
-  #   repeat_f = ifelse(parent == 'SORO', '▶', repeat_f),
-  #   repeat_f = ifelse(parent == 'SGBY', '◼', repeat_f),
-  #   repeat_f = ifelse(parent == 'WSPR', '◑', repeat_f),
-  #   repeat_m = ifelse(parent == 'BUSY', '★', NA),
-  #   repeat_m = ifelse(parent == 'ROSO', '✕', repeat_m),
-  #   repeat_m2 = ifelse(parent == 'POPS', '⬟', NA)
-  # )
   mutate(
     repeat_f = ifelse(parent == 'SUOR', '\U2B21', NA),
     repeat_f = ifelse(parent == 'SORO', '\U25B6', repeat_f),
@@ -178,4 +166,10 @@ ggplot(data = prov_prop_repeats,
                             "Noisy" = "S",
                             "N1718CA2_brd1" = "T",
                             "NB18C4_18_brd1" = "U")) 
-```
+  # ggsave(
+  #   file = "provisioning_individual_fig.pdf",
+  #   path ="plots/bw/",
+  #   width = 3.5,
+  #   height = 4,
+  #   units = "in",
+  #   dpi = 600)
