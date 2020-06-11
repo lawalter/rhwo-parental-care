@@ -9,7 +9,7 @@ library(Cairo) # helps print unicode
 
 bbyvid <- read.csv("clean_data/bbyvid.csv", stringsAsFactors = FALSE)
 
-# script ------------------------------------------------------------------
+# wrangling ---------------------------------------------------------------
 
 # Rates
 bbyvid <-
@@ -86,6 +86,15 @@ parent_repeats <-
 
 prov_prop_repeats <- 
   prov_prop %>%
+  # mutate(
+  #   repeat_f = ifelse(parent == 'SUOR', '⬡', NA),
+  #   repeat_f = ifelse(parent == 'SORO', '▶', repeat_f),
+  #   repeat_f = ifelse(parent == 'SGBY', '◼', repeat_f),
+  #   repeat_f = ifelse(parent == 'WSPR', '◑', repeat_f),
+  #   repeat_m = ifelse(parent == 'BUSY', '★', NA),
+  #   repeat_m = ifelse(parent == 'ROSO', '✕', repeat_m),
+  #   repeat_m2 = ifelse(parent == 'POPS', '⬟', NA)
+  # )
   mutate(
     repeat_f = ifelse(parent == 'SUOR', '⬡', NA),
     repeat_f = ifelse(parent == 'SORO', '▶', repeat_f),
@@ -93,17 +102,12 @@ prov_prop_repeats <-
     repeat_f = ifelse(parent == 'WSPR', '◑', repeat_f),
     repeat_m = ifelse(parent == 'BUSY', '★', NA),
     repeat_m = ifelse(parent == 'ROSO', '✕', repeat_m),
+<<<<<<< HEAD
     repeat_m2 = ifelse(parent == 'POPS', '⬟', NA)
+=======
+    repeat_m2 = ifelse(parent == 'POPS', '\u2B1F', NA)
+>>>>>>> 8c8b0f9cc7dfb66d586fdd8338d7a36ea6532f4f
   )
-# mutate(
-#   repeat_f = ifelse(parent == 'SUOR', '⬡', NA),
-#   repeat_f = ifelse(parent == 'SORO', '▶', repeat_f),
-#   repeat_f = ifelse(parent == 'SGBY', '◼', repeat_f),
-#   repeat_f = ifelse(parent == 'WSPR', '◑', repeat_f),
-#   repeat_m = ifelse(parent == 'BUSY', '★', NA),
-#   repeat_m = ifelse(parent == 'ROSO', '✕', repeat_m),
-#   repeat_m2 = ifelse(parent == 'POPS', '\U2B1F', NA)
-# )
   # mutate(
   #   repeat_f = ifelse(parent == 'SUOR', 'α', NA),
   #   repeat_f = ifelse(parent == 'SORO', 'ε', repeat_f),
@@ -121,7 +125,7 @@ ggplot(data = prov_prop_repeats,
   geom_col(width = 0.75, color = 'white') +
   geom_text(
     aes(label = repeat_m), 
-    size = 4, 
+    size = 3, 
     position = position_stack(vjust = 0),
     hjust = 'right') +
   geom_text(
@@ -131,7 +135,7 @@ ggplot(data = prov_prop_repeats,
     hjust = 'right') +
   geom_text(
     aes(label = repeat_f), 
-    size = 3, 
+    size = 3.5, 
     position = position_stack(vjust = 1), 
     hjust = 'left') +
   geom_hline(yintercept = 0.50, linetype = "dashed") +
@@ -139,18 +143,16 @@ ggplot(data = prov_prop_repeats,
        x = "Brood",
        title = "Figure 5") + 
   theme_classic() +
-  theme(axis.title.x = element_text(size = 11), 
-        axis.title.y = element_text(size = 11),
+  theme(axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
         axis.text.y = element_text(size = 9),
         axis.text.x = element_text(size = 9),
-        legend.text = element_text(size = 10),
-        legend.title = element_text(size = 11),
+        legend.text = element_text(size = 9),
+        legend.title = element_text(size = 10),
         legend.position = "bottom") +
   coord_flip() + 
   # scale_fill_manual(values = colors_sex_bw) + #light!!
-  # scale_fill_manual(
-  #   values = c('female' = '#6c6c6c', #dark!!
-  #              'male' = '#333333')) +
+  # scale_fill_manual(values = c('female' = '#6c6c6c', 'male' = '#333333')) + #dark!! 
   scale_fill_manual(
     values =  c('female' = '#858585', #medium
                 'male' = '#4c4c4c')) +
@@ -182,7 +184,11 @@ ggplot(data = prov_prop_repeats,
     width = 3.5,
     height = 4,
     units = "in",
-    dpi = 600)
+    dpi = 600, 
+    device = cairo_pdf)
+
+
+# other plots -------------------------------------------------------------
 
 # Plot for individuals with repeat parents (color)
 ggplot(data = prov_prop_repeats, 
@@ -248,7 +254,7 @@ ggplot(data = prov_prop_repeats,
     units = "in",
     dpi = 600)
 
-# previous custom labels --------------------------------------------------
+# Previous custom labels
 
 # scale_x_discrete(labels=c("A3_brd2" = "A3_2017", 
 #                           "Timber_brd1" = "Timber_brood1_2018",
@@ -272,7 +278,7 @@ ggplot(data = prov_prop_repeats,
 #                           "N1718CA2_brd1" = "18CA2_2017",
 #                           "NB18C4_18_brd1" = "NB18C4_2018")) +
 
-# plot with colors for individuals ----------------------------------------
+# Plot with colors for individuals 
 
 prov_prop_color_repeats <- 
   prov_prop %>%
@@ -354,9 +360,8 @@ ggplot(data = prov_prop_color_repeats,
 #     units = "in",
 #     dpi = 600)
 
-# plot with mean chick ages -----------------------------------------------
 
-## Plot to show ages
+# Plot to show ages
 ggplot(
   data = prov_prop, 
   aes(x = reorder(brood_id, number), 
