@@ -33,7 +33,8 @@ sex_data <-
   as_tibble() %>%
   set_names(
     names(.) %>% 
-      tolower()) 
+      tolower()) %>%
+  select(subject = color_combo, sex) 
 
 # Video data about the actual recordings
 
@@ -48,7 +49,7 @@ video_data_initial <-
 
 # Behavior data from videos scored in BORIS
 
-boris_data <- 
+boris_initial <- 
   read.csv('raw_data/boris_provisioning_preyproofed_bestdata.csv', 
            na.strings = c("", "na", "NA"), 
            stringsAsFactors = FALSE) %>%
@@ -87,7 +88,7 @@ total_sample <-
 # time of cleaning event
 
 cleaning <-
-  boris_data %>%
+  boris_initial %>%
   select(-c(modifier_general, modifier_specific)) %>%
   filter(behavior == "in cavity" | behavior == "cleaning nest") %>%
   group_by(observation.id) %>%
@@ -123,24 +124,25 @@ cleaning <-
 # poopsearch with original data
 boris <- 
   cleaning %>%
-  bind_rows(boris_data)
+  bind_rows(
+    boris_initial %>% 
+      filter(behavior != "in cavity" & behavior != "cleaning nest") %>%
+      select(-c(modifier_general:behavior_type))) 
 
-# behavior data combined with video/nest data -----------------------------
 
-# Merge boris behavior data and video/nest data
-borisdata_w_nestinfo <- 
-  boris_data %>%
-  left_join(video_data_initial, by = "observation.id") 
+# behavior table ----------------------------------------------------------
 
-# Make the sex data into 2 columns
-sex_data_sm <- 
-  sex_data %>% 
-  select(subject = color_combo, sex) 
-
-# Merge the sex data with the main dataframe
-# The merged dataframe will be shorter because it does not include chick events
-provision_data <- 
-  left_join(borisdata_w_nestinfo, sex_data_sm, by = "subject") %>%
+behaviors <- 
+  boris %>%
+  # Start with BORIS scored behaviors that were just cleaned/classified
+  # Merge in data about the video recordings/nests
+  left_join(
+    video_data_initial %>%
+      # Unselect data that is redundant or unnecessary
+      select(-c(letter, part, month, day, year)), 
+    by = "observation.id") %>%
+  # Merge in the sex data
+  left_join(sex_data, by = "subject") %>%
   # Add Julian dates and modify date columns to date format
   mutate(
     date = as.Date(date, "%m/%d/%Y"),
@@ -153,9 +155,22 @@ provision_data <-
     fledge_julian = yday(fledge_date)
   )
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 # nest survival summary percents ------------------------------------------
 
-provision_data %>%
+behaviors %>%
   mutate(
     proportion_hatched = max_number_chicks/max_number_eggs,
     percent_chick_mortalities = number_chick_mortalities/max_number_chicks,
@@ -170,7 +185,16 @@ provision_data %>%
   arrange(desc(proportion_hatched))
 
 
-# combine dataframes ------------------------------------------------------
+
+
+
+
+# --- ................ not fixed yet -----------------------------------------------------------
+
+
+
+
+
 
 # Create a behavior dataframe of rates of feeding chicks, cleaning, and brooding
 
