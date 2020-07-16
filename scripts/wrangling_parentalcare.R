@@ -6,7 +6,8 @@
 
 # last updates ------------------------------------------------------------
 
-# May 2020: More modernizing 
+# May 2020: More modernizing & updated rules for cleaning/brooding: if it 
+#           takes >= 60s to find poop, it's brooding. Changed 15 obs.
 # Mar 2020: More modernizing
 # Feb 2020: Modernized script using the tidyverse
 # Jan 2020: Best updated version submitted to github
@@ -109,10 +110,14 @@ cleaning <-
   ) %>% 
   mutate(
     behavior_new =
-      ifelse(behavior_new == "poopsearch" & duration_sec >= 60, "broodn", behavior_new)
-  )
-  filter(behavior_new == 'poopsearch')
-  select(-c(time_lag, diff_sec, behavior_lag))
+      # If a RHEO takes >= 60 sec to 'poopsearch', it's brooding
+      ifelse(
+        behavior_new == "poopsearch" & duration_sec >= 60, 
+        "brooding", 
+        behavior_new)
+  ) %>%
+  select(-behavior) %>%
+  select(1:3, behavior = behavior_new, 4:7)
 
 # Merge final classifications of cleaning, visiting, brooding, and 
 # poopsearch with original data
