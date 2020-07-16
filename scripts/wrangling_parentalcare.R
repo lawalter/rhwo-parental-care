@@ -133,20 +133,15 @@ borisdata_w_nestinfo <-
   left_join(video_data_initial, by = "observation.id") 
 
 # Make the sex data into 2 columns
-sex_data_sm <- dplyr::select(sex_data, color_combo, sex)
-names(sex_data_sm) <- c("subject", "sex")
+sex_data_sm <- 
+  sex_data %>% 
+  select(subject = color_combo, sex) 
 
 # Merge the sex data with the main dataframe
 # The merged dataframe will be shorter because it does not include chick events
 provision_data <- 
-  merge.data.frame(borisdata_w_nestinfo, sex_data_sm, by="subject") %>%
-  as_tibble()
-
-
-# julian dates ------------------------------------------------------------
-
-provision_data <-
-  provision_data %>%
+  left_join(borisdata_w_nestinfo, sex_data_sm, by = "subject") %>%
+  # Add Julian dates and modify date columns to date format
   mutate(
     date = as.Date(date, "%m/%d/%Y"),
     julian_date = yday(date),
@@ -173,34 +168,6 @@ provision_data %>%
     percent_chick_mortalities) %>%
   distinct() %>%
   arrange(desc(proportion_hatched))
-
-
-# summary rates -----------------------------------------------------------
-
-# Calculate rates of parental care
-
-provision_data %>%
-  mutate(
-    count = 1,
-    countpermin = count/length_usable,
-    countperchkmin = (count/peeped_chick_count)/length_usable,
-    countperchkhr = countperchkmin*60,
-    duration_min = duration_sec/60,
-    duration_per_vid = duration_min/length_usable,
-    brooding_min_per_hr = duration_per_vid*60) %>%
-  select(
-    subject,
-    brood_id,
-    julian_date,
-    behavior,
-    countperchkhr,
-    duration_min,
-    brooding_min_per_hr
-  ) %>%
-  distinct()
-
-## The above section isn't really needed
-## Does not show breakdown by brood_id on a particular day
 
 
 # combine dataframes ------------------------------------------------------
