@@ -34,7 +34,7 @@ sex_data <-
     names(.) %>% 
       tolower()) 
 
-# Video data related about recordings
+# Video data about the actual recordings
 
 video_data_initial <- 
   read.csv('raw_data/provisioning_video_data.csv', 
@@ -45,7 +45,7 @@ video_data_initial <-
     names(.) %>% 
       tolower()) 
 
-# Data from videos scored in Boris
+# Behavior data from videos scored in BORIS
 
 boris_data <- 
   read.csv('raw_data/boris_provisioning_preyproofed_bestdata.csv', 
@@ -82,7 +82,7 @@ total_sample <-
 
 # cleaning table ----------------------------------------------------------
 
-# Calculate the time difference between stop time of in cavity and the 
+# Calculate the time difference between stop time of 'in cavity' and the 
 # time of cleaning event
 
 cleaning <-
@@ -94,19 +94,28 @@ cleaning <-
     time_lag = lead(stop_sec),
     diff_sec = time_lag - stop_sec,
     behavior_lag = lead(behavior)) %>%
-  ungroup %>%
+  ungroup() %>%
   mutate(
-    behavior = 
+    behavior_new = 
       case_when(
-        (behavior == "in cavity" & duration_sec <= 60) ~ 'visit',
-        (behavior == 'in cavity' & duration_sec > 60) ~ 'brooding',
-        (behavior != "cleaning nest" & diff_sec < 1) ~ 'poopsearch',
+        # If a RHWO leaves with a fecal sac, it's 'poopsearch'
+        # If a RHWO enters the cavity for < 60 sec, it's a visit
+        # If a RHWO enters the cavity for >= 60 sec, it's brooding
+        (behavior == "in cavity" & diff_sec < 1) ~ 'poopsearch',
+        (behavior == "in cavity" & duration_sec < 60) ~ 'visit',
+        (behavior == 'in cavity' & duration_sec >= 60) ~ 'brooding',
         TRUE ~ behavior
       )
   ) %>% 
+  mutate(
+    behavior_new =
+      ifelse(behavior_new == "poopsearch" & duration_sec >= 60, "broodn", behavior_new)
+  )
+  filter(behavior_new == 'poopsearch')
   select(-c(time_lag, diff_sec, behavior_lag))
 
-# Merge final classifications of cleaning, visiting, brooding, and poopsearch with original data
+# Merge final classifications of cleaning, visiting, brooding, and 
+# poopsearch with original data
 boris <- 
   cleaning %>%
   bind_rows(boris_data)
