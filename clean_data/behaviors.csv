@@ -1,0 +1,89 @@
+"","video_id","brooding_count","cleaning_nest","feeding_chicks","visit_count","brooding_sec","poopsearch_sec","visit_sec","video_number","subject","sex","julian_date","habitat","exact_age_chick","peeped_chick_count","nest_id","brood_id","length_usable"
+"1","99_SUOR",2,2,4,NA,638.049,159.701,NA,99,"SUOR","female",NA,"CC",1,3,"18C Catfish","18C_Catfish_brd1",94
+"2","99_OOSG",1,1,6,4,299.337,57.581,119.922,99,"OOSG","male",NA,"CC",1,3,"18C Catfish","18C_Catfish_brd1",94
+"3","94_SGRO",NA,5,9,NA,NA,49.244,NA,94,"SGRO","female",NA,"Savanna",22,2,"A3","A3_brd2",192
+"4","94_OYSR",NA,1,7,NA,NA,21.276,NA,94,"OYSR","male",NA,"Savanna",22,2,"A3","A3_brd2",192
+"5","93_YSOG",NA,NA,10,NA,NA,NA,NA,93,"YSOG","male",NA,"Savanna",24,2,"N17 REC2","N17REC2_brd1",128
+"6","93_GOSY",NA,NA,2,NA,NA,NA,NA,93,"GOSY","female",NA,"Savanna",24,2,"N17 REC2","N17REC2_brd1",128
+"7","90_SUGR",1,NA,NA,NA,67.572,NA,NA,90,"SUGR","male",NA,"Savanna",1,1,"RB23","RB23_brd2",128
+"8","90_SORO",6,NA,NA,NA,2589.659,NA,NA,90,"SORO","female",NA,"Savanna",1,1,"RB23","RB23_brd2",128
+"9","89_SRGG_mate",NA,NA,1,1,NA,NA,34.082,89,"SRGG","female",NA,"Savanna",2,2,"N17 REC3","N17REC3_brd2",55
+"10","89_SRGG",2,NA,3,1,684.85,NA,33.433,89,"SRGG","female",NA,"Savanna",2,2,"N17 REC3","N17REC3_brd2",55
+"11","88_SGRO",NA,5,38,NA,NA,49.511,NA,88,"SGRO","female",NA,"Savanna",16,2,"A3","A3_brd2",203
+"12","88_OYSR",NA,2,5,NA,NA,26.194,NA,88,"OYSR","male",NA,"Savanna",16,2,"A3","A3_brd2",203
+"13","86_SRGG_mate",6,NA,4,1,2541.853,NA,51.605,86,"SRGG","female",NA,"Savanna",1,2,"N17 REC3","N17REC3_brd2",182
+"14","86_SRGG",5,NA,5,NA,4133.158,NA,NA,86,"SRGG","female",NA,"Savanna",1,2,"N17 REC3","N17REC3_brd2",182
+"15","85_YSOG",1,6,11,NA,197.796,126.833,NA,85,"YSOG","male",NA,"Savanna",17,3,"N17 REC2","N17REC2_brd1",178
+"16","85_GOSY",NA,NA,35,NA,NA,NA,NA,85,"GOSY","female",NA,"Savanna",17,3,"N17 REC2","N17REC2_brd1",178
+"17","82_SUOB",NA,NA,9,NA,NA,NA,NA,82,"SUOB","female",NA,"CC",17,1,"PN17 REC1","REC1_brd1",185
+"18","82_RYSG",7,12,11,2,1118.165,174.128,31.727,82,"RYSG","male",NA,"CC",17,1,"PN17 REC1","REC1_brd1",185
+"19","81_YSOG",1,5,10,3,85.845,177.991,115.686,81,"YSOG","male",NA,"Savanna",12,3,"N17 REC2","N17REC2_brd1",111
+"20","81_GOSY",1,NA,14,12,72.346,NA,169.508,81,"GOSY","female",NA,"Savanna",12,3,"N17 REC2","N17REC2_brd1",111
+"21","75_YSOG",2,2,15,7,740.079,29.826,155.163,75,"YSOG","male",NA,"Savanna",6,3,"N17 REC2","N17REC2_brd1",147
+"22","75_GOSY",NA,4,22,5,NA,54.902,109.64,75,"GOSY","female",NA,"Savanna",6,3,"N17 REC2","N17REC2_brd1",147
+"23","74_SGBY",NA,NA,22,NA,NA,NA,NA,74,"SGBY","female",NA,"CC",24,2,"PNB 18CB","Tonto_brd1",205
+"24","74_ROSO",NA,NA,21,NA,NA,NA,NA,74,"ROSO","male",NA,"CC",24,2,"PNB 18CB","Tonto_brd1",205
+"25","73_SRUB",NA,NA,3,NA,NA,NA,NA,73,"SRUB","female",NA,"Savanna",25,1,"N17 18CA2","N1718CA2_brd1",218
+"26","73_BUSY",NA,NA,18,NA,NA,NA,NA,73,"BUSY","male",NA,"Savanna",25,1,"N17 18CA2","N1718CA2_brd1",218
+"27","72_SGBY",NA,NA,39,NA,NA,NA,NA,72,"SGBY","female",NA,"CC",23,2,"PNB 18CB","Tonto_brd1",195
+"28","72_ROSO",NA,6,27,NA,NA,263.588,NA,72,"ROSO","male",NA,"CC",23,2,"PNB 18CB","Tonto_brd1",195
+"29","70_SRUB",NA,NA,9,NA,NA,NA,NA,70,"SRUB","female",NA,"Savanna",24,1,"N17 18CA2","N1718CA2_brd1",228
+"30","70_BUSY",NA,6,30,NA,NA,74.036,NA,70,"BUSY","male",NA,"Savanna",24,1,"N17 18CA2","N1718CA2_brd1",228
+"31","68_OSGR_mate",NA,NA,10,NA,NA,NA,NA,68,"OSGR","male",NA,"Savanna",21,3,"NB 5B5","NB5B5_brd1",128
+"32","68_OSGR",NA,5,23,NA,NA,55.329,NA,68,"OSGR","male",NA,"Savanna",21,3,"NB 5B5","NB5B5_brd1",128
+"33","67_OSGR_mate",NA,NA,19,NA,NA,NA,NA,67,"OSGR","male",NA,"Savanna",20,3,"NB 5B5","NB5B5_brd1",144
+"34","67_OSGR",NA,8,44,NA,NA,96.703,NA,67,"OSGR","male",NA,"Savanna",20,3,"NB 5B5","NB5B5_brd1",144
+"35","65_SURO",NA,NA,8,NA,NA,NA,NA,65,"SURO","female",NA,"Savanna",25,1,"NB 5A4","NB5A4_brd1",128
+"36","65_GRGS",NA,NA,5,NA,NA,NA,NA,65,"GRGS","male",NA,"Savanna",25,1,"NB 5A4","NB5A4_brd1",128
+"37","64_SUOB",NA,NA,37,1,NA,NA,3.403,64,"SUOB","female",NA,"CC",7,3,"PN17 REC1","REC1_brd1",200
+"38","64_RYSG",4,11,30,4,638.402,602.87,101.551,64,"RYSG","male",NA,"CC",7,3,"PN17 REC1","REC1_brd1",200
+"39","147_WSPR",NA,4,10,6,NA,70.606,48.012,147,"WSPR","female",NA,"CC",14,1,"18C Timber","Timber_brd2",201
+"40","147_POPS",NA,5,7,2,NA,111.585,33.362,147,"POPS","male",NA,"CC",14,1,"18C Timber","Timber_brd2",201
+"41","146_YOUS",2,3,9,4,547.717,40.339,80.832,146,"YOUS","male",NA,"Savanna",11,1,"18C Houdini","Houdini",163
+"42","146_SWOP",1,NA,11,9,222.621,NA,102.534,146,"SWOP","female",NA,"Savanna",11,1,"18C Houdini","Houdini",163
+"43","144_SORO_mate_18",3,4,9,3,324.861,52.793,31.768,144,"SORO","female",NA,"Savanna",17,1,"RB36 Alt","RB36alt_brd2_18",234
+"44","144_SORO",NA,NA,3,3,NA,NA,91.988,144,"SORO","female",NA,"Savanna",17,1,"RB36 Alt","RB36alt_brd2_18",234
+"45","141_SUOR",NA,NA,25,4,NA,NA,60.535,141,"SUOR","female",NA,"CC",11,3,"18C Noisy","Noisy",240
+"46","141_PYGS",NA,10,44,3,NA,84.689,30.376,141,"PYGS","male",NA,"CC",11,3,"18C Noisy","Noisy",240
+"47","139_SYRP",2,NA,1,NA,726.18,NA,NA,139,"SYRP","female",NA,"Savanna",0,2,"18C Gum","Gum",41
+"48","139_SUBU",3,NA,1,NA,1259.77,NA,NA,139,"SUBU","male",NA,"Savanna",0,2,"18C Gum","Gum",41
+"49","138_SYRP",2,NA,2,NA,2310.24,NA,NA,138,"SYRP","female",NA,"Savanna",0,2,"18C Gum","Gum",50
+"50","138_SUBU",NA,NA,1,1,NA,NA,41.4,138,"SUBU","male",NA,"Savanna",0,2,"18C Gum","Gum",50
+"51","137_WOWS",2,9,21,1,376.976,192.979,46.14,137,"WOWS","male",NA,"Savanna",19,2,"5A Cross","Cross",192
+"52","137_OSOP",NA,NA,12,NA,NA,NA,NA,137,"OSOP","female",NA,"Savanna",19,2,"5A Cross","Cross",192
+"53","135_YOUS",NA,5,9,NA,NA,47.547,NA,135,"YOUS","male",NA,"Savanna",22,1,"18C Houdini","Houdini",178
+"54","135_SWOP",NA,NA,4,NA,NA,NA,NA,135,"SWOP","female",NA,"Savanna",22,1,"18C Houdini","Houdini",178
+"55","132_SUOR",NA,NA,13,2,NA,NA,22.178,132,"SUOR","female",NA,"CC",12,3,"18C Noisy","Noisy",198
+"56","132_PYGS",NA,20,41,2,NA,179.036,10.46,132,"PYGS","male",NA,"CC",12,3,"18C Noisy","Noisy",198
+"57","130_WOWS",NA,NA,NA,NA,NA,NA,NA,130,"WOWS","male",NA,"Savanna",15,2,"5A Cross","Cross",128
+"58","130_OSOP",NA,NA,NA,NA,NA,NA,NA,130,"OSOP","female",NA,"Savanna",15,2,"5A Cross","Cross",128
+"59","127_WSPR",NA,NA,41,13,NA,NA,46.744,127,"WSPR","female",NA,"CC",15,2,"18C Timber","Timber_brd1",232
+"60","127_POPS",NA,6,15,5,NA,102.02,35.078,127,"POPS","male",NA,"CC",15,2,"18C Timber","Timber_brd1",232
+"61","126_WOWS",2,NA,15,11,373.833,NA,97.051,126,"WOWS","male",NA,"Savanna",4,3,"5A Cross","Cross",188
+"62","126_OSOP",3,NA,10,6,1020.677,NA,119.043,126,"OSOP","female",NA,"Savanna",4,3,"5A Cross","Cross",188
+"63","125_SGBY",NA,NA,NA,NA,NA,NA,NA,125,"SGBY","female",NA,"CC",15,3,"PNB 18CB","Tonto18_brd1",141
+"64","125_ROSO",NA,6,24,10,NA,179.537,52.812,125,"ROSO","male",NA,"CC",15,3,"PNB 18CB","Tonto18_brd1",141
+"65","121_SGBY",3,5,18,12,1652.04,127.31,193.852,121,"SGBY","female",NA,"CC",7,3,"PNB 18CB","Tonto18_brd1",181
+"66","121_ROSO",8,2,9,1,2442.875,978.779,7.007,121,"ROSO","male",NA,"CC",7,3,"PNB 18CB","Tonto18_brd1",181
+"67","120_WSPR",10,1,16,8,5093.95,20.419,162.619,120,"WSPR","female",NA,"CC",1,2,"18C Timber","Timber_brd1",226
+"68","120_POPS",5,5,6,1,2761.504,1187.473,10.228,120,"POPS","male",NA,"CC",1,2,"18C Timber","Timber_brd1",226
+"69","118_WYRS_mate",1,6,17,1,499.4,62.624,13.846,118,"WYRS","female",NA,"Savanna",15,2,"5A Cut","5A Cut_brd2",203
+"70","118_WYRS",NA,NA,10,1,NA,NA,8.319,118,"WYRS","female",NA,"Savanna",15,2,"5A Cut","5A Cut_brd2",203
+"71","117_SUOR",NA,NA,NA,NA,NA,NA,NA,117,"SUOR","female",NA,"CC",6,3,"18C Noisy","Noisy",169
+"72","117_PYGS",NA,10,21,11,NA,132.258,77.664,117,"PYGS","male",NA,"CC",6,3,"18C Noisy","Noisy",169
+"73","116_WOWS",NA,14,29,NA,NA,226.649,NA,116,"WOWS","male",NA,"Savanna",27,2,"5A Cross","Cross",232
+"74","116_OSOP",NA,NA,12,NA,NA,NA,NA,116,"OSOP","female",NA,"Savanna",27,2,"5A Cross","Cross",232
+"75","115_SYRP",13,1,16,6,3840.633,31.935,115.607,115,"SYRP","female",NA,"Savanna",4,2,"18C Gum","Gum",223
+"76","115_SUBU",5,4,13,2,1253.473,702.172,107.353,115,"SUBU","male",NA,"Savanna",4,2,"18C Gum","Gum",223
+"77","113_WSPR",NA,1,29,NA,NA,12.612,NA,113,"WSPR","female",NA,"CC",23,2,"18C Timber","Timber_brd1",232
+"78","113_POPS",NA,NA,14,NA,NA,NA,NA,113,"POPS","male",NA,"CC",23,2,"18C Timber","Timber_brd1",232
+"79","112_RSUU",NA,NA,21,NA,NA,NA,NA,112,"RSUU","female",NA,"Savanna",15,1,"N17 18CA2","N1718CA2_18",170
+"80","112_BUSY",6,5,15,5,1397.492,76.34,147.943,112,"BUSY","male",NA,"Savanna",15,1,"N17 18CA2","N1718CA2_18",170
+"81","111_SBGO_mate_18",NA,NA,NA,NA,NA,NA,NA,111,"SBGO","male",NA,"Savanna",21,2,"NB 18C4","NB18C4_18_brd1",208
+"82","111_SBGO",NA,1,31,NA,NA,9.709,NA,111,"SBGO","male",NA,"Savanna",21,2,"NB 18C4","NB18C4_18_brd1",208
+"83","110_SGBY",NA,NA,50,12,NA,NA,166.212,110,"SGBY","female",NA,"CC",19,3,"PNB 18CB","Tonto18_brd1",243
+"84","110_ROSO",NA,10,49,4,NA,121.799,39.523,110,"ROSO","male",NA,"CC",19,3,"PNB 18CB","Tonto18_brd1",243
+"85","106_SBGO_mate_18",NA,NA,NA,NA,NA,NA,NA,106,"SBGO","male",NA,"Savanna",13,2,"NB 18C4","NB18C4_18_brd1",123
+"86","106_SBGO",NA,1,11,3,NA,18.876,7.773,106,"SBGO","male",NA,"Savanna",13,2,"NB 18C4","NB18C4_18_brd1",123
+"87","100_SUGR",3,4,17,12,248.436,230.951,219.972,100,"SUGR","male",NA,"Savanna",8,2,"RB23","RB23_brd2",229
+"88","100_SORO",2,1,9,8,745.245,29.829,141.197,100,"SORO","female",NA,"Savanna",8,2,"RB23","RB23_brd2",229

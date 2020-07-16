@@ -53,8 +53,7 @@ video_data_initial <-
             chicks_fledged, proportion_fledged, priority, chicks_visible., 
             with_bpk., bpk_status_1, bpk_status_2, start_time, 
             early_or_late, length_discrepancy., boris_observer, 
-            length_each, length_total, summary.notes, ref_combo_1,
-            ref_combo_2))
+            length_each, length_total, summary.notes))
 
 # Behavior data from videos scored in BORIS
 
@@ -81,17 +80,16 @@ NOAA_data <-
 # Both parents do not participate in all videos (without this step, the 
 # data does not fill n = 288)
 
-#           NOT ENTIRELY SURE WE NEED THIS........ (:
-
-# total_sample <- 
-#   video_data_initial %>%
-#   select(observation.id, ref_combo_1, ref_combo_2) %>%
-#   mutate(
-#     ID1 = paste(observation.id, ref_combo_1, sep = '.'),
-#     ID2 = paste(observation.id, ref_combo_2, sep = '.')) %>%
-#   select(-c(observation.id, ref_combo_1, ref_combo_2)) %>%
-#   gather() %>%
-#   select(-key, sample = value)
+total_sample <-
+  video_data_initial %>%
+  select(video_number, ref_combo_1, ref_combo_2) %>%
+  mutate(
+    ID1 = paste(video_number, ref_combo_1, sep = '_'),
+    ID2 = paste(video_number, ref_combo_2, sep = '_')) %>%
+  select(-c(video_number, ref_combo_1, ref_combo_2)) %>%
+  gather() %>%
+  select(-key, video_id = value) %>%
+  distinct()
 
 # cleaning table ----------------------------------------------------------
 
@@ -115,19 +113,19 @@ cleaning <-
         # If a RHWO enters the cavity for < 60 sec, it's a visit
         # If a RHWO enters the cavity for >= 60 sec, it's brooding
         (behavior == "in cavity" & diff_sec < 1) ~ 'poopsearch',
-        (behavior == "in cavity" & duration_sec < 60) ~ 'visit',
-        (behavior == 'in cavity' & duration_sec >= 60) ~ 'brooding',
+        (behavior == "in cavity" & duration_sec =< 60) ~ 'visit',
+        (behavior == 'in cavity' & duration_sec > 60) ~ 'brooding',
         TRUE ~ behavior
       )
   ) %>% 
-  mutate(
-    behavior_new =
-      # If a RHEO takes >= 60 sec to 'poopsearch', it's brooding
-      ifelse(
-        behavior_new == "poopsearch" & duration_sec >= 60, 
-        "brooding", 
-        behavior_new)
-  ) %>%
+  # mutate(
+  #   behavior_new =
+  #     # If a RHWO takes >= 60 sec to 'poopsearch'...
+  #     ifelse(
+  #       behavior_new == "poopsearch" & duration_sec >= 60, 
+  #       "long_poop", 
+  #       behavior_new)
+  # ) %>%
   select(-behavior) %>%
   select(1:3, behavior = behavior_new, 5:7)
 
@@ -144,6 +142,8 @@ boris <-
 
 # behavior table ----------------------------------------------------------
 
+# Point behaviors that can be counted
+
 count_behaviors <- 
   # Start with BORIS scored behaviors that were just cleaned/classified
   boris %>%
@@ -154,20 +154,31 @@ count_behaviors <-
     by = 'observation.id') %>%
   mutate(
     video_id = paste(video_number, subject, sep = '_')) %>% 
-  select(-c(observation.id, subject, observation_id_boris, start_sec, stop_sec, duration_sec)) %>%
-  filter(behavior %in% c('cleaning nest', 'feeding chicks', 'visit', 'brooding')) %>%
+  select(-c(observation.id, subject, observation_id_boris, start_sec, 
+            stop_sec, duration_sec)) %>%
+  filter(
+    behavior %in% 
+      c('cleaning nest', 
+        'feeding chicks', 
+        'visit', 
+        'brooding')) %>%
   mutate(
     times = 1,
-    behavior = ifelse(behavior == 'cleaning nest', 'cleaning_nest', behavior),
-    behavior = ifelse(behavior == 'feeding chicks', 'feeding_chicks', behavior),
-    behavior = ifelse(behavior == 'visit', 'visit_count', behavior),
-    behavior = ifelse(behavior == 'brooding', 'brooding_count', behavior)) %>%
+    behavior = 
+      case_when(
+        behavior == 'cleaning nest' ~ 'cleaning_nest',
+        behavior == 'feeding chicks' ~ 'feeding_chicks',
+        behavior == 'visit' ~ 'visit_count',
+        behavior == 'brooding' ~ 'brooding_count',
+        TRUE ~ behavior)) %>%
   group_by(video_id, behavior) %>%
   summarize(sum_count = sum(times)) %>%
   ungroup() %>%
   pivot_wider(
     names_from = behavior, 
     values_from = sum_count)
+
+# State behaviors that have a duration
 
 duration_behaviors <- 
   # Start with BORIS scored behaviors that were just cleaned/classified
@@ -178,13 +189,17 @@ duration_behaviors <-
       select(observation.id, video_number), 
     by = 'observation.id') %>%
   mutate(
-    video_id = paste(video_number, subject, sep = '.')) %>% 
-  select(-c(observation.id, subject, observation_id_boris, start_sec, stop_sec)) %>%
+    video_id = paste(video_number, subject, sep = '_')) %>% 
+  select(-c(observation.id, subject, observation_id_boris, start_sec, 
+            stop_sec)) %>%
   filter(behavior %in% c('poopsearch', 'visit', 'brooding')) %>%
   mutate(
-    behavior = ifelse(behavior == 'poopsearch', 'poopsearch_sec', behavior),
-    behavior = ifelse(behavior == 'visit', 'visit_sec', behavior),
-    behavior = ifelse(behavior == 'brooding', 'brooding_sec', behavior)) %>%
+    behavior = 
+      case_when(
+        behavior == 'poopsearch' ~ 'poopsearch_sec',
+        behavior == 'visit' ~ 'visit_sec',
+        behavior == 'brooding' ~ 'brooding_sec',
+        TRUE ~ behavior)) %>%
   group_by(video_id, behavior) %>%
   summarize(sum_durations = sum(duration_sec)) %>%
   ungroup() %>%
@@ -192,46 +207,50 @@ duration_behaviors <-
     names_from = behavior, 
     values_from = sum_durations)
 
+# Combining the state and point behaviors
 
 behaviors <-
-  count_behaviors %>%
-  left_join(duration_behaviors, by = 'video_id')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-  # Merge in data about the video recordings/nests
-  left_join(
-    video_data_initial, 
-    by = "observation.id") %>%
+  total_sample %>%
+  left_join(count_behaviors, by = 'video_id') %>%
+  left_join(duration_behaviors, by = 'video_id') %>%
+  # Remove PNA5A1b because it is the only wetland nest
+  filter(!str_detect(video_id, "SROB")) %>%
+  arrange(desc(video_id)) %>%
+  mutate(
+    video_number = str_extract(video_id, "^[0-9]{1,3}"),
+    video_number = as.numeric(video_number),
+    subject = str_extract(video_id, "[A-Z]{4}")) %>%
   # Merge in the sex data
   left_join(sex_data, by = "subject") %>%
-  # Add Julian dates and modify date columns to date format
+  # Merge in nest data
+  left_join(
+    video_data_initial %>%
+      select(video_number, julian_date, habitat, exact_age_chick, 
+             peeped_chick_count, nest_id, brood_id) %>%
+      distinct(), 
+    by = "video_number") %>%
+  # Merge in usable_length, but first sum all the parts!
+  left_join(
+    video_data_initial %>%
+      select(video_number, length_usable) %>%
+      group_by(video_number) %>%
+      summarize(length_usable = sum(length_usable)) %>%
+      ungroup(), 
+    by = "video_number") 
+  
+
+# write csv ---------------------------------------------------------------
+
+write.csv(behaviors, "clean_data/behaviors.csv")       
+
+
+
+
+
+
+
+
+# Add Julian dates and modify date columns to date format
   mutate(
     date = as.Date(date, "%m/%d/%Y"),
     julian_date = yday(date),
