@@ -81,15 +81,17 @@ NOAA_data <-
 # Both parents do not participate in all videos (without this step, the 
 # data does not fill n = 288)
 
-total_sample <- 
-  video_data_initial %>%
-  select(observation.id, ref_combo_1, ref_combo_2) %>%
-  mutate(
-    ID1 = paste(observation.id, ref_combo_1, sep = '.'),
-    ID2 = paste(observation.id, ref_combo_2, sep = '.')) %>%
-  select(-c(observation.id, ref_combo_1, ref_combo_2)) %>%
-  gather() %>%
-  select(-key, sample = value)
+#           NOT ENTIRELY SURE WE NEED THIS........ (:
+
+# total_sample <- 
+#   video_data_initial %>%
+#   select(observation.id, ref_combo_1, ref_combo_2) %>%
+#   mutate(
+#     ID1 = paste(observation.id, ref_combo_1, sep = '.'),
+#     ID2 = paste(observation.id, ref_combo_2, sep = '.')) %>%
+#   select(-c(observation.id, ref_combo_1, ref_combo_2)) %>%
+#   gather() %>%
+#   select(-key, sample = value)
 
 # cleaning table ----------------------------------------------------------
 
@@ -142,12 +144,91 @@ boris <-
 
 # behavior table ----------------------------------------------------------
 
-behaviors <- 
-  boris %>%
+count_behaviors <- 
   # Start with BORIS scored behaviors that were just cleaned/classified
+  boris %>%
+  filter(subject != 'unknown' & subject != 'chick') %>%
+  left_join(
+    video_data_initial %>% 
+      select(observation.id, video_number), 
+    by = 'observation.id') %>%
+  mutate(
+    video_id = paste(video_number, subject, sep = '_')) %>% 
+  select(-c(observation.id, subject, observation_id_boris, start_sec, stop_sec, duration_sec)) %>%
+  filter(behavior %in% c('cleaning nest', 'feeding chicks', 'visit', 'brooding')) %>%
+  mutate(
+    times = 1,
+    behavior = ifelse(behavior == 'cleaning nest', 'cleaning_nest', behavior),
+    behavior = ifelse(behavior == 'feeding chicks', 'feeding_chicks', behavior),
+    behavior = ifelse(behavior == 'visit', 'visit_count', behavior),
+    behavior = ifelse(behavior == 'brooding', 'brooding_count', behavior)) %>%
+  group_by(video_id, behavior) %>%
+  summarize(sum_count = sum(times)) %>%
+  ungroup() %>%
+  pivot_wider(
+    names_from = behavior, 
+    values_from = sum_count)
+
+duration_behaviors <- 
+  # Start with BORIS scored behaviors that were just cleaned/classified
+  boris %>%
+  filter(subject != 'unknown' & subject != 'chick') %>%
+  left_join(
+    video_data_initial %>% 
+      select(observation.id, video_number), 
+    by = 'observation.id') %>%
+  mutate(
+    video_id = paste(video_number, subject, sep = '.')) %>% 
+  select(-c(observation.id, subject, observation_id_boris, start_sec, stop_sec)) %>%
+  filter(behavior %in% c('poopsearch', 'visit', 'brooding')) %>%
+  mutate(
+    behavior = ifelse(behavior == 'poopsearch', 'poopsearch_sec', behavior),
+    behavior = ifelse(behavior == 'visit', 'visit_sec', behavior),
+    behavior = ifelse(behavior == 'brooding', 'brooding_sec', behavior)) %>%
+  group_by(video_id, behavior) %>%
+  summarize(sum_durations = sum(duration_sec)) %>%
+  ungroup() %>%
+  pivot_wider(
+    names_from = behavior, 
+    values_from = sum_durations)
+
+
+behaviors <-
+  count_behaviors %>%
+  left_join(duration_behaviors, by = 'video_id')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
   # Merge in data about the video recordings/nests
   left_join(
-    video_data_initial, by = "observation.id") %>%
+    video_data_initial, 
+    by = "observation.id") %>%
   # Merge in the sex data
   left_join(sex_data, by = "subject") %>%
   # Add Julian dates and modify date columns to date format
