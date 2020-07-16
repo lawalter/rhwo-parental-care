@@ -45,7 +45,16 @@ video_data_initial <-
   as_tibble() %>%
   set_names(
     names(.) %>% 
-      tolower()) 
+      tolower()) %>%
+  # Unselect data that is redundant or unnecessary
+  select(-c(letter, part, month, day, year, chick_week, max_number_eggs, 
+            max_number_chicks, number_chick_mortalities, 
+            percent_chick_mortalities, nest_fate, nest_fate_certainty, 
+            chicks_fledged, proportion_fledged, priority, chicks_visible., 
+            with_bpk., bpk_status_1, bpk_status_2, start_time, 
+            early_or_late, length_discrepancy., boris_observer, 
+            length_each, length_total, summary.notes, ref_combo_1,
+            ref_combo_2))
 
 # Behavior data from videos scored in BORIS
 
@@ -118,7 +127,7 @@ cleaning <-
         behavior_new)
   ) %>%
   select(-behavior) %>%
-  select(1:3, behavior = behavior_new, 4:7)
+  select(1:3, behavior = behavior_new, 5:7)
 
 # Merge final classifications of cleaning, visiting, brooding, and 
 # poopsearch with original data
@@ -127,7 +136,8 @@ boris <-
   bind_rows(
     boris_initial %>% 
       filter(behavior != "in cavity" & behavior != "cleaning nest") %>%
-      select(-c(modifier_general:behavior_type))) 
+      select(-c(modifier_general, modifier_specific, behavior_type))
+    ) 
 
 
 # behavior table ----------------------------------------------------------
@@ -137,10 +147,7 @@ behaviors <-
   # Start with BORIS scored behaviors that were just cleaned/classified
   # Merge in data about the video recordings/nests
   left_join(
-    video_data_initial %>%
-      # Unselect data that is redundant or unnecessary
-      select(-c(letter, part, month, day, year)), 
-    by = "observation.id") %>%
+    video_data_initial, by = "observation.id") %>%
   # Merge in the sex data
   left_join(sex_data, by = "subject") %>%
   # Add Julian dates and modify date columns to date format
@@ -168,21 +175,7 @@ behaviors <-
 
 
 
-# nest survival summary percents ------------------------------------------
 
-behaviors %>%
-  mutate(
-    proportion_hatched = max_number_chicks/max_number_eggs,
-    percent_chick_mortalities = number_chick_mortalities/max_number_chicks,
-    proportion_fledged = chicks_fledged/max_number_chicks) %>%
-  select(
-    subject, 
-    brood_id, 
-    proportion_hatched, 
-    proportion_fledged, 
-    percent_chick_mortalities) %>%
-  distinct() %>%
-  arrange(desc(proportion_hatched))
 
 
 
