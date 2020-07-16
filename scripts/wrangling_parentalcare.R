@@ -6,6 +6,7 @@
 
 # last updates ------------------------------------------------------------
 
+# May 2020: More modernizing 
 # Mar 2020: More modernizing
 # Feb 2020: Modernized script using the tidyverse
 # Jan 2020: Best updated version submitted to github
@@ -14,7 +15,7 @@
 # Apr 2019: Fixed provisioning analysis to removed brooding by males if 
 #            followed by cleaning event
 
-# setup -------------------------------------------------------------------
+# libraries ---------------------------------------------------------------
 
 library(tidyverse)
 library(lubridate)
@@ -84,8 +85,7 @@ total_sample <-
 # Calculate the time difference between stop time of in cavity and the 
 # time of cleaning event
 
-#cleaning_new <-
-c <-
+cleaning <-
   boris_data %>%
   select(-c(modifier_general, modifier_specific)) %>%
   filter(behavior == "in cavity" | behavior == "cleaning nest") %>%
@@ -124,72 +124,73 @@ names(sex_data_sm) <- c("subject", "sex")
 
 # Merge the sex data with the main dataframe
 # The merged dataframe will be shorter because it does not include chick events
-provision_data <- merge.data.frame(borisdata_w_nestinfo, sex_data_sm, by="subject")
+provision_data <- 
+  merge.data.frame(borisdata_w_nestinfo, sex_data_sm, by="subject") %>%
+  as_tibble()
 
 
 # julian dates ------------------------------------------------------------
 
-provision_data$date <- as.Date(provision_data$date, "%m/%d/%Y")
-provision_data$julian_date <- yday(provision_data$date)
-provision_data$clutch_laid <- as.Date(provision_data$clutch_laid, "%m/%d/%Y")
-provision_data$hatch_date <- as.Date(provision_data$hatch_date, "%m/%d/%Y")
-provision_data$fledge_date <- as.Date(provision_data$fledge_date, "%m/%d/%Y")
-provision_data$first_egg_julian <- yday(provision_data$clutch_laid)
-provision_data$hatch_julian <- yday(provision_data$hatch_date)
-provision_data$fledge_julian <- yday(provision_data$fledge_date)
+provision_data <-
+  provision_data %>%
+  mutate(
+    date = as.Date(date, "%m/%d/%Y"),
+    julian_date = yday(date),
+    clutch_laid = as.Date(clutch_laid, "%m/%d/%Y"),
+    hatch_date = as.Date(hatch_date, "%m/%d/%Y"),
+    fledge_date = as.Date(fledge_date, "%m/%d/%Y"),
+    first_egg_julian = yday(clutch_laid),
+    hatch_julian = yday(hatch_date),
+    fledge_julian = yday(fledge_date)
+  )
 
-
-# summary percentages -----------------------------------------------------
+# nest survival summary percents ------------------------------------------
 
 provision_data %>%
   mutate(
     proportion_hatched = max_number_chicks/max_number_eggs,
     percent_chick_mortalities = number_chick_mortalities/max_number_chicks,
-    proportion_fledged = chicks_fledged/max_number_chicks)
-
-### CALCULATE RATES OF PARENTAL CARE ###
-# Double checked on 2/5/19 using Excel pivot table and they are correct
-
-# Add a column of "1"s for counting purposes 
-provision_data$count <- as.numeric(c("1"))
-
-# behavior rate per video time
-provision_data$countpermin <- provision_data$count/provision_data$length_usable
-
-# Provisioning per chick per video time 
-provision_data$countperchkmin <- 
-  (provision_data$count/provision_data$peeped_chick_count)/provision_data$length_usable
-
-# Multiply the rate per chick per video minutes by 60 to find the rate per hour
-provision_data$countperchkhr <- provision_data$countperchkmin*60
-
-# Convert duration of brooding from per sec to per minute by dividing by 60 
-provision_data$duration_min <- provision_data$duration_sec/60
-
-# Find duration of brooding per video by dividing duration (min) by length usable (min)
-provision_data$duration_per_vid <- 
-  provision_data$duration_min/provision_data$length_usable
-
-# Find duration of brooding per hour by dividing duration (sec) by 60 
-provision_data$brooding_min_per_hr <- provision_data$Duration_per_vid*60
+    proportion_fledged = chicks_fledged/max_number_chicks) %>%
+  select(
+    subject, 
+    brood_id, 
+    proportion_hatched, 
+    proportion_fledged, 
+    percent_chick_mortalities) %>%
+  distinct() %>%
+  arrange(desc(proportion_hatched))
 
 
-### MAKE A PIVOT TABLE OF VIDEO BEHAVIORS BY SUBJECT ###
+# summary rates -----------------------------------------------------------
 
-# Counts of behaviors
-cast_provcount <- dcast(provision_data, observation.id + subject ~ behavior, 
-                        value.var="count", fun.aggregate=sum)
+# Calculate rates of parental care
 
-# Sum of the rates: counts per chick hour
-cast_prov <- dcast(provision_data, observation.id + subject ~ behavior, 
-                   value.var="countperchkhr", fun.aggregate=sum)
+provision_data %>%
+  mutate(
+    count = 1,
+    countpermin = count/length_usable,
+    countperchkmin = (count/peeped_chick_count)/length_usable,
+    countperchkhr = countperchkmin*60,
+    duration_min = duration_sec/60,
+    duration_per_vid = duration_min/length_usable,
+    brooding_min_per_hr = duration_per_vid*60) %>%
+  select(
+    subject,
+    brood_id,
+    julian_date,
+    behavior,
+    countperchkhr,
+    duration_min,
+    brooding_min_per_hr
+  ) %>%
+  distinct()
 
-# Duration per hour
-cast_duration <- dcast(provision_data, observation.id + subject ~ behavior, 
-                       value.var="duration_min", fun.aggregate=sum)
+## The above section isn't really needed
+## Does not show breakdown by brood_id on a particular day
 
 
-### COMBINE DATAFRAMES ###
+# combine dataframes ------------------------------------------------------
+
 # Create a behavior dataframe of rates of feeding chicks, cleaning, and brooding
 
 # Select desired behaviors
