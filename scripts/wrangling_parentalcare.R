@@ -236,7 +236,10 @@ behaviors <-
       group_by(video_number) %>%
       summarize(length_usable = sum(length_usable)) %>%
       ungroup(), 
-    by = "video_number") 
+    by = "video_number") %>%
+  map_if(
+    
+  )
   
 
 # write csv ---------------------------------------------------------------
