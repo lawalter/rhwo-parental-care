@@ -24,7 +24,7 @@ bbyvid <-
   # Calculate standardized temperatures
   mutate(
     std_tmax = (tmax - mean(tmax))/sd(tmax),
-    brooding_rate = (brooding_min/usable_video)*60) %>%
+    brooding_rate = (brooding_min/usable_video)*60)
   # To eliminate the warnings from glmmTMB
   # "non-integer counts in a truncated_nbinom1 model"
   # Run the following mutate, but it is not needed -- it's fine as dbl
@@ -205,7 +205,5 @@ ICtab(modelhb0,
       type = c("AIC"), weights = TRUE, delta = TRUE, base = TRUE,
       logLik = TRUE, sort = TRUE)
 
-
-summary(modelhb1.1i) ## Previously best model using incorrect brooding duration values
 
 summary(modelhb1.5i) ## Best model using correct brooding duration values
