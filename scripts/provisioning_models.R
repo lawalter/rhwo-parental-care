@@ -6,8 +6,10 @@ library(bbmle)
 # data --------------------------------------------------------------------
 
 bbyvid <- 
-  read.csv("clean_data/bbyvid.csv", stringsAsFactors = FALSE) %>%
-  as_tibble() 
+  read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>%
+  as_tibble() %>%
+  mutate(feeding = feeding_chicks) %>%
+  select(-feeding_chicks)
 
 # best distribution fit ---------------------------------------------------
 
@@ -179,7 +181,7 @@ model1.1x2 <- glmmTMB(feeding ~ I(exact_age_chick^2)*sex + peeped_chick_count + 
 
 model1.2x2 <- glmmTMB(feeding ~ I(exact_age_chick^2)*sex + exact_age_chick + peeped_chick_count + std_jdate + (1|brood_id) + (1|subject)+ offset(log(usable_video)), data = bbyvid, ziformula = ~1, family = nbinom2(link = "log"))
 
-model1.3x2 <- glmmTMB(feeding ~ I(exact_age_chick^2)*sex + peeped_chick_count + std_jdate + exact_age_chick + (1|brood_id) + (1|subject)  + offset(log(usable_video)), data = bbyvid, ziformula = ~1, family = nbinom2(link = "log"))
+model1.3x2 <- glmmTMB(feeding ~ I(exact_age_chick^2)*sex + peeped_chick_count + habitat + exact_age_chick + (1|brood_id) + (1|subject)  + offset(log(usable_video)), data = bbyvid, ziformula = ~1, family = nbinom2(link = "log"))
 
 model1.4x2 <- glmmTMB(feeding ~ I(exact_age_chick^2)*sex + peeped_chick_count + habitat + std_jdate + exact_age_chick + (1|brood_id) + (1|subject)  + offset(log(usable_video)), data = bbyvid, ziformula = ~1, family = nbinom2(link = "log"))
 
@@ -211,8 +213,7 @@ AICtab(model0, model1, model2, model3, model4, model5, model6,
        model4.1x, model4.2x, model4.3x, model4.4x, 
        model5.1x, model5.2x, model5.3x, model5.4x)
 
-### This AIC is the most meaningful
-### THESIS TABLE 
+# AIC with more info columns
 ICtab(model0, model0x,
       model1x, model2x, model3x, model4x, model5x, model6x,
       model1.1x, model1.2x, model1.3x, model1.4x, 
@@ -238,11 +239,3 @@ ICtab(model0, model0x,
 summary(model4.1x2)
 
 # Note QAIC is not required if the overdispersion in the dataset has been modelled using zero-inflated models, OLREs, or compound probability distributions. Bolker et al. (2009) and Grueber et al. (2011) provide details of how to calculate these criteria.
-
-############################################################
-
-## Check models with R package 'performance'
-library(performance)
-
-check_collinearity(model1.2i, component = "all")
-
