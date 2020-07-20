@@ -189,19 +189,21 @@ duration_behaviors <-
       select(observation.id, video_number), 
     by = 'observation.id') %>%
   mutate(
-    video_id = paste(video_number, subject, sep = '_')) %>% 
+    video_id = paste(video_number, subject, sep = '_'),
+    duration_min = duration_sec/60) %>% 
   select(-c(observation.id, subject, observation_id_boris, start_sec, 
-            stop_sec)) %>%
+            stop_sec, duration_sec)) %>%
   filter(behavior %in% c('poopsearch', 'visit', 'brooding')) %>%
   mutate(
     behavior = 
       case_when(
-        behavior == 'poopsearch' ~ 'poopsearch_sec',
-        behavior == 'visit' ~ 'visit_sec',
-        behavior == 'brooding' ~ 'brooding_sec',
+        behavior == 'poopsearch' ~ 'poopsearch_min',
+        behavior == 'visit' ~ 'visit_min',
+        behavior == 'brooding' ~ 'brooding_min',
         TRUE ~ behavior)) %>%
   group_by(video_id, behavior) %>%
-  summarize(sum_durations = sum(duration_sec)) %>%
+  # Summarize the durations of behaviors and convert from sec to minutes
+  summarize(sum_durations = sum(duration_min)) %>%
   ungroup() %>%
   pivot_wider(
     names_from = behavior, 
@@ -225,10 +227,15 @@ behaviors <-
   # Merge in nest data
   left_join(
     video_data_initial %>%
-      select(video_number, julian_date, habitat, exact_age_chick, 
+      select(video_number, date, habitat, exact_age_chick, 
              peeped_chick_count, nest_id, brood_id) %>%
       distinct(), 
     by = "video_number") %>%
+  mutate(
+    date = as.Date(date, "%m/%d/%Y"),
+    julian_date = yday(date),
+    std_jdate = (julian_date - mean(julian_date))/sd(julian_date)) %>%
+  select(-c(date, julian_date)) %>%
   # Merge in usable_length, but first sum all the parts!
   left_join(
     video_data_initial %>%
@@ -236,10 +243,7 @@ behaviors <-
       group_by(video_number) %>%
       summarize(length_usable = sum(length_usable)) %>%
       ungroup(), 
-    by = "video_number") %>%
-  map_if(
-    
-  )
+    by = "video_number") 
   
 
 # write csv ---------------------------------------------------------------
@@ -253,10 +257,8 @@ write.csv(behaviors, "clean_data/behaviors.csv")
 
 
 
-# Add Julian dates and modify date columns to date format
+# Modify date columns to date format
   mutate(
-    date = as.Date(date, "%m/%d/%Y"),
-    julian_date = yday(date),
     clutch_laid = as.Date(clutch_laid, "%m/%d/%Y"),
     hatch_date = as.Date(hatch_date, "%m/%d/%Y"),
     fledge_date = as.Date(fledge_date, "%m/%d/%Y"),
