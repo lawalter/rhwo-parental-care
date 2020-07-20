@@ -5,7 +5,9 @@ library(reshape2)
 
 # data --------------------------------------------------------------------
 
-bbyvid <- read.csv("clean_data/bbyvid.csv", stringsAsFactors = FALSE)
+bbyvid <- 
+  read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>%
+  as_tibble()
 
 # script ------------------------------------------------------------------
 
@@ -13,7 +15,7 @@ bbyvid <- read.csv("clean_data/bbyvid.csv", stringsAsFactors = FALSE)
 bbyvid <-
   bbyvid %>%
   mutate(
-    cleaning_rate = (cleaning/usable_video)*60,
+    cleaning_rate = (cleaning_nest/usable_video)*60,
     cleaning_rate_perchk = cleaning_rate/peeped_chick_count)
 
 cleaning_male <- bbyvid %>% filter(sex == "male")
@@ -63,16 +65,16 @@ ggplot(
        title = "Figure 6") +
   scale_fill_grey(start = 0.6, end = 0.3) +
   theme_classic() +
-  theme(axis.title.x = element_text(size = 11), 
-        axis.title.y = element_text(size = 11),
+  theme(axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
         axis.text.y = element_text(size = 9),
         axis.text.x = element_text(size = 9),
         legend.text = element_text(size = 10),
-        legend.title = element_text(size = 11),
+        legend.title = element_text(size = 10),
         legend.position = "none") +
   ggsave(
   file = "cleaning_fig.pdf",
-  path ="plots/",
+  path ="plots/bw/",
   width = 3.5,
   height = 3,
   units = "in",

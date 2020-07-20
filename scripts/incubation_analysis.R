@@ -142,8 +142,8 @@ ggplot(
   scale_fill_manual(values = colors_sex) +
   theme_classic() +
   theme_classic() +
-  theme(axis.title.x = element_text(size = 11), 
-        axis.title.y = element_text(size = 11),
+  theme(axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
         axis.text.y = element_text(size = 9),
         axis.text.x = element_text(size = 9),
         legend.position = "none")  +

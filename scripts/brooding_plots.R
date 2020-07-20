@@ -115,16 +115,16 @@ brooding_sex <-
   scale_color_manual(values = c("female" = "black", "male" = "black")) +
   scale_fill_grey(start = 0.6, end = 0.6) +
   theme_classic() +
-  theme(axis.title.x = element_text(size=11), 
-        axis.title.y = element_text(size=11),
-        axis.text.y = element_text(size=9),
-        axis.text.x = element_text(size=9),
-        legend.text = element_text(size=10),
-        legend.title = element_text(size=11),
+  theme(axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.y = element_text(size = 9),
+        axis.text.x = element_text(size = 9),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 10),
         legend.position = "bottom") +
   ggplot2::ggsave(
   file = "brooding_sex_fig.pdf",
-  path ="plots/bw/brooding/",
+  path ="plots/bw/",
   width = 3.5,
   height = 3,
   units = "in",
@@ -150,16 +150,16 @@ brooding_violin <-
   scale_color_manual(values = c("Cool" = "#333333", "Hot" = "#333333")) +
   scale_fill_manual(values = c("Cool" = "#333333", "Hot" = "#333333")) +
   theme_classic() +
-  theme(axis.title.x = element_text(size = 11), 
-        axis.title.y = element_text(size = 11),
+  theme(axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
         axis.text.y = element_text(size = 9, color = 'black'),
         axis.text.x = element_text(size = 9, color = 'black'),
         legend.text = element_text(size = 10),
-        legend.title = element_text(size = 11),
+        legend.title = element_text(size = 10),
         legend.position = "none") +
   ggsave(
     file = "brooding_T_fig.pdf",
-    path ="plots/bw/brooding/",
+    path ="plots/bw/",
     width = 3.5,
     height = 3,
     units = "in",
@@ -172,7 +172,7 @@ cowplot::plot_grid(brooding_sex, brooding_violin,
           nrow = 2, ncol = 1) +
   ggsave(
     file = "brooding_plots_pair.pdf",
-    path ="plots/bw/brooding",
+    path ="plots/bw/",
     width = 3.5,
     height = 7,
     units = "in",
