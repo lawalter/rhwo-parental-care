@@ -28,7 +28,7 @@ library(reshape2)
 
 sex_data <-
   read.csv('raw_data/sex_data.csv', 
-           na.strings = c('', 'na', 'NA'),
+           na.strings = c("", "na", "NA"),
            stringsAsFactors = FALSE) %>%
   as_tibble() %>%
   set_names(
@@ -117,8 +117,8 @@ cleaning <-
     behavior_new = 
       case_when(
         # If a RHWO leaves with a fecal sac, it's 'poopsearch'
-        # If a RHWO enters the cavity for < 60 sec, it's a visit
-        # If a RHWO enters the cavity for >= 60 sec, it's brooding
+        # If a RHWO enters the cavity for <= 60 sec, it's a visit
+        # If a RHWO enters the cavity for > 60 sec, it's brooding
         (behavior == "in cavity" & diff_sec < 1) ~ 'poopsearch',
         (behavior == "in cavity" & duration_sec <= 60) ~ 'visit',
         (behavior == 'in cavity' & duration_sec > 60) ~ 'brooding',
@@ -243,8 +243,15 @@ behaviors <-
     year = str_sub(date, 1, 4),
     jdayyr = paste(julian_date, year, sep = '.')) %>%
   left_join(NOAA_data, by = 'jdayyr') %>%
-  select(-c(date, julian_date, jdayyr, year)) 
+  select(-c(date, julian_date, jdayyr, year)) %>%
+  # Set behavior NAs to zero
+  replace(is.na(.), 0)
+  
 
+video_lengths_2020 <- 
+  behaviors %>%
+  select(video_id, usable_video) %>%
+  distinct()
 
 # write csv ---------------------------------------------------------------
 

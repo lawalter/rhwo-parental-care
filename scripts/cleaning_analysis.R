@@ -7,7 +7,12 @@ library(reshape2)
 
 bbyvid <- 
   read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>%
-  as_tibble()
+  as_tibble() %>%
+  select(-X) %>%
+  # Set all NAs to zero
+  mutate(
+    cleaning_nest =
+      ifelse(is.na(cleaning_nest), 0, cleaning_nest))
 
 # script ------------------------------------------------------------------
 
@@ -79,13 +84,3 @@ ggplot(
   height = 3,
   units = "in",
   dpi = 600)
-
-# Poster 
-ggplot(
-  bbyvid, aes(x=Sex, y=Cleaning_rate_perchk, fill=Sex)) + 
-  geom_boxplot() + 
-  labs(x = "Sex", 
-       y = "Cleaning rate\n(per chick/hr)") +
-  scale_fill_manual(values = colors_sex) +
-  theme_classic() +
-  theme(axis.title.x = element_text(size=24), axis.title.y = element_text(size=24), text = element_text(size=24), legend.position = "none") 
