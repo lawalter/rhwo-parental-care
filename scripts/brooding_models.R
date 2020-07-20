@@ -17,16 +17,20 @@ library(bbmle)
 
 bbyvid <- 
   read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>%
-  as_tibble() 
-
-# script ------------------------------------------------------------------
-
-# Calculate standardized temperatures
-bbyvid <-
-  bbyvid %>%
+  as_tibble() %>%
+  select(video_id, brooding_min, subject, sex, habitat, exact_age_chick,
+         peeped_chick_count, nest_id, brood_id, std_jdate, tmax, 
+         usable_video) %>%
+  # Calculate standardized temperatures
   mutate(
     std_tmax = (tmax - mean(tmax))/sd(tmax),
-    brooding_rate = (brooding_min/usable_video)*60)
+    brooding_rate = (brooding_min/usable_video)*60) %>%
+  # To eliminate the warnings from glmmTMB
+  # "non-integer counts in a truncated_nbinom1 model"
+  # Run the following mutate, but it is not needed -- it's fine as dbl
+  # mutate(brooding_min = as.integer(round(brooding_min)))
+
+# script ------------------------------------------------------------------
 
 # Plot distribution - it looks zero-inflated
 ggplot(
