@@ -72,7 +72,14 @@ boris_initial <-
 NOAA_data <-
   read.csv('raw_data/NOAA_weather_data.csv', 
            stringsAsFactors = FALSE) %>%
-  as_tibble()
+  as_tibble() %>%
+  # Calculate Julian dates for the NOAA data
+  mutate(
+    good_date = as.Date(DATE, "%Y-%m-%d"),
+    julian_date = lubridate::yday(good_date),
+    yr = str_sub(DATE, 1, 4),
+    jdayyr = paste(julian_date, yr, sep = '.')) %>%
+  select(tmax = TMAX, jdayyr)
 
 # tidying -----------------------------------------------------------------
 
@@ -113,19 +120,9 @@ cleaning <-
         # If a RHWO enters the cavity for < 60 sec, it's a visit
         # If a RHWO enters the cavity for >= 60 sec, it's brooding
         (behavior == "in cavity" & diff_sec < 1) ~ 'poopsearch',
-        (behavior == "in cavity" & duration_sec =< 60) ~ 'visit',
+        (behavior == "in cavity" & duration_sec <= 60) ~ 'visit',
         (behavior == 'in cavity' & duration_sec > 60) ~ 'brooding',
-        TRUE ~ behavior
-      )
-  ) %>% 
-  # mutate(
-  #   behavior_new =
-  #     # If a RHWO takes >= 60 sec to 'poopsearch'...
-  #     ifelse(
-  #       behavior_new == "poopsearch" & duration_sec >= 60, 
-  #       "long_poop", 
-  #       behavior_new)
-  # ) %>%
+        TRUE ~ behavior)) %>% 
   select(-behavior) %>%
   select(1:3, behavior = behavior_new, 5:7)
 
@@ -136,9 +133,7 @@ boris <-
   bind_rows(
     boris_initial %>% 
       filter(behavior != "in cavity" & behavior != "cleaning nest") %>%
-      select(-c(modifier_general, modifier_specific, behavior_type))
-    ) 
-
+      select(-c(modifier_general, modifier_specific, behavior_type))) 
 
 # behavior table ----------------------------------------------------------
 
@@ -235,16 +230,21 @@ behaviors <-
     date = as.Date(date, "%m/%d/%Y"),
     julian_date = yday(date),
     std_jdate = (julian_date - mean(julian_date))/sd(julian_date)) %>%
-  select(-c(date, julian_date)) %>%
   # Merge in usable_length, but first sum all the parts!
   left_join(
     video_data_initial %>%
       select(video_number, length_usable) %>%
       group_by(video_number) %>%
-      summarize(length_usable = sum(length_usable)) %>%
+      summarize(usable_video = sum(length_usable)) %>%
       ungroup(), 
-    by = "video_number") 
-  
+    by = "video_number") %>%
+  # Add weather data
+  mutate(
+    year = str_sub(date, 1, 4),
+    jdayyr = paste(julian_date, year, sep = '.')) %>%
+  left_join(NOAA_data, by = 'jdayyr') %>%
+  select(-c(date, julian_date, jdayyr, year)) 
+
 
 # write csv ---------------------------------------------------------------
 
@@ -615,23 +615,6 @@ bbyvid <-
   filter(brood_id != "PNA5A1b_brd1")
 
 
-# import NOAA weather data ------------------------------------------------
-
-# Calculate Julian dates for the NOAA data
-NOAA_data <-
-  NOAA_data %>%
-  mutate(
-    good_date = as.Date(DATE, "%Y-%m-%d"),
-    julian_date = lubridate::yday(good_date),
-    yr = str_sub(DATE, 1, 4),
-    jdayyr = paste(julian_date, yr, sep = '.')) %>%
-  select(tmax = TMAX, jdayyr)
-
-### Add max day temps to df
-bbyvid <-
-  bbyvid %>%
-  mutate(jdayyr = paste(julian_date, year, sep = '.')) %>%
-  left_join(NOAA_data, by = 'jdayyr')
 
 # write csv ---------------------------------------------------------------
 

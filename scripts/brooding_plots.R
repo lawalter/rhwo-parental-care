@@ -15,7 +15,7 @@ library(glmmTMB)
 # data --------------------------------------------------------------------
 
 bbyvid <- 
-  read.csv("clean_data/bbyvid.csv", stringsAsFactors = FALSE) %>%
+  read.csv("clean_data/beahviors.csv", stringsAsFactors = FALSE) %>%
   as_tibble() %>%
   # Calculate standardized temperatures
   mutate(
@@ -89,7 +89,8 @@ ggplot(brooding_predictions,
         text = element_text(size = 12)) 
 
 # Final brooding plot - by sex (black & white)
-ggplot(brooding_predictions, 
+brooding_sex <-
+  ggplot(brooding_predictions, 
        aes(x = exact_age_chick, 
            y = predicted_brood_per_hr)) +
   stat_smooth(
@@ -158,7 +159,7 @@ brooding_violin <-
         legend.position = "none") +
   ggsave(
     file = "brooding_T_fig.pdf",
-    path ="plots/brooding/",
+    path ="plots/bw/brooding/",
     width = 3.5,
     height = 3,
     units = "in",
@@ -168,12 +169,12 @@ brooding_violin <-
 
 cowplot::plot_grid(brooding_sex, brooding_violin, 
           labels = 'AUTO',
-          nrow = 2, ncol = 2) +
+          nrow = 2, ncol = 1) +
   ggsave(
     file = "brooding_plots_pair.pdf",
-    path ="plots/brooding",
+    path ="plots/bw/brooding",
     width = 3.5,
-    height = 3,
+    height = 7,
     units = "in",
     dpi = 600)
 

@@ -16,7 +16,7 @@ library(bbmle)
 # read data ---------------------------------------------------------------
 
 bbyvid <- 
-  read.csv("clean_data/bbyvid.csv", stringsAsFactors = FALSE) %>%
+  read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>%
   as_tibble() 
 
 # script ------------------------------------------------------------------
