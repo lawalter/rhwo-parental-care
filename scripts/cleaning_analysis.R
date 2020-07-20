@@ -8,11 +8,7 @@ library(reshape2)
 bbyvid <- 
   read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>%
   as_tibble() %>%
-  select(-X) %>%
-  # Set all NAs to zero
-  mutate(
-    cleaning_nest =
-      ifelse(is.na(cleaning_nest), 0, cleaning_nest))
+  select(-X) 
 
 # script ------------------------------------------------------------------
 

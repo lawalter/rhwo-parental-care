@@ -6,8 +6,11 @@
 
 # last updates ------------------------------------------------------------
 
-# May 2020: More modernizing & updated rules for cleaning/brooding: if it 
-#           takes >= 60s to find poop, it's brooding. Changed 15 obs.
+# Jul 2020: Finished modernizing the script using the tidyverse. Found a 
+#           discrepancy between new finished dataframe and old one with
+#           the calculation of total video lengths. The new .csv is the
+#           most accurate
+# May 2020: More modernizing 
 # Mar 2020: More modernizing
 # Feb 2020: Modernized script using the tidyverse
 # Jan 2020: Best updated version submitted to github
