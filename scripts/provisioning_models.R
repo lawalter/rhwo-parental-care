@@ -226,7 +226,7 @@ ICtab(model0, model0x,
       type = c("AIC"), weights = TRUE, delta = TRUE, base = TRUE,
       logLik = TRUE, sort = TRUE)
 
-### Detailed AIC table
+# Detailed AIC table
 ICtab(model0, model0x,
       model1x, model2x, model3x, model4x, model5x, model6x,
       model1.1x, model1.2x, model1.3x, model1.4x, 
@@ -237,5 +237,9 @@ ICtab(model0, model0x,
 
 
 summary(model4.1x2)
+
+# Calculate confidence intervals
+
+confint(model4.1x2, level = 0.95)
 
 # Note QAIC is not required if the overdispersion in the dataset has been modelled using zero-inflated models, OLREs, or compound probability distributions. Bolker et al. (2009) and Grueber et al. (2011) provide details of how to calculate these criteria.

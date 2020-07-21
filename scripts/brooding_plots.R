@@ -15,7 +15,7 @@ library(glmmTMB)
 # data --------------------------------------------------------------------
 
 bbyvid <- 
-  read.csv("clean_data/beahviors.csv", stringsAsFactors = FALSE) %>%
+  read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>%
   as_tibble() %>%
   # Calculate standardized temperatures
   mutate(
@@ -50,7 +50,7 @@ brooding_predictions <-
     predicted_brood_per_hr =
       (predicted_brood_per_unit/usable_video)*60,
     brood_per_hr = (brooding_min/usable_video)*60,
-    tmax = ifelse(std_tmax > 0.12, "Hot", "Cool"))
+    tmax = ifelse(std_tmax > 0, "Hot", "Cool"))
 
 # Colors
 colors_sex <- c("female" = "#F47C89", "male" = "#7b758e")
@@ -180,7 +180,7 @@ cowplot::plot_grid(brooding_sex, brooding_violin,
 
 # comparison --------------------------------------------------------------
   
-# Comparing interactions b/w temp and chick age
+# Temp and chick age
 ggplot(brooding_predictions, 
        aes(exact_age_chick, 
            predicted_brood_per_hr, 

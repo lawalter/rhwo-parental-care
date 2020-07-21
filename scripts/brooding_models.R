@@ -207,3 +207,17 @@ ICtab(modelhb0,
 
 
 summary(modelhb1.5i) ## Best model using correct brooding duration values
+
+# Calculate confidence intervals
+
+confint(modelhb1.5i, level = 0.95)
+
+
+# overdispersion check ----------------------------------------------------
+
+library(aods3)
+
+gof(modelhb1.5i)
+
+# Pearson residuals are not implemented for models with zero-inflation 
+# or variable dispersion 
