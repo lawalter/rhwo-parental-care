@@ -246,7 +246,7 @@ behaviors <-
     year = str_sub(date, 1, 4),
     jdayyr = paste(julian_date, year, sep = '.')) %>%
   left_join(NOAA_data, by = 'jdayyr') %>%
-  select(-c(date, julian_date, jdayyr, year)) %>%
+  select(-c(date, jdayyr)) %>%
   # Set behavior NAs to zero
   replace(is.na(.), 0)
   

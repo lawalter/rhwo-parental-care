@@ -1,17 +1,31 @@
 # libraries ---------------------------------------------------------------
 
 library(tidyverse)
-library(reshape2)
-library(glmmTMB)
+library(psych)
 
 # data --------------------------------------------------------------------
+
+# Video level data
 
 behaviors <- 
   read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>% 
   as_tibble() %>%
-  select(-X)
+  select(-X) %>%
+  mutate(
+    cleaning_rate = (cleaning_nest/usable_video)*60,
+    cleaning_rate_perchk = cleaning_rate/peeped_chick_count,
+    prov_rate = (feeding_chicks/usable_video)*60,
+    prov_rate_perchk = prov_rate/peeped_chick_count,
+    brooding_rate = (brooding_min/usable_video)*60)
+    
 
-# new code ----------------------------------------------------------------
+# Brood level data (brood data not repeated for each subject)
+
+brood_level <- 
+  behaviors %>%
+  select(julian_date, exact_age_chick)
+
+# summary numbers ---------------------------------------------------------
 
 # Length of video used
 
@@ -34,102 +48,82 @@ behaviors %>%
   distinct()
 
 # Number of parents
+# Some of these parents participate at > 1 brood
 
 behaviors %>%
-  select(subject, brood_id) %>%
-  distinct() %>% view
+  select(subject) %>%
+  distinct()
+
+# Video length
+describe(behaviors$usable_video)
 
 
-# old code ----------------------------------------------------------------
+# distributions -----------------------------------------------------------
 
-bbyvid$provrate <- (bbyvid$feeding/bbyvid$Usable_video)*60
-bbyvid$cleanrate <- (bbyvid$cleaning/bbyvid$Usable_video)*60
-bbyvid$feedingperchkhr <- ((bbyvid$feeding/bbyvid$Peeped_chick_count)/bbyvid$Usable_video)*60
-bbyvid$brooding_min_vid <- (bbyvid$brooding_min/bbyvid$Usable_video)*60
+# Chick age distribution
 
-library(psych)
+shapiro.test(brood_level$exact_age_chick) # not normal
 
-# Find total video used
-sum(bbyvid$Usable_video)
-describe(bbyvid$Usable_video)
-# 15348/60 = 255.8
-# 255.8/2 = 127.9
 
-describe(bbyvid$provrate)
-describe(bbyvid$feedingperchkhr)
+# summary tests -----------------------------------------------------------
 
-# Usable video range
-range(bbyvid$Usable_video)
-mean(bbyvid$Usable_video)
+# Chick age vs julian date (correlation)
+# Kendall correlation bc chick age is non-parametric
 
-# Male and female
-male <- bbyvid %>% filter(Sex == "male")
-female <- bbyvid %>% filter (Sex == "female")
+leveneTest(brood_level$julian_date, brood_level$exact_age_chick) # equal
 
-# Male
-describe(male$provrate) # 5.28
-describe(male$provrate/female$Peeped_chick_count) # 2.59
-describe(male$cleanrate) # 1.41
-describe(male$brooding_min) # 1.89
+cor.test(x = brood_level$julian_date, 
+         y = brood_level$exact_age_chick,
+         method = c("kendall"))
 
-# Female
-describe(female$provrate) # 4.396
-describe(female$provrate/female$Peeped_chick_count) # 2.178
-describe(female$cleanrate) # 0.224
-describe(female$brooding_min) # 2.15
+plot(x = brood_level$julian_date, y = brood_level$exact_age_chick)
 
-var(female$cleanrate) # not equal
-var(male$cleanrate)
-shapiro.test(female$cleanrate) # not normal
-shapiro.test(male$cleanrate) # not normal
+
+
+# comparisons by year -----------------------------------------------------
+
+# T-tests by year
+
+b_17 <- behaviors %>% filter(year == 2017)
+b_18 <- behaviors %>% filter(year == 2018)
 
 # T-tests
 # Provisioning
-t.test(male$provrate, female$provrate, conf.level = 0.95, paired = TRUE)
-
-# Prov per chick
-t.test(male$feedingperchkhr, female$feedingperchkhr, conf.level = 0.95, paired = TRUE)
-
-# Cleaning
-t.test(male$cleaning, female$cleaning, conf.level = 0.95, paired = TRUE)
-wilcox.test(male$cleaning, female$cleaning, conf.level = 0.95, paired = TRUE)
-
-# Brooding
-t.test(male$brooding_min, female$brooding_min, conf.level = 0.95, paired = TRUE)
-
-
-#####################
-
-
-CC <- bbyvid %>% filter(Habitat == "CC")
-Savanna <- bbyvid %>% filter(Habitat == "Savanna")
-
-# CC
-describe(CC$provrate) # 6.3
-describe(CC$feedingperchkhr) # 2.7
-describe(CC$cleanrate) # 1.2
-describe(CC$brooding_min) # 1.6
-
-# Savanna
-describe(Savanna$provrate) # 4.11
-describe(Savanna$feedingperchkhr) # 2.2
-describe(Savanna$cleanrate) # 0.61
-describe(Savanna$brooding_min) # 2.24
-
-# Provisioning
-t.test(CC$provrate, Savanna$provrate, conf.level = 0.95)
-
-# Prov per chick
-t.test(CC$feedingperchkhr, Savanna$feedingperchkhr, conf.level = 0.95)
+shapiro.test(b_17$prov_rate_perchk)  #not normal
+shapiro.test(b_18$prov_rate_perchk)  #not normal
+wilcox.test(b_17$prov_rate_perchk, b_18$prov_rate_perchk, conf.level = 0.95) 
 
 # Cleaning
-t.test(CC$cleaning, Savanna$cleaning, conf.level = 0.95)
+shapiro.test(b_17$cleaning_rate_perchk)  #not normal
+shapiro.test(b_18$cleaning_rate_perchk)  #not normal
+wilcox.test(b_17$cleaning_rate_perchk, b_18$cleaning_rate_perchk, conf.level = 0.95)
 
 # Brooding
-t.test(CC$brooding_min, Savanna$brooding_min, conf.level = 0.95)
+shapiro.test(b_17$brooding_rate)  #not normal
+shapiro.test(b_18$brooding_rate)  #not normal
+wilcox.test(b_17$brooding_rate, b_18$brooding_rate, conf.level = 0.95)
 
 
-#############3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# old code ----------------------------------------------------------------
 
 jdateda <- bbyvid %>% filter(Julian_date <= "188.5")
 jdateda$Date <- c("Early summer")
@@ -153,17 +147,6 @@ describe(`Late summer`$feedingperchkhr) # 1.9
 describe(`Late summer`$cleanrate) # 0.91
 describe(`Late summer`$brooding_min) # 2.2
 
-# Provisioning
-t.test(`Early summer`$provrate, `Late summer`$provrate, conf.level = 0.95)
-
-# Prov per chick
-t.test(`Early summer`$feedingperchkhr, `Late summer`$feedingperchkhr, conf.level = 0.95)
-
-# Cleaning
-t.test(`Early summer`$cleaning, `Late summer`$cleaning, conf.level = 0.95)
-
-# Brooding
-t.test(`Early summer`$brooding_min, `Late summer`$brooding_min, conf.level = 0.95)
 
 ###################
 library(gsheet)
@@ -459,55 +442,3 @@ headout <- select(provision_data, Exact_age_chick, Chicks_visible.)
 headout <- headout %>% filter(Chicks_visible. > 0)
 
 describe(headout$Exact_age_chick)
-
-
-########################
-
-# T-tests by year
-
-bbyvid_2017 <- bbyvid %>% filter(Year == 2017)
-bbyvid_2018 <- bbyvid %>% filter(Year == 2018)
-bbyvid_2017$provrate <- as.numeric(bbyvid_2017$provrate)
-
-# T-tests
-# Provisioning
-shapiro.test(bbyvid_2017$provrate)  #not normal
-shapiro.test(bbyvid_2018$provrate)  #not normal
-wilcox.test(bbyvid_2017$provrate, bbyvid_2018$provrate, conf.level = 0.95) 
-
-# Prov per chick
-shapiro.test(bbyvid_2017$feedingperchkhr)  #not normal
-shapiro.test(bbyvid_2018$feedingperchkhr)  #not normal
-wilcox.test(bbyvid_2017$feedingperchkhr, bbyvid_2018$feedingperchkhr, conf.level = 0.95)
-
-# Cleaning
-shapiro.test(bbyvid_2017$cleanrate)  #not normal
-shapiro.test(bbyvid_2018$cleanrate)  #not normal
-wilcox.test(bbyvid_2017$cleanrate, bbyvid_2018$cleanrate, conf.level = 0.95)
-
-# Brooding
-shapiro.test(bbyvid_2017$brooding_min_vid)  #not normal
-shapiro.test(bbyvid_2018$brooding_min_vid)  #not normal
-wilcox.test(bbyvid_2017$brooding_min_vid, bbyvid_2018$brooding_min_vid, conf.level = 0.95)
-
-
-###########
-
-pbc <- boris_data %>% filter(Behavior == "feeding chicks" | 
-                               Behavior == "cleaning nest" | 
-                               Behavior == "brooding")
-
-###
-
-bbyvid_single <- bbyvid[!duplicated(bbyvid$Video_number), ]
-shapiro.test(bbyvid_single$Julian_date) #normal
-shapiro.test(bbyvid_single$Exact_age_chick) #not normal
-car::leveneTest(bbyvid_single$Julian_date, bbyvid_single$Exact_age_chick) #equal
-
-# Kendall correlation bc non-parametric
-cor.test(x= bbyvid_single$Julian_date, 
-         y= bbyvid_single$Exact_age_chick,
-         method = c("kendall"))
-
-plot(x= bbyvid_single$Julian_date, y = bbyvid_single$Exact_age_chick)
-f
