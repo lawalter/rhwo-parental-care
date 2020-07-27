@@ -38,8 +38,8 @@ behavior_data <-
       mutate(usable_length_total = sum(usable_length)) %>%
       ungroup(),
     by = 'video_key') %>%
-  # Below filter added 2/8/2020 in accordance with methods:
-  filter(duration_sec > 179) %>%
+  # RHWO must be in cavity 1 min or longer to be considered incubating
+  filter(duration_sec >= 60) %>%
   # Sum incubation per parent by video_number. This is so that incubation
   # events spanning two videos are not divided and incorrectly analyzed as
   # two separate (shorter) events:
@@ -108,7 +108,7 @@ t.test(incubation_sex$female, incubation_sex$male,
        paired = TRUE,
        var.equal = TRUE,
        conf.level = 0.95)
-       # p = 0.047
+       # p = 0.043
 
 # sex plots ---------------------------------------------------------------
 
@@ -126,10 +126,11 @@ ggplot(
   scale_fill_manual(values = colors_sex) +
   theme_classic() +
   theme_classic() +
-  theme(axis.title.x = element_text(size = 12), 
-        axis.title.y = element_text(size = 12), 
-        text = element_text(size = 12), 
-        legend.position = "none") 
+  theme(axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.y = element_text(size = 9),
+        axis.text.x = element_text(size = 9),
+        legend.position = "none")   
 
 # Boxplot of incubation by sex (black & white)
 
@@ -165,9 +166,25 @@ ggplot(
   scale_fill_manual(values = colors_sex) +
   theme_classic() +
   theme_classic() +
-  theme(axis.title.x = element_text(size = 12), 
-        axis.title.y = element_text(size = 12), 
-        text = element_text(size = 12), 
+  theme(axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.y = element_text(size = 9),
+        axis.text.x = element_text(size = 9),
+        legend.position = "none")
+
+ggplot(
+  behavior_data, aes(x = sex, y = incubation_rate)) + 
+  geom_violin() + 
+  labs(x = "Sex", 
+       y = "Incubating (min/hr)",
+       title = "Figure 2") +
+  scale_fill_manual(values = colors_sex) +
+  theme_classic() +
+  theme_classic() +
+  theme(axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.y = element_text(size = 9),
+        axis.text.x = element_text(size = 9),
         legend.position = "none") 
 
 
@@ -198,7 +215,8 @@ cavity_entries <-
       ungroup(),
     by = 'video_key') %>%
   # Below filter added 2/8/2020 in accordance with methods:
-  filter(duration_sec > 179) %>%
+  # Visits are LESS THAN 1 min
+  filter(duration_sec < 60) %>%
   group_by(video_number, subject) %>%
   mutate(
     incubation_rate_min = sum(duration_sec[behavior == 'incubating'])/60,
