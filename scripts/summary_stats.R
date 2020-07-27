@@ -1,3 +1,47 @@
+# libraries ---------------------------------------------------------------
+
+library(tidyverse)
+library(reshape2)
+library(glmmTMB)
+
+# data --------------------------------------------------------------------
+
+behaviors <- 
+  read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>% 
+  as_tibble() %>%
+  select(-X)
+
+# new code ----------------------------------------------------------------
+
+# Length of video used
+
+behaviors %>%
+  select(usable_video, video_number) %>%
+  distinct() %>%
+  select(-video_number) %>%
+  sum(.)/60
+
+# Number of broods
+
+behaviors %>%
+  select(brood_id) %>%
+  distinct()
+
+# Number of nest snags
+
+behaviors %>%
+  select(nest_id) %>%
+  distinct()
+
+# Number of parents
+
+behaviors %>%
+  select(subject, brood_id) %>%
+  distinct() %>% view
+
+
+# old code ----------------------------------------------------------------
+
 bbyvid$provrate <- (bbyvid$feeding/bbyvid$Usable_video)*60
 bbyvid$cleanrate <- (bbyvid$cleaning/bbyvid$Usable_video)*60
 bbyvid$feedingperchkhr <- ((bbyvid$feeding/bbyvid$Peeped_chick_count)/bbyvid$Usable_video)*60

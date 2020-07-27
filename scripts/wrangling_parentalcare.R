@@ -219,7 +219,7 @@ behaviors <-
   mutate(
     video_number = str_extract(video_id, "^[0-9]{1,3}"),
     video_number = as.numeric(video_number),
-    subject = str_extract(video_id, "[A-Z]{4}")) %>%
+    subject = str_remove(video_id, "^[0-9]{1,3}\\_")) %>%
   # Merge in the sex data
   left_join(sex_data, by = "subject") %>%
   # Merge in nest data
