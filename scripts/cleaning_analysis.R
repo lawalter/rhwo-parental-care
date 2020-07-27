@@ -2,6 +2,7 @@
 
 library(tidyverse)
 library(reshape2)
+library(psych)
 
 # data --------------------------------------------------------------------
 
@@ -37,6 +38,8 @@ cleaning_test
 zstat <- qnorm(cleaning_test$p.value/2)
 zstat
 
+describe(cleaning_male$cleaning_rate_perchk)
+describe(cleaning_female$cleaning_rate_perchk)
 
 # plot --------------------------------------------------------------------
 
