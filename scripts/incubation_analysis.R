@@ -39,7 +39,7 @@ behavior_data <-
       ungroup(),
     by = 'video_key') %>%
   # RHWO must be in cavity 1 min or longer to be considered incubating
-  filter(duration_sec >= 60) %>%
+  filter(duration_sec >= 60) %>% 
   # Sum incubation per parent by video_number. This is so that incubation
   # events spanning two videos are not divided and incorrectly analyzed as
   # two separate (shorter) events:
@@ -56,7 +56,7 @@ behavior_data <-
     date = mdy(date)) %>%
   filter(row_number() == first(row_number())) %>%
   ungroup() %>%
-  # Remove incubation events (2) done by unidentified parents
+  # Remove incubation events done by unidentified parents
   filter(!str_detect(subject, 'unknown')) %>% 
   left_join(
     NOAA_data %>%
@@ -193,7 +193,7 @@ ggplot(
 # TO DO:
 
 # Count how many times each sex went into their cavity:
-# Also, count how many of these entries were < 180 sec per sex:
+# Also, count how many of these entries were < 60 sec per sex:
 
 cavity_entries <-
   boris_data %>% 
@@ -228,8 +228,6 @@ cavity_entries <-
     date = mdy(date)) %>%
   filter(row_number() == first(row_number())) %>%
   ungroup() %>%
-  # Remove incubation events (2) done by unidentified parents
-  filter(!str_detect(subject, 'unknown')) %>% 
   left_join(
     NOAA_data %>%
       select(date, tmax),
