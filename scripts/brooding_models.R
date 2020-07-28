@@ -166,10 +166,6 @@ modelhb1.2i <- glmmTMB(brooding_min ~ exact_age_chick*sex + peeped_chick_count +
 
 modelhb1.5i <- glmmTMB(brooding_min ~ exact_age_chick*sex + peeped_chick_count + std_tmax + (1|brood_id) + offset(log(usable_video)), data = bbyvid, ziformula = ~., family = "truncated_nbinom1")
 
-modelhb1.5i2 <- glmmTMB(brooding_min ~ exact_age_chick*sex + peeped_chick_count + std_tmax + I(exact_age_chick^2) + (1|brood_id) + offset(log(usable_video)), data = bbyvid, ziformula = ~., family = "truncated_nbinom1")
-## Testing quadratic effect to the top model, but it's not as good (AIC 0.7)
-
-
 modelhb1.7i <- glmmTMB(brooding_min ~ exact_age_chick*sex + peeped_chick_count + std_tmax + habitat + (1|brood_id) + offset(log(usable_video)), data = bbyvid, ziformula = ~., family = "truncated_nbinom1")
 
 modelhb3.1i <- glmmTMB(brooding_min ~ exact_age_chick*peeped_chick_count + habitat + sex + (1|brood_id) + offset(log(usable_video)), data = bbyvid, ziformula = ~., family = "truncated_nbinom1")
@@ -180,7 +176,7 @@ modelhb3.3i <- glmmTMB(brooding_min ~ exact_age_chick*peeped_chick_count + habit
 
 modelhb3.4i <- glmmTMB(brooding_min ~ exact_age_chick*peeped_chick_count + std_tmax + (1|brood_id) + offset(log(usable_video)), data = bbyvid, ziformula = ~., family = "truncated_nbinom1")
 
-modelhb4i <- glmmTMB(brooding_min ~ exact_age_chick*habitat + peeped_chick_count + habitat*sex + (1|brood_id) + offset(log(usable_video)), data = bbyvid, ziformula = ~., family = "truncated_nbinom1")
+modelhb4i <- glmmTMB(brooding_min ~ exact_age_chick*habitat + peeped_chick_count +  + (1|brood_id) + offset(log(usable_video)), data = bbyvid, ziformula = ~., family = "truncated_nbinom1")
 
 modelhb6.1i <- glmmTMB(brooding_min ~ exact_age_chick*std_tmax + peeped_chick_count + (1|brood_id)  + offset(log(usable_video)), data = bbyvid, ziformula = ~., family = "truncated_nbinom1")
 
@@ -191,22 +187,17 @@ modelhb6.3i <- glmmTMB(brooding_min ~ exact_age_chick*std_tmax + peeped_chick_co
 #####
 
 # Comparing the modelhbs
-AICtab(modelhb0,
-       modelhb1, modelhb2, modelhb8, modelhb9, modelhb11,
-       modelhb1.1i, modelhb1.2i, modelhb1.5i, modelhb1.7i,
-       modelhb3.1i, modelhb3.2i, modelhb3.3i, modelhb3.4i, 
-       modelhb6.1i, modelhb6.2i, modelhb6.3i)  
-
 ICtab(modelhb0,
       modelhb1, modelhb2, modelhb8, modelhb9, modelhb11,
       modelhb1.1i, modelhb1.2i, modelhb1.5i, modelhb1.7i, 
-      modelhb3.2i, modelhb3.3i, modelhb3.4i, 
+      modelhb3.1i, modelhb3.2i, modelhb3.3i, modelhb3.4i,
+      modelhb4i,
       modelhb6.1i, modelhb6.2i, modelhb6.3i, 
       type = c("AIC"), weights = TRUE, delta = TRUE, base = TRUE,
       logLik = TRUE, sort = TRUE)
 
 
-summary(modelhb1.5i) ## Best model using correct brooding duration values
+summary(modelhb1.5i) 
 
 # Calculate confidence intervals
 
