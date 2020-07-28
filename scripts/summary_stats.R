@@ -57,6 +57,13 @@ behaviors %>%
 # Video length
 describe(behaviors$usable_video)
 
+# Mean provisioning rate per chick
+describe(behaviors$prov_rate_perchk)
+
+# Mean provisioning rate 
+describe(behaviors$prov_rate)
+
+
 
 # distributions -----------------------------------------------------------
 
