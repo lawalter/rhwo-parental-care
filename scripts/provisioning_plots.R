@@ -7,26 +7,17 @@ library(glmmTMB)
 # data --------------------------------------------------------------------
 
 bbyvid <- 
-  read.csv("clean_data/bbyvid.csv", stringsAsFactors = FALSE) %>% 
+  read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>% 
   as_tibble() %>%
-  select(video_number, feeding, subject, brood_id, exact_age_chick,
-         habitat, julian_date, std_jdate, usable_video, 
+  select(-X) %>%
+  select(video_number, feeding = feeding_chicks, subject, brood_id, 
+         exact_age_chick, habitat, julian_date, std_jdate, usable_video, 
          peeped_chick_count)
 
 # script ------------------------------------------------------------------
 
 # Top GLMM
-model4.1x2 <- 
-  glmmTMB(feeding ~ 
-            I(exact_age_chick^2)*Std_jdate + 
-            peeped_chick_count + 
-            exact_age_chick + 
-            (1|brood_id) + 
-            (1|subject) + 
-            offset(log(usable_video)), 
-          data = bbyvid, 
-          ziformula = ~1, 
-          family = nbinom2(link = "log"))
+model4.1x2 <- glmmTMB(feeding ~ I(exact_age_chick^2)*std_jdate + peeped_chick_count + exact_age_chick + (1|brood_id) + (1|subject)  + offset(log(usable_video)), data = behaviors, ziformula = ~1, family = nbinom2(link = "log"))
 
 # Generate dataframes with needed model variables to generate prediction
 # https://github.com/glmmTMB/glmmTMB/issues/378
@@ -113,12 +104,12 @@ ggplot(preddata, aes(exact_age_chick, predper_chkhr)) +
   scale_fill_manual(values = colors_dat) +
   scale_color_manual(values = colors_dat) +
   theme_classic() +
-  theme(axis.title.x = element_text(size = 11), 
-        axis.title.y = element_text(size = 11),
+  theme(axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
         axis.text.y = element_text(size = 9),
         axis.text.x = element_text(size = 9),
         legend.text = element_text(size = 10),
-        legend.title = element_text(size = 11),
+        legend.title = element_text(size = 10),
         legend.position = "bottom") +
   ggsave(
     file = "provisioning_fig_color.png",
@@ -127,27 +118,6 @@ ggplot(preddata, aes(exact_age_chick, predper_chkhr)) +
     height = 3,
     units = "in",
     dpi = 600)
-
-# Predicted provisioning rate by date (greyscale)
-ggplot(preddata, aes(exact_age_chick, predper_chkhr)) +
-    stat_smooth(method = glm, formula = y ~ x + I(x^2), 
-                aes(y = predper_chkhr, color = Date, 
-                    fill = Date, linetype = Date), alpha = 0.2,
-                se = TRUE, level = 0.95, fullrange = TRUE) +
-    labs(title = "Figure 4",
-         x = "Chick age (day)", 
-         y = "Predicted provisioning \n (per chick/hr)") + 
-    guides(color = guide_legend("Date")) +
-    scale_color_grey(start = 0.6, end = 0.3) +
-    scale_fill_grey(start = 0.6, end = 0.3) +
-    theme_classic() +
-    theme(axis.title.x = element_text(size = 11), 
-          axis.title.y = element_text(size = 11),
-          axis.text.y = element_text(size = 9),
-          axis.text.x = element_text(size = 9),
-          legend.text = element_text(size = 10),
-          legend.title = element_text(size = 11),
-          legend.position = "bottom") 
 
 # Predicted provisioning rate by date (black & white)
 ggplot(preddata, aes(exact_age_chick, predper_chkhr)) +
@@ -159,17 +129,18 @@ ggplot(preddata, aes(exact_age_chick, predper_chkhr)) +
        x = "Chick age (day)", 
        y = "Predicted provisioning \n (per chick/hr)") + 
   guides(color = guide_legend("Date")) +
+  scale_y_continuous(limits = c(0, 4.5)) +
   scale_shape_manual(values = c(17, 1)) +
   scale_color_manual(values = c("Early summer" = "black", 
                                 "Late summer" = "black")) +
   scale_fill_grey(start = 0.6, end = 0.6) +
   theme_classic() +
-  theme(axis.title.x = element_text(size = 11), 
-        axis.title.y = element_text(size = 11),
+  theme(axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
         axis.text.y = element_text(size = 9),
         axis.text.x = element_text(size = 9),
         legend.text = element_text(size = 10),
-        legend.title = element_text(size = 11),
+        legend.title = element_text(size = 10),
         legend.position = "bottom") +
   ggsave(
     file = "provisioning_fig.pdf",
