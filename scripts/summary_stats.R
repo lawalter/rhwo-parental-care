@@ -18,7 +18,6 @@ behaviors <-
     prov_rate_perchk = prov_rate/peeped_chick_count,
     brooding_rate = (brooding_min/usable_video)*60)
     
-
 # Brood level data (brood data not repeated for each subject)
 
 brood_level <- 
@@ -63,7 +62,42 @@ describe(behaviors$prov_rate_perchk)
 # Mean provisioning rate 
 describe(behaviors$prov_rate)
 
+# video start times -------------------------------------------------------
 
+# Video start times
+
+video_times <- 
+  read.csv('raw_data/provisioning_video_data.csv', 
+           na.strings = c("", "na", "NA"), 
+           stringsAsFactors = FALSE) %>%
+  as_tibble() %>%
+  set_names(
+    names(.) %>% 
+      tolower()) %>%
+  # Unselect data that is redundant or unnecessary
+  select(video_number, start_time) %>%
+  group_by(video_number) %>%
+  summarise(start_hr = min(start_time))
+
+behaviors <-
+  behaviors %>%
+  left_join(video_times, by = "video_number")
+
+# Start time distribution
+
+plot(behaviors$start_hr)
+
+# Start time vs. provisioning
+
+corr.test(behaviors$start_hr, behaviors$prov_rate_perchk)
+summary(lm(start_hr ~ prov_rate_perchk, data = behaviors)) # p = 0.4
+plot(behaviors$start_hr, behaviors$prov_rate_perchk)
+
+# Start time vs. season
+
+corr.test(behaviors$start_hr, behaviors$julian_date)
+summary(lm(julian_date ~ start_hr, data = behaviors)) # p = 0.4
+plot(behaviors$julian_date, behaviors$start_hr)
 
 # distributions -----------------------------------------------------------
 
