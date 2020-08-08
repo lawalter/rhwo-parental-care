@@ -93,6 +93,8 @@ incubation_data <-
   filter(!str_detect(subject, 'unknown')) %>% 
   select(video_number, subject, sex, date, incubation_min)
 
+#write.csv(incubation_data, "clean_data/incubation.csv")
+
 # quick summaries ---------------------------------------------------------
 
 # Length of incubation videos
