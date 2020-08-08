@@ -54,9 +54,9 @@ video_data_initial <-
             max_number_chicks, number_chick_mortalities, 
             percent_chick_mortalities, nest_fate, nest_fate_certainty, 
             chicks_fledged, proportion_fledged, priority, chicks_visible., 
-            with_bpk., bpk_status_1, bpk_status_2, start_time, 
-            early_or_late, length_discrepancy., boris_observer, 
-            length_each, length_total, summary.notes))
+            bpk_status_1, bpk_status_2, start_time, early_or_late, 
+            length_discrepancy., boris_observer, length_each, length_total, 
+            summary.notes))
 
 # Behavior data from videos scored in BORIS
 
@@ -226,13 +226,15 @@ behaviors <-
   left_join(
     video_data_initial %>%
       select(video_number, date, habitat, exact_age_chick, 
-             peeped_chick_count, nest_id, brood_id) %>%
+             peeped_chick_count, nest_id, brood_id, 
+             bpk_status = with_bpk.) %>%
       distinct(), 
     by = "video_number") %>%
   mutate(
     date = as.Date(date, "%m/%d/%Y"),
     julian_date = yday(date),
-    std_jdate = (julian_date - mean(julian_date))/sd(julian_date)) %>%
+    std_jdate = (julian_date - mean(julian_date))/sd(julian_date),
+    bpk_status = ifelse(bpk_status == 1, "with", "without")) %>%
   # Merge in usable_length, but first sum all the parts!
   left_join(
     video_data_initial %>%
