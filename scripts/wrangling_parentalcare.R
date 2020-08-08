@@ -54,9 +54,28 @@ video_data_initial <-
             max_number_chicks, number_chick_mortalities, 
             percent_chick_mortalities, nest_fate, nest_fate_certainty, 
             chicks_fledged, proportion_fledged, priority, chicks_visible., 
-            bpk_status_1, bpk_status_2, start_time, early_or_late, 
-            length_discrepancy., boris_observer, length_each, length_total, 
-            summary.notes))
+            with_bpk., bpk_status_1, bpk_status_2, start_time, 
+            early_or_late, length_discrepancy., boris_observer, 
+            length_each, length_total, summary.notes))
+
+# Backpack data
+
+bpk_status <- 
+  read.csv('raw_data/provisioning_video_data.csv', 
+           na.strings = c("", "na", "NA"), 
+           stringsAsFactors = FALSE) %>%
+  as_tibble() %>%
+  set_names(
+    names(.) %>% 
+      tolower()) %>%
+  # Unselect data that is redundant or unnecessary
+  select(video_number, bpk_status_1, bpk_status_2) %>%
+  distinct() %>%
+  pivot_longer(cols = starts_with("bpk"),
+               names_to = "bpk_status",
+               values_to = "status") %>%
+  select(-bpk_status) %>%
+  separate(status, c("subject", "bpk_status"))
 
 # Behavior data from videos scored in BORIS
 
@@ -226,15 +245,13 @@ behaviors <-
   left_join(
     video_data_initial %>%
       select(video_number, date, habitat, exact_age_chick, 
-             peeped_chick_count, nest_id, brood_id, 
-             bpk_status = with_bpk.) %>%
+             peeped_chick_count, nest_id, brood_id) %>%
       distinct(), 
     by = "video_number") %>%
   mutate(
     date = as.Date(date, "%m/%d/%Y"),
     julian_date = yday(date),
-    std_jdate = (julian_date - mean(julian_date))/sd(julian_date),
-    bpk_status = ifelse(bpk_status == 1, "with", "without")) %>%
+    std_jdate = (julian_date - mean(julian_date))/sd(julian_date)) %>%
   # Merge in usable_length, but first sum all the parts!
   left_join(
     video_data_initial %>%
@@ -254,4 +271,11 @@ behaviors <-
   
 # write csv ---------------------------------------------------------------
 
+# Behaviors
+
 write.csv(behaviors, "clean_data/behaviors.csv")       
+
+
+# GPS tag status
+
+write.csv(bpk_status, "clean_data/bpk_status.csv")
