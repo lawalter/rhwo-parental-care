@@ -5,7 +5,7 @@ library(psych)
 
 # data --------------------------------------------------------------------
 
-# Video level data
+# Video level behavior observation data
 
 behaviors <- 
   read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>% 
@@ -17,11 +17,6 @@ behaviors <-
     prov_rate = (feeding_chicks/usable_video)*60,
     prov_rate_perchk = prov_rate/peeped_chick_count,
     brooding_rate = (brooding_min/usable_video)*60)
-
-bpk_status <-
-  read.csv("clean_data/bpk_status.csv", stringsAsFactors = FALSE) %>% 
-  as_tibble() %>%
-  select(-X)
 
 # Brood level data (brood data not repeated for each subject)
 
@@ -104,142 +99,6 @@ corr.test(behaviors$start_hr, behaviors$julian_date)
 summary(lm(julian_date ~ start_hr, data = behaviors)) # p = 0.4
 plot(behaviors$julian_date, behaviors$start_hr)
 
-# bpk status on parental care (prov, brood, clean) ------------------------
-
-bpk_behaviors <-
-  behaviors %>%
-  left_join(bpk_status, by = c("video_number", "subject")) %>%
-  mutate(
-    bpk_status = ifelse(bpk_status != "with", "without", bpk_status),
-    bpk_status = ifelse(is.na(bpk_status), "without", bpk_status))
-
-parentalcare_bpk <-
-  bpk_behaviors %>%
-  select(video_number, subject, bpk_status, prov_rate_perchk, sex,
-         brooding_rate, cleaning_rate_perchk, exact_age_chick, julian_date) 
-
-# Sexes
-bpk_behaviors %>%
-  select(subject, sex, bpk_status) %>%
-  filter(bpk_status == "with") %>%
-  filter(sex == "male")
-
-# provisioning w/ backpack ------------------------------------------------
-
-bpk_p <- 
-  parentalcare_bpk %>%
-  select(video_number, subject, bpk_status, prov_rate_perchk) %>%
-  pivot_wider(
-    names_from = "bpk_status",
-    values_from = "prov_rate_perchk") %>%
-  select(-c(video_number, subject)) 
-
-shapiro.test(bpk_p$with) # not normal
-shapiro.test(bpk_p$without) # not normal  
-
-# Nonparametric test (this is fine even w/ the NAs in the table, 
-# I tried comparing just the cols without NAs with the same result)
-bpk_p_test <- wilcox.test(bpk_p$with, bpk_p$without, conf.level = 0.95) 
-bpk_p_test
-
-# z statistic
-qnorm(bpk_p_test$p.value/2)
-
-# With (mean age = 13.12, mean jdate = 191)
-parentalcare_bpk %>%
-  select(prov_rate_perchk, bpk_status) %>%
-  filter(bpk_status == "with") %>%
-  select(prov_rate_perchk) %>% 
-  pull() %>%
-  describe(.)
-
-# Without (mean age = 13.82, mean jdate = 185)
-parentalcare_bpk %>%
-  select(prov_rate_perchk, bpk_status) %>%
-  filter(bpk_status == "without") %>%
-  select(prov_rate_perchk) %>% 
-  pull() %>%
-  describe(.)
-
-# brooding w/ backpack ----------------------------------------------------
-
-bpk_b <- 
-  parentalcare_bpk %>%
-  select(video_number, subject, bpk_status, brooding_rate) %>%
-  pivot_wider(
-    names_from = "bpk_status",
-    values_from = "brooding_rate") %>%
-  select(-c(video_number, subject)) 
-
-shapiro.test(bpk_b$with) # not normal
-shapiro.test(bpk_b$without) # not normal  
-
-# Nonparametric test (this is fine even w/ the NAs in the table, 
-# I tried comparing just the cols without NAs with the same result)
-bpk_b_test <- wilcox.test(bpk_b$with, bpk_b$without, conf.level = 0.95) 
-bpk_b_test 
-
-# z statistic
-qnorm(bpk_b_test$p.value/2)
-
-# With 
-parentalcare_bpk %>%
-  select(brooding_rate, bpk_status) %>%
-  filter(bpk_status == "with") %>%
-  select(brooding_rate) %>% 
-  pull() %>%
-  describe(.)
-
-# Without 
-parentalcare_bpk %>%
-  select(brooding_rate, bpk_status) %>%
-  filter(bpk_status == "without") %>%
-  select(brooding_rate) %>% 
-  pull() %>%
-  describe(.)
-  
-# cleaning w/ backpack ----------------------------------------------------
-
-bpk_c <- 
-  parentalcare_bpk %>%
-  select(video_number, subject, bpk_status, cleaning_rate_perchk) %>%
-  pivot_wider(
-    names_from = "bpk_status",
-    values_from = "cleaning_rate_perchk") %>%
-  select(-c(video_number, subject)) 
-
-shapiro.test(bpk_c$with) # not normal
-shapiro.test(bpk_c$without) # not normal  
-
-# Nonparametric test (this is fine even w/ the NAs in the table, 
-# I tried comparing just the cols without NAs with the same result)
-bpk_c_test <- wilcox.test(bpk_c$with, bpk_c$without, conf.level = 0.95) 
-bpk_c_test 
-
-# z statistic
-qnorm(bpk_c_test$p.value/2)
-
-# With 
-parentalcare_bpk %>%
-  select(cleaning_rate_perchk, bpk_status) %>%
-  filter(bpk_status == "with") %>%
-  select(cleaning_rate_perchk) %>% 
-  pull() %>%
-  describe(.)
-
-# Without 
-parentalcare_bpk %>%
-  select(cleaning_rate_perchk, bpk_status) %>%
-  filter(bpk_status == "without") %>%
-  select(cleaning_rate_perchk) %>% 
-  pull() %>%
-  describe(.)
-
-
-# incubating w/ backpack --------------------------------------------------
-
-
-
 # distributions -----------------------------------------------------------
 
 # Chick age distribution
@@ -270,17 +129,62 @@ b_18 <- behaviors %>% filter(year == 2018)
 # Provisioning
 shapiro.test(b_17$prov_rate_perchk)  #not normal
 shapiro.test(b_18$prov_rate_perchk)  #not normal
-wilcox.test(b_17$prov_rate_perchk, b_18$prov_rate_perchk, conf.level = 0.95) 
+wilcox.test(b_17$prov_rate_perchk, 
+            b_18$prov_rate_perchk, 
+            conf.level = 0.95) 
 
 # Cleaning
 shapiro.test(b_17$cleaning_rate_perchk)  #not normal
 shapiro.test(b_18$cleaning_rate_perchk)  #not normal
-wilcox.test(b_17$cleaning_rate_perchk, b_18$cleaning_rate_perchk, conf.level = 0.95)
+wilcox.test(b_17$cleaning_rate_perchk, 
+            b_18$cleaning_rate_perchk, 
+            conf.level = 0.95)
 
 # Brooding
 shapiro.test(b_17$brooding_rate)  #not normal
 shapiro.test(b_18$brooding_rate)  #not normal
-wilcox.test(b_17$brooding_rate, b_18$brooding_rate, conf.level = 0.95)
+wilcox.test(b_17$brooding_rate, 
+            b_18$brooding_rate, 
+            conf.level = 0.95)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Old
+
+## Code
+
+
+
+
+
+
+
+
+
+
+
 
 
 
