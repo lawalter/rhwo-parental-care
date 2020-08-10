@@ -54,8 +54,15 @@ parentalcare_bpk <-
 # Sexes
 bpk_behaviors %>%
   select(subject, sex, bpk_status) %>%
+  distinct() %>%
   filter(bpk_status == "with") %>%
-  filter(sex == "male")
+  filter(sex == "female")
+
+bpk_behaviors %>%
+  select(subject, sex, bpk_status) %>%
+  distinct() %>%
+  filter(bpk_status == "without") %>%
+  filter(sex == "female")
 
 # provisioning w/ backpack ------------------------------------------------
 
@@ -189,9 +196,6 @@ incubation_bpk <-
     with = ifelse(bpk_status == "with", incubation_rate, NA),
     without = ifelse(bpk_status == "without", incubation_rate, NA))
 
-incubation_bpk %>%
-  filter(bpk_status == "with")
-
 shapiro.test(incubation_bpk$with) # normal
 shapiro.test(incubation_bpk$without) # normal  
 
@@ -201,7 +205,7 @@ bpk_i_test
 
 # With 
 incubation_bpk %>%
-  select(incubation_rate, bpk_status) %>%
+  select(video_id, incubation_rate, bpk_status) %>%
   filter(bpk_status == "with") %>%
   select(incubation_rate) %>% 
   pull() %>%
@@ -215,6 +219,14 @@ incubation_bpk %>%
   pull() %>%
   describe(.)
 
+# Sexes
+incubation_bpk %>%
+  select(video_id, sex, bpk_status) %>%
+  mutate(subject = str_remove_all(video_id, "^[0-9]{1,3}\\_")) %>%
+  select(-video_id) %>%
+  distinct() %>%
+  filter(bpk_status == "with") %>%
+  filter(sex == "female")
 
 # figure ------------------------------------------------------------------
 
