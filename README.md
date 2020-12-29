@@ -2,15 +2,15 @@
 
 ## Table of Contents
 
-    - [Introduction](#introduction)
-    - [About the data](#data-collection)
-    - [Using the repository](#using-the-repository)
+- [Introduction](#introduction)
+- [About the Data](#data-collection)
+- [Using the Repository](#using-the-repository)
 
 ## Introduction
 
 This repository contains data and data analyses that belong to a study on Red-headed Woodpecker (RHWO) parental care behavior conducted by L. Abigail Walter with the [Bulluck Avian Ecology Lab](https://rampages.us/bullucklab) at Virginia Commonwealth University. The Master's thesis that resuled from these data can be found [here](). A manuscript is in progress. 
 
-## Data collection
+## About the Data
 
 ### Data collection: field methods
 
@@ -28,9 +28,10 @@ To model brooding duration, we used the same simple base model as provisioning w
 
 For both provisioning and brooding analyses, video length was used as an offset in the models to account for variable recording time among samples (Foster and Bravington 2013). Models were compared using AIC, top models were chosen based on the lowest ΔAIC value, and models with ΔAIC < 2.0 were considered equally supported. However, these equally supported models were typically nested iterations of the top model so we identified which parameters were most important in these nested models by assessing β estimates and p-values. Predictions for brooding time and provisioning rate were generated from the top-performing models and then plotted using R package stats::predict. Predicted provisioning counts were adjusted using each sample’s video length and brood size to calculate provisioning visits per chick per hour. Brooding durations were adjusted using only video length to determine brooding minutes per hour. 
 
-### Using the repository
+## Using the repository
 
 <b>Program:</b> R version 3.5.2+
+
 <b>Required packages:</b> tidyverse, glmmTMB, AICtab
 
 R scripts included are for wrangling, tidying, analyzing, and plotting these data.   
