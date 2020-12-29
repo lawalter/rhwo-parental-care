@@ -1,10 +1,10 @@
 # Red-headed Woodpecker Parental Care 
 
-## Table of Contents
+### Table of Contents
 
 - [Introduction](#introduction)
-- [About the Data](#data-collection)
-- [Using the Repository](#using-the-repository)
+- [About the Data](#about-the-data)
+- [Using the R Scripts](#using-the-r-scripts)
 
 ## Introduction
 
@@ -28,9 +28,11 @@ To model brooding duration, we used the same simple base model as provisioning w
 
 For both provisioning and brooding analyses, video length was used as an offset in the models to account for variable recording time among samples (Foster and Bravington 2013). Models were compared using AIC, top models were chosen based on the lowest ΔAIC value, and models with ΔAIC < 2.0 were considered equally supported. However, these equally supported models were typically nested iterations of the top model so we identified which parameters were most important in these nested models by assessing β estimates and p-values. Predictions for brooding time and provisioning rate were generated from the top-performing models and then plotted using R package stats::predict. Predicted provisioning counts were adjusted using each sample’s video length and brood size to calculate provisioning visits per chick per hour. Brooding durations were adjusted using only video length to determine brooding minutes per hour. 
 
-## Using the repository
+## Using the R Scripts
 
-<b>Program:</b> R version 3.5.2+
+### Details
+
+<b>R Version:</b> v3.5.2+
 
 <b>Required packages:</b> tidyverse, glmmTMB, AICtab
 
