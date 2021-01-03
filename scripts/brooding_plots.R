@@ -1,10 +1,12 @@
-### Red-headed Woodpecker brooding duration model predictions
-### By: Lynn Abigail Walter
+# intro -------------------------------------------------------------------
 
-### Latest updates:
+# Red-headed Woodpecker brooding duration model predictions
+# By: Lynn Abigail Walter
+
+# Latest updates:
 # Aug 2019 - After correcting the bbyvid to sum duration of brooding, a new top model was selected. My thesis used model 1.1i which did not include Tmax as a factor, but the new top model 1.5i does.
 
-### BEST VERSION
+# Best version
 
 # libraries ---------------------------------------------------------------
 
@@ -14,45 +16,74 @@ library(glmmTMB)
 
 # data --------------------------------------------------------------------
 
+# Behaviors by video
+
 bbyvid <- 
   read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>%
   as_tibble() %>%
-  # Calculate standardized temperatures
   mutate(
+    # Calculate standardized temperatures
     std_tmax = (tmax - mean(tmax))/sd(tmax),
     brood_perhr = (brooding_min/usable_video)*60)
 
 # script ------------------------------------------------------------------
 
-# Run best model
+# Run best model (see brooding_models.R)
+
 brood_mod <- 
-  glmmTMB(brooding_min ~ exact_age_chick*sex + 
-            peeped_chick_count + std_tmax + 
-            (1|brood_id) + offset(log(usable_video)), 
-          data = bbyvid, 
-          ziformula = ~., 
-          family = "truncated_nbinom1")
+  glmmTMB(
+    brooding_min ~ 
+      exact_age_chick * sex + peeped_chick_count + std_tmax + (1|brood_id) + 
+      offset(log(usable_video)), 
+    data = bbyvid,
+    ziformula = ~ .,
+    family = "truncated_nbinom1")
 
 summary(brood_mod)
 
 # Generate dataframes with needed model variables to generate prediction
-brooding_predictions <- 
+
+brooding_subset <- 
   bbyvid %>%
   select(brooding_min, subject, brood_id, exact_age_chick, sex, habitat,
          std_tmax, usable_video, peeped_chick_count) 
 
-# Calculate brooding rate (brooding per minute)
+# Calculate a predicted brooding rate (brooding per minute)
+
 brooding_predictions <-
-  brooding_predictions %>%
+  brooding_subset %>%
   mutate(
     predicted_brood_per_unit = 
-      stats::predict(brood_mod, brooding_predictions, type = "response"),
+      stats::predict(brood_mod, brooding_subset, type = "response"),
     predicted_brood_per_hr =
       (predicted_brood_per_unit/usable_video)*60,
     brood_per_hr = (brooding_min/usable_video)*60,
     tmax = ifelse(std_tmax > 0, "Hot", "Cool"))
 
-# Colors
+# experimental ------------------------------------------------------------
+
+# Generate dataframes with needed model variables to generate prediction
+
+brooding_subset2 <- 
+  bbyvid %>%
+  select(brooding_min, subject, brood_id, exact_age_chick, sex, habitat,
+         std_tmax, usable_video, peeped_chick_count, tmax) 
+
+# Calculate a predicted brooding rate (brooding per minute)
+
+brooding_predictions2 <-
+  brooding_subset2 %>%
+  mutate(
+    predicted_brood_per_unit = 
+      stats::predict(brood_mod, brooding_subset2, type = "response"),
+    predicted_brood_per_hr =
+      (predicted_brood_per_unit/usable_video)*60,
+    brood_per_hr = (brooding_min/usable_video)*60)
+
+# ------
+
+# Set colors
+
 colors_sex <- c("female" = "#F47C89", "male" = "#7b758e")
 colors_tem <- c("Cool" = "#6bd2db", "Hot" = "#fc913a")
 colors_bw <- c("Cool" = "#ABABAB", "Hot" = "#333333")
@@ -64,6 +95,7 @@ predbrood_conditional <-
 # linear plots ------------------------------------------------------------
 
 # Final brooding plot - by sex (color)
+
 ggplot(brooding_predictions, 
        aes(x = exact_age_chick, 
            y = predicted_brood_per_hr, 
@@ -89,6 +121,7 @@ ggplot(brooding_predictions,
         text = element_text(size = 12)) 
 
 # Final brooding plot - by sex (black & white)
+
 brooding_sex <-
   ggplot(brooding_predictions, 
        aes(x = exact_age_chick, 
@@ -104,7 +137,7 @@ brooding_sex <-
     level = 0.95, 
     fullrange = TRUE) +
   geom_point(aes(color = sex, shape = sex)) +
-  coord_cartesian(ylim = c(0,40)) + 
+  coord_cartesian(ylim = c(0, 40)) + 
   labs(title = "Figure 3a",
        x = "Chick age (day)", 
        y = "Predicted brooding (min/hr)") + 
@@ -130,9 +163,39 @@ brooding_sex <-
   units = "in",
   dpi = 600)
 
+# linear temperature plot -------------------------------------------------
+
+temp_line <- 
+  brooding_predictions2 %>%
+  ggplot(aes(x = tmax, y = predicted_brood_per_hr)) +
+  stat_smooth(
+    method = glm,
+    formula = y ~ x,
+    aes(y = predicted_brood_per_hr),
+    alpha = 0.2,
+    se = TRUE,
+    level = 0.95,
+    fullrange = TRUE,
+    color = "black") +
+  geom_point(shape = 1) +
+  labs(title = "Figure 3b",
+       x = "Maximum daily air temperature (°C)", 
+       y = "Predicted brooding (min/hr)") +
+  scale_fill_grey(start = 0.6, end = 0.6) +
+  coord_cartesian(ylim = c(0, 40)) + 
+  theme_classic() +
+  theme(axis.title.x = element_text(size = 10), 
+        axis.title.y = element_text(size = 10),
+        axis.text.y = element_text(size = 9, color = 'black'),
+        axis.text.x = element_text(size = 9, color = 'black'),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        legend.position = "none")
+
 # violin plots ------------------------------------------------------------
 
 # Violin plot - by temperature (black & white)
+
 brooding_violin <- 
   ggplot(brooding_predictions, 
        aes(tmax, 
@@ -172,6 +235,18 @@ cowplot::plot_grid(brooding_sex, brooding_violin,
           nrow = 2, ncol = 1) +
   ggsave(
     file = "brooding_plots_pair.pdf",
+    path ="plots/bw/",
+    width = 3.5,
+    height = 7,
+    units = "in",
+    dpi = 600)
+
+
+cowplot::plot_grid(brooding_sex, temp_line, 
+                   labels = 'AUTO',
+                   nrow = 2, ncol = 1) +
+  ggsave(
+    file = "brooding_plots_pair_templine.pdf",
     path ="plots/bw/",
     width = 3.5,
     height = 7,
@@ -256,10 +331,10 @@ ggplot(data = brooding_predictions,
   geom_point() +
   labs(main = "Hurdle model predictions", 
        x = "Brooding (min/hr)", 
-       y = "Predicted brooding (min/hr") + 
+       y = "Predicted brooding (min/hr)") + 
   theme_classic()
 
-plot(predbrood$brooding_min, predbrood$predicted_brood_per_hr)
+plot(brooding_predictions$brooding_min, brooding_predictions$predicted_brood_per_hr)
 title(main = "Hurdle model predictions")
 ylab(main = "Brooding (min/hr)")
 

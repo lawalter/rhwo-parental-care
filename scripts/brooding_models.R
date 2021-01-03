@@ -1,10 +1,13 @@
 # intro -------------------------------------------------------------------
 
-### Red-headed Woodpecker brooding duration models
-### By: Lynn Abigail Walter
+# Red-headed Woodpecker brooding duration models
+# By: Lynn Abigail Walter
 
-### Latest updates:
-# Aug 2019 - After correcting the bbyvid to sum duration of brooding, re-ran models. In the test models, the Gaussian distribution did not converge with brood_id included as a random effect, so I removed it from all of the test models. All of the models with data converged even with brood_id included.
+# Latest updates:
+# Aug 2019 - After correcting the bbyvid to sum duration of brooding, re-ran
+# models. In the test models, the Gaussian distribution did not converge with
+# brood_id included as a random effect, so I removed it from all of the test
+# models. All of the models with data converged even with brood_id included.
 
 # libraries ---------------------------------------------------------------
 
@@ -12,8 +15,9 @@ library(tidyverse)
 library(glmmTMB)
 library(bbmle)
 
-
 # read data ---------------------------------------------------------------
+
+# Behaviors by video
 
 bbyvid <- 
   read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>%
@@ -32,7 +36,8 @@ bbyvid <-
 
 # script ------------------------------------------------------------------
 
-# Plot distribution - it looks zero-inflated
+# Plot distribution - when viewed, it looks zero-inflated
+
 ggplot(
   bbyvid, aes(x = brooding_min)) + 
   geom_histogram(bins = 30) + 
@@ -87,6 +92,7 @@ AICtab(
 # quadratic fit testing ---------------------------------------------------
 
 # Test to see if brooding fits better with quadratic chick age  
+
 testmodellinear <-
   glmmTMB(
     brooding_min ~ exact_age_chick + peeped_chick_count + 
@@ -117,7 +123,8 @@ testmodelquad_hurdle <-
     ziformula = ~ .,
     family = "truncated_nbinom1")
 
-# The linear hurdle model is best
+# The linear hurdle model is best!
+
 AICtab(
   testmodellinear, 
   testmodelquad, 
@@ -196,13 +203,11 @@ ICtab(modelhb0,
       type = c("AIC"), weights = TRUE, delta = TRUE, base = TRUE,
       logLik = TRUE, sort = TRUE)
 
-
 summary(modelhb1.5i) 
 
 # Calculate confidence intervals
 
 confint(modelhb1.5i, level = 0.95)
-
 
 # overdispersion check ----------------------------------------------------
 
