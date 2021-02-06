@@ -88,9 +88,9 @@ colors_sex <- c("female" = "#F47C89", "male" = "#7b758e")
 colors_tem <- c("Cool" = "#6bd2db", "Hot" = "#fc913a")
 colors_bw <- c("Cool" = "#ABABAB", "Hot" = "#333333")
 
-predbrood_conditional <- 
-  brooding_predictions %>% 
-  filter(predicted_brood_per_unit > 1)
+# predbrood_conditional <- 
+#   brooding_predictions %>% 
+#   filter(predicted_brood_per_unit > 1)
 
 # linear plots ------------------------------------------------------------
 
