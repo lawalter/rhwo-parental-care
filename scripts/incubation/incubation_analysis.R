@@ -94,7 +94,7 @@ incubation_data <-
   select(video_number, subject, sex, date, incubation_min)
 
 # Write incubation by video dataframe into csv
-#write.csv(behavior_data, "clean_data/incubation.csv")
+#write.csv(behavior_data, "clean_data/incubation.csv", row.names = FALSE)
 
 # quick summaries ---------------------------------------------------------
 
