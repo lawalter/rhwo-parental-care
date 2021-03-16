@@ -6,21 +6,9 @@ library(emojifont) # for greek letters
 
 # data --------------------------------------------------------------------
 
-# On mac
 bbyvid <-
-  read.csv("~/Desktop/abby_git/rhwo-parental-care/clean_data/behaviors.csv",
-           stringsAsFactors = FALSE) %>%
-  as_tibble() %>%
-  mutate(feeding = feeding_chicks) %>%
-  select(-feeding_chicks)
-
-# On laptop
-# bbyvid <-
-#   read.csv('~/Desktop/rhwo-parental-care/clean_data/behaviors.csv',
-#            stringsAsFactors = FALSE) %>%
-#   as_tibble() %>%
-#   mutate(feeding = feeding_chicks) %>%
-#   select(-feeding_chicks)
+  read_csv("clean_data/behaviors.csv") %>%
+  rename(feeding = feeding_chicks)
 
 # wrangling ---------------------------------------------------------------
 
