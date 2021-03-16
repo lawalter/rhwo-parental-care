@@ -20,7 +20,6 @@ c('raw_data/sex_data.csv',
   map(
     function(x){
       read_csv(
-        #file = gsheet2text(x, format='csv'),
         x,
         na = c("", "na", "NA", "not sent")) %>%
         set_names(str_replace_all(names(.), '\\?', '')) %>%
