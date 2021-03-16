@@ -6,6 +6,7 @@
 
 # last updates ------------------------------------------------------------
 
+# Mar 2021: More modernizing
 # Jul 2020: Finished modernizing the script using the tidyverse. Found a 
 #           discrepancy between new finished dataframe and old one with
 #           the calculation of total video lengths. The new .csv is the
@@ -15,75 +16,73 @@
 # Feb 2020: Modernized script using the tidyverse
 # Jan 2020: Best updated version submitted to github
 # Aug 2019: Corrected line creating bbyvid that averaged brooding by 
-#            parent instead of summing the video parts
+#           parent instead of summing the video parts
 # Apr 2019: Fixed provisioning analysis to removed brooding by males if 
-#            followed by cleaning event
+#           followed by cleaning event
 
 # libraries ---------------------------------------------------------------
 
 library(tidyverse)
 library(lubridate)
-library(reshape2)
 
 # import data -------------------------------------------------------------
 
 # Sex data for individual Red-headed Woodpeckers
 
 sex_data <-
-  read.csv('raw_data/sex_data.csv', 
-           na.strings = c("", "na", "NA"),
-           stringsAsFactors = FALSE) %>%
-  as_tibble() %>%
+  read_csv("raw_data/sex_data.csv", na = c("", "na", "NA")) %>%
+  # Change field names to all lowercase
   set_names(
     names(.) %>% 
       tolower()) %>%
   select(subject = color_combo, sex) 
 
-# Video data about the actual recordings
+# Video metadata
 
-video_data_initial <- 
-  read.csv('raw_data/provisioning_video_data.csv', 
-           na.strings = c("", "na", "NA"), 
-           stringsAsFactors = FALSE) %>%
-  as_tibble() %>%
+video_metadata <- 
+  read_csv("raw_data/provisioning_video_data.csv", na = c("", "na", "NA")) %>%
+  # Change field names to all lowercase, remove "?"s and "/"s
   set_names(
     names(.) %>% 
-      tolower()) %>%
+      tolower() %>% 
+      str_remove(., "\\?") %>% 
+      str_remove(., "\\/")) %>%
   # Unselect data that is redundant or unnecessary
   select(-c(letter, part, month, day, year, chick_week, max_number_eggs, 
             max_number_chicks, number_chick_mortalities, 
             percent_chick_mortalities, nest_fate, nest_fate_certainty, 
-            chicks_fledged, proportion_fledged, priority, chicks_visible., 
-            with_bpk., bpk_status_1, bpk_status_2, start_time, 
-            early_or_late, length_discrepancy., boris_observer, 
-            length_each, length_total, summary.notes))
+            chicks_fledged, proportion_fledged, priority, chicks_visible, 
+            with_bpk, bpk_status_1, bpk_status_2, start_time, 
+            early_or_late, length_discrepancy, boris_observer, 
+            length_each, length_total, summarynotes))
 
 # Backpack data
 
 bpk_status <- 
-  read.csv('raw_data/provisioning_video_data.csv', 
-           na.strings = c("", "na", "NA"), 
-           stringsAsFactors = FALSE) %>%
-  as_tibble() %>%
+  read_csv("raw_data/provisioning_video_data.csv", na = c("", "na", "NA")) %>%
+  # Change field names to all lowercase, remove "?"s and "/"s
   set_names(
     names(.) %>% 
-      tolower()) %>%
-  # Unselect data that is redundant or unnecessary
+      tolower() %>% 
+      str_remove(., "\\?") %>% 
+      str_remove(., "\\/")) %>%
+  # Select fields related to backpacks
   select(video_number, bpk_status_1, bpk_status_2) %>%
   distinct() %>%
-  pivot_longer(cols = starts_with("bpk"),
-               names_to = "bpk_status",
-               values_to = "status") %>%
+  pivot_longer(
+    cols = starts_with("bpk"),
+    names_to = "bpk_status",
+    values_to = "status") %>%
   select(-bpk_status) %>%
   separate(status, c("subject", "bpk_status"))
 
 # Behavior data from videos scored in BORIS
 
 boris_initial <- 
-  read.csv('raw_data/boris_provisioning_preyproofed_bestdata.csv', 
-           na.strings = c("", "na", "NA"), 
-           stringsAsFactors = FALSE) %>%
-  as_tibble() %>%
+  read_csv(
+    "raw_data/boris_provisioning_preyproofed_bestdata.csv", 
+    na = c("", "na", "NA")) %>%
+  # Change field names to all lowercase
   set_names(
     names(.) %>% 
       tolower()) %>%
@@ -92,9 +91,7 @@ boris_initial <-
 # NOAA weather data
 
 NOAA_data <-
-  read.csv('raw_data/NOAA_weather_data.csv', 
-           stringsAsFactors = FALSE) %>%
-  as_tibble() %>%
+  read_csv("raw_data/NOAA_weather_data.csv") %>%
   # Calculate Julian dates for the NOAA data
   mutate(
     good_date = as.Date(DATE, "%Y-%m-%d"),
@@ -106,11 +103,11 @@ NOAA_data <-
 # tidying -----------------------------------------------------------------
 
 # Total sample dataframe: make a df with total sample size of n = 288
-# Both parents do not participate in all videos (without this step, the 
-# data does not fill n = 288)
+# Both parents do not participate in all videos (without this step, the data
+# does not fill n = 288)
 
 total_sample <-
-  video_data_initial %>%
+  video_metadata %>%
   select(video_number, ref_combo_1, ref_combo_2) %>%
   mutate(
     ID1 = paste(video_number, ref_combo_1, sep = '_'),
@@ -122,8 +119,8 @@ total_sample <-
 
 # cleaning table ----------------------------------------------------------
 
-# Calculate the time difference between stop time of 'in cavity' and the 
-# time of cleaning event
+# Calculate the time difference between stop time of 'in cavity' and the time of
+# cleaning event
 
 cleaning <-
   boris_initial %>%
@@ -131,8 +128,7 @@ cleaning <-
   filter(behavior == "in cavity" | behavior == "cleaning nest") %>%
   group_by(observation.id) %>%
   mutate(
-    time_lag = lead(stop_sec),
-    diff_sec = time_lag - stop_sec,
+    diff_sec = lead(stop_sec) - stop_sec,
     behavior_lag = lead(behavior)) %>%
   ungroup() %>%
   mutate(
@@ -146,16 +142,24 @@ cleaning <-
         (behavior == 'in cavity' & duration_sec > 60) ~ 'brooding',
         TRUE ~ behavior)) %>% 
   select(-behavior) %>%
-  select(1:3, behavior = behavior_new, 5:7)
+  select(
+    observation_id_boris,
+    observation.id,
+    subject, 
+    behavior = behavior_new, 
+    start_sec,
+    stop_sec,
+    duration_sec)
 
-# Merge final classifications of cleaning, visiting, brooding, and 
-# poopsearch with original data
+# Merge final classifications of cleaning, visiting, brooding, and poopsearch
+# with original data
 boris <- 
   cleaning %>%
   bind_rows(
     boris_initial %>% 
       filter(behavior != "in cavity" & behavior != "cleaning nest") %>%
-      select(-c(modifier_general, modifier_specific, behavior_type))) 
+      select(-c(modifier_general, modifier_specific, behavior_type))
+    ) 
 
 # behavior table ----------------------------------------------------------
 
@@ -164,29 +168,30 @@ boris <-
 count_behaviors <- 
   # Start with BORIS scored behaviors that were just cleaned/classified
   boris %>%
-  filter(subject != 'unknown' & subject != 'chick') %>%
+  # Exclude unknown woodpeckers and chicks
+  filter(subject != "unknown" & subject != "chick") %>%
   left_join(
-    video_data_initial %>% 
+    video_metadata %>% 
       select(observation.id, video_number), 
-    by = 'observation.id') %>%
-  mutate(
-    video_id = paste(video_number, subject, sep = '_')) %>% 
-  select(-c(observation.id, subject, observation_id_boris, start_sec, 
-            stop_sec, duration_sec)) %>%
+    by = "observation.id") %>%
+  # Create a video_id
+  mutate(video_id = paste(video_number, subject, sep = '_')) %>% 
+  select(behavior, video_number, video_id) %>% 
+  # Keep on the behaviors of interest
   filter(
     behavior %in% 
-      c('cleaning nest', 
-        'feeding chicks', 
-        'visit', 
-        'brooding')) %>%
+      c("cleaning nest", 
+        "feeding chicks", 
+        "visit", 
+        "brooding")) %>%
   mutate(
     times = 1,
     behavior = 
       case_when(
-        behavior == 'cleaning nest' ~ 'cleaning_nest',
-        behavior == 'feeding chicks' ~ 'feeding_chicks',
-        behavior == 'visit' ~ 'visit_count',
-        behavior == 'brooding' ~ 'brooding_count',
+        behavior == "cleaning nest" ~ "cleaning_nest",
+        behavior == "feeding chicks" ~ "feeding_chicks",
+        behavior == "visit" ~ "visit_count",
+        behavior == "brooding" ~ "brooding_count",
         TRUE ~ behavior)) %>%
   group_by(video_id, behavior) %>%
   summarize(sum_count = sum(times)) %>%
@@ -200,23 +205,26 @@ count_behaviors <-
 duration_behaviors <- 
   # Start with BORIS scored behaviors that were just cleaned/classified
   boris %>%
-  filter(subject != 'unknown' & subject != 'chick') %>%
+  # Exclude unknown woodpeckers and chicks
+  filter(subject != "unknown" & subject != "chick") %>%
   left_join(
-    video_data_initial %>% 
+    video_metadata %>% 
       select(observation.id, video_number), 
-    by = 'observation.id') %>%
+    by = "observation.id") %>%
   mutate(
+    # Create a video_id
     video_id = paste(video_number, subject, sep = '_'),
+    # Add duration of behaviors (in minutes)
     duration_min = duration_sec/60) %>% 
-  select(-c(observation.id, subject, observation_id_boris, start_sec, 
-            stop_sec, duration_sec)) %>%
-  filter(behavior %in% c('poopsearch', 'visit', 'brooding')) %>%
+  select(behavior, video_number, video_id, duration_min) %>% 
+  # Keep on the behaviors of interest
+  filter(behavior %in% c("poopsearch", "visit", "brooding")) %>%
   mutate(
     behavior = 
       case_when(
-        behavior == 'poopsearch' ~ 'poopsearch_min',
-        behavior == 'visit' ~ 'visit_min',
-        behavior == 'brooding' ~ 'brooding_min',
+        behavior == "poopsearch" ~ "poopsearch_min",
+        behavior == "visit" ~ "visit_min",
+        behavior == "brooding" ~ "brooding_min",
         TRUE ~ behavior)) %>%
   group_by(video_id, behavior) %>%
   # Summarize the durations of behaviors and convert from sec to minutes
@@ -230,8 +238,8 @@ duration_behaviors <-
 
 behaviors <-
   total_sample %>%
-  left_join(count_behaviors, by = 'video_id') %>%
-  left_join(duration_behaviors, by = 'video_id') %>%
+  left_join(count_behaviors, by = "video_id") %>%
+  left_join(duration_behaviors, by = "video_id") %>%
   # Remove PNA5A1b because it is the only wetland nest
   filter(!str_detect(video_id, "SROB")) %>%
   arrange(desc(video_id)) %>%
@@ -243,19 +251,20 @@ behaviors <-
   left_join(sex_data, by = "subject") %>%
   # Merge in nest data
   left_join(
-    video_data_initial %>%
+    video_metadata %>%
       select(video_number, date, habitat, exact_age_chick, 
              peeped_chick_count, nest_id, brood_id) %>%
       distinct(), 
     by = "video_number") %>%
+  # Mutate the dates
   mutate(
     date = as.Date(date, "%m/%d/%Y"),
     julian_date = yday(date),
     std_jdate = (julian_date - mean(julian_date))/sd(julian_date)) %>%
   # Merge in usable_length, but first sum all the parts!
   left_join(
-    video_data_initial %>%
-      select(video_number, length_usable) %>% ## hither
+    video_metadata %>%
+      select(video_number, length_usable) %>% 
       group_by(video_number) %>%
       summarize(usable_video = sum(length_usable)) %>%
       ungroup(), 
@@ -273,9 +282,9 @@ behaviors <-
 
 # Behaviors
 
-write.csv(behaviors, "clean_data/behaviors.csv")       
+write.csv(behaviors, "clean_data/behaviors.csv", row.names = FALSE)       
 
 
 # GPS tag status
 
-write.csv(bpk_status, "clean_data/bpk_status.csv")
+write.csv(bpk_status, "clean_data/bpk_status.csv", row.names = FALSE)
