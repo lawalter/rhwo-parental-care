@@ -19,11 +19,11 @@ Although the clean data files are already included in this repo, their creation 
 
 #### Incubation
 
-Run `scripts/incubation/wrangling_incubation.R` to wrangle and tidy the raw data into `clean_data/incubation.rds`.
+- Run `scripts/incubation/wrangling_incubation.R` to wrangle and tidy the raw data into `clean_data/incubation.rds`.
 
 #### Brooding, provisioning, and nest cleaning
 
-Run `scripts/wrangling_parentalcare.R` to wrangle and tidy the raw data into `clean_data/behaviors.csv`.
+- Run `scripts/wrangling_parentalcare.R` to wrangle and tidy the raw data into `clean_data/behaviors.csv`.
 
 ### Step 2: Data analyses
 
@@ -31,7 +31,7 @@ The following scripts are used to analyze incubation, brooding, provisioning, an
 
 #### Incubation
 
-To analyze the incubation data, run `scripts/incubation/incubation_analysis.R`
+- To analyze the incubation data, run `scripts/incubation/incubation_analysis.R`
 
 #### Brooding
 
@@ -47,7 +47,7 @@ To analyze the incubation data, run `scripts/incubation/incubation_analysis.R`
 
 #### Nest cleaning
 
-Run `scripts/cleaning/cleaning_analysis.R` for analysis and plot.
+- Run `scripts/cleaning/cleaning_analysis.R` for analysis and plot.
 
 #### GPS tags
 
@@ -58,7 +58,7 @@ Since some woodpeckers were GPS tagged for another part of our study, we checked
 
 #### Nest success
 
-Summaries of fledge success can be found in `scripts/nest-success/nest_survival_summaries.R`
+- Summaries of fledge success can be found in `scripts/nest-success/nest_survival_summaries.R`
 
 ## Acknowledgments
 
