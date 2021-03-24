@@ -9,27 +9,17 @@ library(emojifont) # for greek letters
 # Behavior data - mac
 
 bbyvid <-
-  read.csv("~/Desktop/abby_git/rhwo-parental-care/clean_data/behaviors.csv",
-           stringsAsFactors = FALSE) %>%
-  as_tibble() %>%
+  read_csv("clean_data/behaviors.csv") %>%
   mutate(feeding = feeding_chicks) %>%
-  select(-c(feeding_chicks, X))
+  select(-c(feeding_chicks))
 
 # Backpack status info - mac
 
 bpk_status <-
-  read.csv("clean_data/bpk_status.csv", stringsAsFactors = FALSE) %>% 
-  as_tibble() %>%
+  read_csv("clean_data/bpk_status.csv") %>% 
   mutate(video_id = paste(video_number, subject, sep = "_")) %>%
-  select(-c(X, video_number, subject))
+  select(-c(video_number, subject))
 
-# Behavior data - laptop
-# bbyvid <-
-#   read.csv('~/Desktop/rhwo-parental-care/clean_data/behaviors.csv',
-#            stringsAsFactors = FALSE) %>%
-#   as_tibble() %>%
-#   mutate(feeding = feeding_chicks) %>%
-#   select(-feeding_chicks)
 
 # wrangling ---------------------------------------------------------------
 

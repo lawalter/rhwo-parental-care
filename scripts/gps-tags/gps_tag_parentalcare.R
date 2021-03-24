@@ -10,7 +10,6 @@ library(psych)
 behaviors <- 
   read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>% 
   as_tibble() %>%
-  select(-X) %>%
   mutate(
     cleaning_rate = (cleaning_nest/usable_video)*60,
     cleaning_rate_perchk = cleaning_rate/peeped_chick_count,
@@ -22,8 +21,7 @@ behaviors <-
 
 bpk_status <-
   read.csv("clean_data/bpk_status.csv", stringsAsFactors = FALSE) %>% 
-  as_tibble() %>%
-  select(-X)
+  as_tibble() 
 
 # Incubation rds
 
@@ -34,8 +32,7 @@ read_rds('clean_data/incubation.rds') %>%
 
 incubation <-
   read.csv("clean_data/incubation.csv", stringsAsFactors = FALSE) %>% 
-  as_tibble() %>%
-  select(-X)
+  as_tibble() 
 
 # bpk status on parental care (prov, brood, clean) ------------------------
 
