@@ -11,11 +11,11 @@ This repository contains data and data analyses that belong to a study on Red-he
 
 ## Data and R scripts overview
 
-The R scripts included are for wrangling, tidying, analyzing, and plotting RHWO behavior data. They should be run in the following order:  
+The R scripts included in this repository are for wrangling, tidying, analyzing, and plotting RHWO behavior data. It is not necessary to complete Step 1, since clean data files are already included in `/clean_data`. 
 
-### Data wrangling
+### Step 1: Data wrangling
 
-The clean data files are already included in the package. Their createion is outlined below for both incubation and post-hatch parental care.
+Although the clean data files are already included in this repo, their creation is nevertheless outlined below for both incubation and post-hatch parental care.
 
 #### Incubation
 
@@ -25,7 +25,7 @@ Run `scripts/incubation/wrangling_incubation.R` to wrangle and tidy the raw data
 
 Run `scripts/wrangling_parentalcare.R` to wrangle and tidy the raw data into `clean_data/behaviors.csv`.
 
-### Data analyses
+### Step 2: Data analyses
 
 The following scripts are used to analyze incubation, brooding, provisioning, and nest cleaning behaviors using the clean data files (generated above).
 
@@ -49,17 +49,17 @@ To analyze the incubation data, run `scripts/incubation/incubation_analysis.R`
 
 Run `scripts/cleaning/cleaning_analysis.R` for analysis and plot.
 
-### GPS tags
+#### GPS tags
 
 Since some woodpeckers were GPS tagged for another part of our study, we checked to see if they caused a difference in parental care rates.
 
 1. Run `scripts/gps-tags/gps_tag_parentalcare.R` to analyze effects of GPS tags on behavior.
 2. Run `scripts/gps-tags/gps_tag_provisioning_individuals.R` to analyze effects of GPS tags on individual provisioning.
 
-### Nest success
+#### Nest success
 
 Summaries of fledge success can be found in `scripts/nest-success/nest_survival_summaries.R`
 
 ## Acknowledgments
 
-We used program BORIS to process videos and generate raw csv files.
+We used program [BORIS](https://www.boris.unito.it/) to process videos and generate raw csv files.
