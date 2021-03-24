@@ -1,49 +1,65 @@
 # Red-headed Woodpecker Parental Care 
 
-### Table of Contents
-
-- [Introduction](#introduction)
-- [About the Data](#about-the-data)
-- [Using the R Scripts](#using-the-r-scripts)
-
 ## Introduction
 
-This repository contains data and data analyses that belong to a study on Red-headed Woodpecker (RHWO) parental care behavior conducted by L. Abigail Walter with the [Bulluck Avian Ecology Lab](https://rampages.us/bullucklab) at Virginia Commonwealth University. The Master's thesis that resuled from these data can be found [here](). A manuscript is in progress. 
+This repository contains data and data analyses that belong to a study on Red-headed Woodpecker (RHWO) parental care behavior conducted by L. Abigail Walter with the [Bulluck Avian Ecology Lab](https://rampages.us/bullucklab) at Virginia Commonwealth University. 
 
-## About the Data
-
-### Data collection: field methods
-
-We recorded parental care behaviors between 1 Apr - 8 Aug in 2017 and 2018 at our study site, Fort A.P. Hill, Virginia, USA. Videos were recorded using camcorders on tripods placed within a 10 m radius of active nest snags. Cameras were focused on the nest cavity entrance and recorded woodpecker activity during sampling periods between 0715–1515. Because we were interested in sex-specific parental care behavior, we only included videos in our analyses if 1) at least one adult was color-banded and genetically sexed, 2) banded individuals could be clearly identified by their color band combination, and 3) the nest contained a known number of chicks with known age. 
-
-We scored adult woodpecker behaviors at the nest using <a href="http://www.boris.unito.it/">BORIS</a>. We associated behaviors with a woodpecker’s unique color band combination or a unique identifier for each unbanded mate of a banded adult, with the assumption that no additional birds were providing parental care. Cooperative breeding was not observed in our system. For analysis, we included the following four parental care behaviors in the ethogram: incubating eggs (in-cavity for > 1 min), feeding chicks (delivering a food item to the nest), cleaning nest (removal of fecal material from the nest), and brooding (in-cavity for > 1 min and not followed by a cleaning event). Incubation and brooding had duration times, while feeding chicks and cleaning nest were instant events. 
-
-### Data analysis
-
-Paste here.
-
-## Using the R Scripts
-
-### Details
+### Requirements
 
 - <b>R Version:</b> v3.5.2+
-- <b>Required packages:</b> tidyverse, glmmTMB, AICtab
+- <b>Packages:</b> tidyverse, lubridate, reshape2, glmmTMB, AICtab, psych, cowplot, emojifont
 
-### Overview 
+## Data and R scripts overview
 
 The R scripts included are for wrangling, tidying, analyzing, and plotting RHWO behavior data. They should be run in the following order:  
 
-### Incubation
+### Data wrangling
 
-1. Run 
-2. To analyze the final table, run 
+The clean data files are already included in the package. Their createion is outlined below for both incubation and post-hatch parental care.
 
-### Brooding, provisioning, and nest cleaning
+#### Incubation
 
-1. Run
-2. To model brooding durations, run
-3. To model provisioning rates, run
-4. To assess individual variation in nestling provisioning rates, run
-5. To test nest cleaning rates, run
+Run `scripts/incubation/wrangling_incubation.R` to wrangle and tidy the raw data into `clean_data/incubation.rds`.
 
+#### Brooding, provisioning, and nest cleaning
 
+Run `scripts/wrangling_parentalcare.R` to wrangle and tidy the raw data into `clean_data/behaviors.csv`.
+
+### Data analyses
+
+The following scripts are used to analyze incubation, brooding, provisioning, and nest cleaning behaviors using the clean data files (generated above).
+
+#### Incubation
+
+To analyze the incubation data, run `scripts/incubation/incubation_analysis.R`
+
+#### Brooding
+
+1. Run `scripts/brooding/brooding_models.R` to follow the modeling process and see how the "top GLMM" was chosen.
+2. Plot predictions using `scripts/brooding/brooding_plots.R`
+
+#### Provisioning
+
+1. Run `scripts/provisioning/provisioning_models.R` to follow the modeling process and see how the "top GLMM" was chosen.
+2. Plot predictions using `scripts/provisioning/provisioning_plots.R`
+3. Plot individual variation in provisioning using `scripts/provisioning/provisioning_individuals.R`
+4. Run additional analyses on reasons for variation in female provisioning using `scripts/provisioning/provisioning_individuals_extra.R`
+
+#### Nest cleaning
+
+Run `scripts/cleaning/cleaning_analysis.R` for analysis and plot.
+
+### GPS tags
+
+Since some woodpeckers were GPS tagged for another part of our study, we checked to see if they caused a difference in parental care rates.
+
+1. Run `scripts/gps-tags/gps_tag_parentalcare.R` to analyze effects of GPS tags on behavior.
+2. Run `scripts/gps-tags/gps_tag_provisioning_individuals.R` to analyze effects of GPS tags on individual provisioning.
+
+### Nest success
+
+Summaries of fledge success can be found in `scripts/nest-success/nest_survival_summaries.R`
+
+## Acknowledgments
+
+We used program BORIS to process videos and generate raw csv files.
