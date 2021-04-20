@@ -131,13 +131,13 @@ ggplot(data = prov_prop_repeats,
   geom_col(width = 0.75, color = 'white') +
   geom_text(
     aes(label = repeat_m), 
-    #size = 3.5, 
+    size = 3.5, 
     position = position_stack(vjust = 0),
     hjust = 'right'
     ) +
   geom_text(
     aes(label = repeat_f), 
-    #size = 3.5, 
+    size = 3.5, 
     position = position_stack(vjust = 1), 
     hjust = 'left'
     ) +
