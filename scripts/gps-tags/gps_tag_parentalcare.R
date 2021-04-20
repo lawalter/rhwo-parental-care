@@ -243,10 +243,10 @@ boxplot_data <-
   mutate(
     behavior = 
       case_when(
-        behavior == "brooding_rate" ~ "brooding",
-        behavior == "cleaning_rate_perchk" ~ "cleaning",
-        behavior == "incubation_rate" ~ "incubating",
-        behavior == "prov_rate_perchk" ~ "provisioning",
+        behavior == "brooding_rate" ~ "Brooding",
+        behavior == "cleaning_rate_perchk" ~ "Cleaning",
+        behavior == "incubation_rate" ~ "Incubating",
+        behavior == "prov_rate_perchk" ~ "Provisioning",
         TRUE ~ behavior)
       )
 
@@ -255,18 +255,18 @@ boxplot_data <-
 incubation_box <-
   ggplot(
   boxplot_data %>% 
-    filter(behavior == "incubating"), 
+    filter(behavior == "Incubating"), 
   aes(behavior, rate, fill = bpk_status)) +
   geom_boxplot() +
   labs(title = "Figure 7",
        x = NULL, 
-       y = "Rate (min/hr)") +
+       y = "Incubation rate (min per hr)") +
   scale_fill_manual(values = c("with" = "#FFFFFF", "without" = "#ABABAB")) +
   theme_classic() +
   theme(axis.title.x = element_text(size = 10), 
         axis.title.y = element_text(size = 10),
         axis.text.y = element_text(size = 9, color = 'black'),
-        axis.text.x = element_text(size = 9, color = 'black'),
+        axis.text.x = element_blank(),
         legend.text = element_text(size = 10),
         legend.title = element_text(size = 10),
         legend.position = "none")
@@ -274,17 +274,17 @@ incubation_box <-
 brood_box <-
   ggplot(
     boxplot_data %>% 
-      filter(behavior == "brooding"), 
+      filter(behavior == "Brooding"), 
     aes(behavior, rate, fill = bpk_status)) +
   geom_boxplot() +
   labs(x = NULL, 
-       y = "Rate (min/hr)") +
+       y = "Brooding rate (min per hr)") +
   scale_fill_manual(values = c("with" = "#FFFFFF", "without" = "#ABABAB")) +
   theme_classic() +
   theme(axis.title.x = element_text(size = 10), 
         axis.title.y = element_text(size = 10),
         axis.text.y = element_text(size = 9, color = 'black'),
-        axis.text.x = element_text(size = 9, color = 'black'),
+        axis.text.x = element_blank(),
         legend.text = element_text(size = 10),
         legend.title = element_text(size = 10),
         legend.position = "none")
@@ -294,18 +294,18 @@ brood_box <-
 clean_box <-
   ggplot(
   boxplot_data %>% 
-    filter(behavior == "cleaning"), 
+    filter(behavior == "Cleaning"), 
   aes(behavior, rate, fill = bpk_status)) +
   geom_boxplot() +
   labs(x = NULL, 
-       y = "Rate per (chick/hr)") +
+       y = "Cleaning rate (per chick per hr)") +
   guides(fill = guide_legend(title = "GPS tag")) +
   scale_fill_manual(values = c("with" = "#FFFFFF", "without" = "#ABABAB")) +
   theme_classic() +
   theme(axis.title.x = element_text(size = 10), 
         axis.title.y = element_text(size = 10),
         axis.text.y = element_text(size = 9, color = 'black'),
-        axis.text.x = element_text(size = 9, color = 'black'),
+        axis.text.x = element_blank(),
         legend.text = element_text(size = 10),
         legend.title = element_text(size = 10),
         legend.position = "none")
@@ -313,18 +313,18 @@ clean_box <-
 prov_box <-
   ggplot(
     boxplot_data %>% 
-      filter(behavior == "provisioning"), 
+      filter(behavior == "Provisioning"), 
     aes(behavior, rate, fill = bpk_status)) +
   geom_boxplot() +
   labs(x = NULL, 
-       y = "Rate per (chick/hr)") +
+       y = "Provisioning rate (per chick per hr)") +
   guides(fill = guide_legend(title = "GPS tag")) +
   scale_fill_manual(values = c("with" = "#FFFFFF", "without" = "#ABABAB")) +
   theme_classic() +
   theme(axis.title.x = element_text(size = 10), 
         axis.title.y = element_text(size = 10),
         axis.text.y = element_text(size = 9, color = 'black'),
-        axis.text.x = element_text(size = 9, color = 'black'),
+        axis.text.x = element_blank(),
         legend.text = element_text(size = 10),
         legend.title = element_text(size = 10),
         legend.position = "none")
@@ -347,9 +347,9 @@ cowplot::plot_grid(fourplots,
                    gps_legend,
                    ncol = 1, rel_heights = c(1, .1)) +
   ggsave(
-    file = "gps_behavior_plots.pdf",
-    path ="plots/bw/",
+    file = "gps_behavior_plots.png",
+    path ="plots/manuscript_plots/",
     width = 7,
     height = 7,
     units = "in",
-    dpi = 600)
+    dpi = 1200)

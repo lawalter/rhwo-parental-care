@@ -138,9 +138,9 @@ brooding_sex <-
     fullrange = TRUE) +
   geom_point(aes(color = sex, shape = sex)) +
   coord_cartesian(ylim = c(0, 40)) + 
-  labs(title = "Figure 3a",
+  labs(title = "Figure 3", 
        x = "Chick age (day)", 
-       y = "Predicted brooding (min/hr)") + 
+       y = "Predicted brooding (min per hr)") + 
   guides(color = guide_legend("Sex"), 
          shape = guide_legend("Sex"),
          linetype = guide_legend("Sex")) +
@@ -154,14 +154,14 @@ brooding_sex <-
         axis.text.x = element_text(size = 9),
         legend.text = element_text(size = 10),
         legend.title = element_text(size = 10),
-        legend.position = "bottom") +
-  ggplot2::ggsave(
-  file = "brooding_sex_fig.pdf",
-  path ="plots/bw/",
-  width = 3.5,
-  height = 3,
-  units = "in",
-  dpi = 600)
+        legend.position = "bottom") 
+  # ggplot2::ggsave(
+  # file = "brooding_sex_fig.pdf",
+  # path ="plots/bw/",
+  # width = 3.5,
+  # height = 3,
+  # units = "in",
+  # dpi = 600)
 
 # linear temperature plot -------------------------------------------------
 
@@ -178,9 +178,8 @@ temp_line <-
     fullrange = TRUE,
     color = "black") +
   geom_point(shape = 1) +
-  labs(title = "Figure 3b",
-       x = "Maximum daily air temperature (°C)", 
-       y = "Predicted brooding (min/hr)") +
+  labs(x = "Maximum daily air temperature (°C)", 
+       y = "Predicted brooding (min per hr)") +
   scale_fill_grey(start = 0.6, end = 0.6) +
   coord_cartesian(ylim = c(0, 40)) + 
   theme_classic() +
@@ -203,8 +202,7 @@ brooding_violin <-
            fill = tmax, 
            color = tmax)) +
   geom_violin(lwd = 0) +
-  labs(title = "Figure 3b",
-       x = "Maximum daily air temperature", 
+  labs(x = "Maximum daily air temperature", 
        y = "Predicted brooding (min/hr)") +
   scale_x_discrete(
     labels=c("Warm\n(23.9 - 31.5°C)",
@@ -246,12 +244,12 @@ cowplot::plot_grid(brooding_sex, temp_line,
                    labels = 'AUTO',
                    nrow = 2, ncol = 1) +
   ggsave(
-    file = "brooding_plots_pair_templine.pdf",
-    path ="plots/bw/",
+    file = "brooding_plots_pair_templine.png",
+    path ="plots/manuscript_plots/",
     width = 3.5,
     height = 7,
     units = "in",
-    dpi = 600)
+    dpi = 1200)
 
 # comparison --------------------------------------------------------------
   

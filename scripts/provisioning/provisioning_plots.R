@@ -9,7 +9,6 @@ library(glmmTMB)
 bbyvid <- 
   read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>% 
   as_tibble() %>%
-  select(-X) %>%
   select(video_number, feeding = feeding_chicks, subject, brood_id, 
          exact_age_chick, habitat, julian_date, std_jdate, usable_video, 
          peeped_chick_count)
@@ -17,7 +16,7 @@ bbyvid <-
 # script ------------------------------------------------------------------
 
 # Top GLMM
-model4.1x2 <- glmmTMB(feeding ~ I(exact_age_chick^2)*std_jdate + peeped_chick_count + exact_age_chick + (1|brood_id) + (1|subject)  + offset(log(usable_video)), data = behaviors, ziformula = ~1, family = nbinom2(link = "log"))
+model4.1x2 <- glmmTMB(feeding ~ I(exact_age_chick^2)*std_jdate + peeped_chick_count + exact_age_chick + (1|brood_id) + (1|subject)  + offset(log(usable_video)), data = bbyvid, ziformula = ~1, family = nbinom2(link = "log"))
 
 # Generate dataframes with needed model variables to generate prediction
 # https://github.com/glmmTMB/glmmTMB/issues/378
@@ -110,30 +109,36 @@ ggplot(preddata, aes(exact_age_chick, predper_chkhr)) +
         axis.text.x = element_text(size = 9),
         legend.text = element_text(size = 10),
         legend.title = element_text(size = 10),
-        legend.position = "bottom") +
-  ggsave(
-    file = "provisioning_fig_color.png",
-    path ="plots/color/",
-    width = 3.5,
-    height = 3,
-    units = "in",
-    dpi = 600)
+        legend.position = "bottom") 
+  # ggsave(
+  #   file = "provisioning_fig_color.png",
+  #   path ="plots/color/",
+  #   width = 3.5,
+  #   height = 3,
+  #   units = "in",
+  #   dpi = 600)
 
 # Predicted provisioning rate by date (black & white)
-ggplot(preddata, aes(exact_age_chick, predper_chkhr)) +
-  stat_smooth(method = glm, formula = y ~ x + I(x^2), 
-              aes(y = predper_chkhr, color = Date, 
-                  fill = Date, linetype = Date), size = 0.5, 
-              se = TRUE, level = 0.95, fullrange = TRUE) +
+ggplot(
+  preddata, 
+  aes(exact_age_chick, predper_chkhr)) +
+  stat_smooth(
+    method = glm, 
+    formula = y ~ x + I(x^2), 
+    aes(y = predper_chkhr, color = Date, fill = Date, linetype = Date), 
+    size = 0.5, 
+    se = TRUE, 
+    level = 0.95,
+    fullrange = TRUE) +
   labs(title = "Figure 4",
        x = "Chick age (day)", 
-       y = "Predicted provisioning \n (per chick/hr)") + 
+       y = "Predicted provisioning \n (per chick per hr)") + 
   guides(color = guide_legend("Date")) +
   scale_y_continuous(limits = c(0, 4.5)) +
-  scale_shape_manual(values = c(17, 1)) +
-  scale_color_manual(values = c("Early summer" = "black", 
-                                "Late summer" = "black")) +
-  scale_fill_grey(start = 0.6, end = 0.6) +
+  scale_linetype_discrete(labels = c("early summer", "late summer")) +
+  scale_shape_manual(values = c(17, 1), labels = c("early summer", "late summer")) +
+  scale_color_manual(values = c("Early summer" = "black", "Late summer" = "black"), labels = c("early summer", "late summer")) +
+  scale_fill_grey(start = 0.6, end = 0.6, labels = c("early summer", "late summer")) +
   theme_classic() +
   theme(axis.title.x = element_text(size = 10), 
         axis.title.y = element_text(size = 10),
@@ -143,12 +148,12 @@ ggplot(preddata, aes(exact_age_chick, predper_chkhr)) +
         legend.title = element_text(size = 10),
         legend.position = "bottom") +
   ggsave(
-    file = "provisioning_fig.pdf",
-    path ="plots/bw/",
+    file = "provisioning_fig.png",
+    path ="plots/manuscript_plots/",
     width = 3.5,
     height = 3,
     units = "in",
-    dpi = 600)
+    dpi = 1200)
 
 
 # comparison plot ---------------------------------------------------------

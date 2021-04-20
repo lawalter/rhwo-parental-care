@@ -8,8 +8,7 @@ library(psych)
 
 bbyvid <- 
   read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>%
-  as_tibble() %>%
-  select(-X) 
+  as_tibble() 
 
 # script ------------------------------------------------------------------
 
@@ -65,7 +64,7 @@ ggplot(
   aes(x = sex, y = cleaning_rate_perchk, fill = NULL)) + 
   geom_boxplot() + 
   labs(x = "Sex", 
-       y = "Cleaning rate (per chick/hr)",
+       y = "Cleaning rate (per chick per hr)",
        title = "Figure 6") +
   scale_fill_grey(start = 0.6, end = 0.3) +
   theme_classic() +
@@ -77,9 +76,9 @@ ggplot(
         legend.title = element_text(size = 10),
         legend.position = "none") +
   ggsave(
-  file = "cleaning_fig.pdf",
-  path ="plots/bw/",
+  file = "cleaning_fig.png",
+  path ="plots/manuscript_plots/",
   width = 3.5,
   height = 3,
   units = "in",
-  dpi = 600)
+  dpi = 1200)

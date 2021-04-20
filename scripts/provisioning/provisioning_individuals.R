@@ -105,14 +105,23 @@ prov_prop_repeats <-
   #   repeat_m = ifelse(parent == 'ROSO', '\U2715', repeat_m),
   #   repeat_m2 = ifelse(parent == 'POPS', '\U2B1F', NA)
   # )
+  # mutate(
+  #   repeat_f = ifelse(parent == 'SUOR', 'α', NA),
+  #   repeat_f = ifelse(parent == 'SORO', 'ε', repeat_f),
+  #   repeat_f = ifelse(parent == 'SGBY', 'π', repeat_f),
+  #   repeat_f = ifelse(parent == 'WSPR', 'ψ', repeat_f),
+  #   repeat_m = ifelse(parent == 'BUSY', 'β', NA),
+  #   repeat_m = ifelse(parent == 'ROSO', 'γ', repeat_m),
+  #   repeat_m = ifelse(parent == 'POPS', 'δ', repeat_m)) 
   mutate(
-    repeat_f = ifelse(parent == 'SUOR', 'α', NA),
-    repeat_f = ifelse(parent == 'SORO', 'ε', repeat_f),
-    repeat_f = ifelse(parent == 'SGBY', 'π', repeat_f),
-    repeat_f = ifelse(parent == 'WSPR', 'ψ', repeat_f),
-    repeat_m = ifelse(parent == 'BUSY', 'β', NA),
-    repeat_m = ifelse(parent == 'ROSO', 'γ', repeat_m),
-    repeat_m = ifelse(parent == 'POPS', 'δ', repeat_m))
+    repeat_f = ifelse(parent == 'SUOR', '\U03B1', NA), #alpha
+    repeat_f = ifelse(parent == 'SORO', '\U03B5', repeat_f), #epsilon
+    repeat_f = ifelse(parent == 'SGBY', '\U03C0', repeat_f), #pi
+    repeat_f = ifelse(parent == 'WSPR', '\U03A8', repeat_f), #psi
+    repeat_m = ifelse(parent == 'BUSY', '\U03B2', NA), #beta
+    repeat_m = ifelse(parent == 'ROSO', '\U03B3', repeat_m), #gamma
+    repeat_m = ifelse(parent == 'POPS', '\U03B4', repeat_m)) #delta
+
 
 # Individual provisioning plot (black & white)
 ggplot(data = prov_prop_repeats, 
@@ -122,19 +131,16 @@ ggplot(data = prov_prop_repeats,
   geom_col(width = 0.75, color = 'white') +
   geom_text(
     aes(label = repeat_m), 
-    size = 3.5, 
+    #size = 3.5, 
     position = position_stack(vjust = 0),
-    hjust = 'right') +
-  # geom_text(
-  #   aes(label = repeat_m2), 
-  #   size = 3.5, 
-  #   position = position_stack(vjust = 0),
-  #   hjust = 'right') +
+    hjust = 'right'
+    ) +
   geom_text(
     aes(label = repeat_f), 
-    size = 3.5, 
+    #size = 3.5, 
     position = position_stack(vjust = 1), 
-    hjust = 'left') +
+    hjust = 'left'
+    ) +
   geom_hline(yintercept = 0.50, linetype = "dashed") +
   labs(y = "Provisioning proportion", 
        x = "Brood",
@@ -144,7 +150,7 @@ ggplot(data = prov_prop_repeats,
         axis.title.y = element_text(size = 10),
         axis.text.y = element_text(size = 9),
         axis.text.x = element_text(size = 9),
-        legend.text = element_text(size = 9),
+        legend.text = element_text(size = 10),
         legend.title = element_text(size = 10),
         legend.position = "bottom") +
   coord_flip() + 
@@ -177,11 +183,11 @@ ggplot(data = prov_prop_repeats,
                             "NB18C4_18_brd1" = "U")) +
   ggsave(
     file = "provisioning_individual_fig_greek.png",
-    path ="plots/bw/",
+    path ="plots/manuscript_plots/",
     width = 3.5,
     height = 4.5,
     units = "in",
-    dpi = 600)
+    dpi = 1200)
 
 
 # other plots -------------------------------------------------------------
