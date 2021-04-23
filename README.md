@@ -1,4 +1,4 @@
-# Red-headed Woodpecker Parental Care 
+# Data and Script Repository: Red-headed Woodpecker Parental Care 
 
 ## Introduction
 
@@ -11,7 +11,7 @@ This repository contains data, code, analyses, and plots by L. Abigail Walter fo
 
 ## Data and R scripts overview
 
-The R scripts included in this repository are for wrangling, tidying, analyzing, and plotting RHWO behavior data. It is not necessary to complete Step 1, since clean data files are already included in `/clean_data`. 
+The R scripts included in this repository are for wrangling, tidying, analyzing, and plotting RHWO behavior data. Please note that it is not strictly necessary to complete Step 1; clean data files are already included in `/clean_data`. 
 
 ### Step 1: Data wrangling
 
