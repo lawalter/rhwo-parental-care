@@ -7,7 +7,7 @@ This repository contains data, code, analyses, and plots by L. Abigail Walter fo
 ### Requirements
 
 - <b>R Version:</b> v3.5.2+
-- <b>Packages:</b> tidyverse, lubridate, reshape2, glmmTMB, AICtab, psych, cowplot, emojifont
+- <b>Packages:</b> tidyverse, lubridate, reshape2, glmmTMB, AICtab, psych, cowplot
 
 ## Data and R scripts overview
 
