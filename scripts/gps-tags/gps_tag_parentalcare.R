@@ -258,7 +258,8 @@ incubation_box <-
     filter(behavior == "Incubating"), 
   aes(behavior, rate, fill = bpk_status)) +
   geom_boxplot() +
-  labs(title = "Figure 7",
+  labs(
+    #title = "Figure 7",
        x = NULL, 
        y = "Incubation rate (min per hr)") +
   scale_fill_manual(values = c("with" = "#FFFFFF", "without" = "#ABABAB")) +
@@ -347,9 +348,9 @@ cowplot::plot_grid(fourplots,
                    gps_legend,
                    ncol = 1, rel_heights = c(1, .1)) +
   ggsave(
-    file = "gps_behavior_plots.png",
+    file = "fig7_gps_behavior.tiff",
     path ="plots/manuscript_plots/",
     width = 7,
     height = 7,
     units = "in",
-    dpi = 1200)
+    dpi = 300)
