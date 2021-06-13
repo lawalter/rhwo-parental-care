@@ -148,12 +148,12 @@ ggplot(
         legend.title = element_text(size = 10),
         legend.position = "bottom") +
   ggsave(
-    file = "provisioning_fig.png",
+    file = "fig4_provisioning.tiff",
     path ="plots/manuscript_plots/",
     width = 3.5,
     height = 3,
     units = "in",
-    dpi = 1200)
+    dpi = 300)
 
 
 # comparison plot ---------------------------------------------------------
