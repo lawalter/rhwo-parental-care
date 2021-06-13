@@ -64,8 +64,7 @@ ggplot(
   aes(x = sex, y = cleaning_rate_perchk, fill = NULL)) + 
   geom_boxplot() + 
   labs(x = "Sex", 
-       y = "Cleaning rate (per chick per hr)",
-       title = "Figure 6") +
+       y = "Cleaning rate (per chick per hr)") +
   scale_fill_grey(start = 0.6, end = 0.3) +
   theme_classic() +
   theme(axis.title.x = element_text(size = 10), 
@@ -76,9 +75,9 @@ ggplot(
         legend.title = element_text(size = 10),
         legend.position = "none") +
   ggsave(
-  file = "cleaning_fig.png",
+  file = "fig6_cleaning.tiff",
   path ="plots/manuscript_plots/",
   width = 3.5,
   height = 3,
   units = "in",
-  dpi = 1200)
+  dpi = 300)
