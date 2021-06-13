@@ -143,8 +143,7 @@ ggplot(data = prov_prop_repeats,
     ) +
   geom_hline(yintercept = 0.50, linetype = "dashed") +
   labs(y = "Provisioning proportion", 
-       x = "Brood",
-       title = "Figure 5") + 
+       x = "Brood") + 
   theme_classic() +
   theme(axis.title.x = element_text(size = 10), 
         axis.title.y = element_text(size = 10),
@@ -182,12 +181,12 @@ ggplot(data = prov_prop_repeats,
                             "N1718CA2_brd1" = "T",
                             "NB18C4_18_brd1" = "U")) +
   ggsave(
-    file = "provisioning_individual_fig_greek.png",
+    file = "fig5_provisioning_proportions.tiff",
     path ="plots/manuscript_plots/",
     width = 3.5,
     height = 4.5,
     units = "in",
-    dpi = 1200)
+    dpi = 300)
 
 
 # other plots -------------------------------------------------------------
