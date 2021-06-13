@@ -181,8 +181,7 @@ ggplot(
   behavior_data, aes(x = sex, y = incubation_rate)) + 
   geom_boxplot() + 
   labs(x = "Sex", 
-       y = "Incubation rate (min per hr)",
-       title = "Figure 2") +
+       y = "Incubation rate (min per hr)") +
   theme_classic() +
   theme_classic() +
   theme(axis.title.x = element_text(size = 10), 
@@ -191,12 +190,12 @@ ggplot(
         axis.text.x = element_text(size = 9),
         legend.position = "none")  +
   ggsave(
-    file = "incubation_fig_bw.png",
+    file = "fig2_incubation.tiff",
     path ="plots/manuscript_plots/",
     width = 3.5,
     height = 3,
     units = "in",
-    dpi = 1200)
+    dpi = 300)
 
 # Boxplot of incubation EVENTS by sex (black & white)
 # Don't include this in the manuscript. We analyzed the rates (min/hr)
