@@ -130,7 +130,8 @@ ggplot(
     se = TRUE, 
     level = 0.95,
     fullrange = TRUE) +
-  labs(title = "Figure 4",
+  labs(
+    #title = "Figure 4",
        x = "Chick age (day)", 
        y = "Predicted provisioning \n (per chick per hr)") + 
   guides(color = guide_legend("Date")) +

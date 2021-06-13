@@ -138,7 +138,8 @@ brooding_sex <-
     fullrange = TRUE) +
   geom_point(aes(color = sex, shape = sex)) +
   coord_cartesian(ylim = c(0, 40)) + 
-  labs(title = "Figure 3", 
+  labs(
+    #title = "Figure 3", 
        x = "Chick age (day)", 
        y = "Predicted brooding (min per hr)") + 
   guides(color = guide_legend("Sex"), 
@@ -244,12 +245,12 @@ cowplot::plot_grid(brooding_sex, temp_line,
                    labels = 'AUTO',
                    nrow = 2, ncol = 1) +
   ggsave(
-    file = "brooding_plots_pair_templine.png",
+    file = "fig3_brooding.tiff",
     path ="plots/manuscript_plots/",
     width = 3.5,
     height = 7,
     units = "in",
-    dpi = 1200)
+    dpi = 300)
 
 # comparison --------------------------------------------------------------
   
