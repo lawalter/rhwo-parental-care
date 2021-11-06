@@ -3,6 +3,8 @@
 library(glmmTMB)
 library(bbmle)
 
+# Nov 2021 - Deprecated. See "new_provisioning_models.R"
+
 # data --------------------------------------------------------------------
 
 behaviors <- 

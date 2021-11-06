@@ -4,6 +4,7 @@
 # By: Lynn Abigail Walter
 
 # Latest updates:
+# Nov 2021 - Deprecated. See "new_brooding_models.R"
 # Aug 2019 - After correcting the bbyvid to sum duration of brooding, re-ran
 # models. In the test models, the Gaussian distribution did not converge with
 # brood_id included as a random effect, so I removed it from all of the test
