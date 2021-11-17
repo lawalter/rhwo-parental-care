@@ -50,6 +50,12 @@ behaviors <-
 
 # run models --------------------------------------------------------------
 
+# Why include the linear term?
+# https://stats.stackexchange.com/questions/28730/does-it-make-sense-to-add-a-quadratic-term-but-not-the-linear-term-to-a-model/28750#28750
+
+# Why include quadratic AND linear interaction?
+# https://stackoverflow.com/questions/47372262/r-interactions-between-independent-variable-and-polynomial-term
+
 #   null model - random effects only
 null_model <-
   glmmTMB(
@@ -63,7 +69,7 @@ null_model <-
 base_model <-   
   glmmTMB(
     feeding ~ 
-      exact_age_chick + peeped_chick_count + 
+      I(exact_age_chick^2) + exact_age_chick + peeped_chick_count + 
       (1|brood_id) + (1|subject) + offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
@@ -73,7 +79,7 @@ base_model <-
 model_sex <-   
   glmmTMB(
     feeding ~ 
-      exact_age_chick + peeped_chick_count + sex + 
+      I(exact_age_chick^2) + exact_age_chick + peeped_chick_count + sex + 
       (1|brood_id) + (1|subject) + offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
@@ -83,8 +89,8 @@ model_sex <-
 model_env <-   
   glmmTMB(
     feeding ~ 
-      exact_age_chick + peeped_chick_count + habitat + std_jdate + 
-      (1|brood_id) + (1|subject) + offset(log(usable_video)), 
+      I(exact_age_chick^2) + exact_age_chick + peeped_chick_count + habitat + 
+      std_jdate + (1|brood_id) + (1|subject) + offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
     family = nbinom2(link = "log"))
@@ -93,8 +99,9 @@ model_env <-
 model_sex_env <-   
   glmmTMB(
     feeding ~ 
-      exact_age_chick + peeped_chick_count + sex + habitat + std_jdate +
-      (1|brood_id) + (1|subject) + offset(log(usable_video)), 
+      I(exact_age_chick^2) + exact_age_chick + peeped_chick_count + sex + 
+      habitat + std_jdate + (1|brood_id) + (1|subject) + 
+      offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
     family = nbinom2(link = "log"))
@@ -103,8 +110,10 @@ model_sex_env <-
 model_sex_interaction <-   
   glmmTMB(
     feeding ~ 
-      sex*exact_age_chick + peeped_chick_count + 
-      (1|brood_id) + (1|subject) + offset(log(usable_video)), 
+      sex*I(exact_age_chick^2) + 
+      sex*exact_age_chick + 
+      peeped_chick_count + (1|brood_id) + (1|subject) + 
+      offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
     family = nbinom2(link = "log"))
@@ -113,8 +122,10 @@ model_sex_interaction <-
 model_date_interaction <-   
   glmmTMB(
     feeding ~ 
-      std_jdate*exact_age_chick + peeped_chick_count + 
-      (1|brood_id) + (1|subject) + offset(log(usable_video)), 
+      std_jdate*I(exact_age_chick^2) + 
+      std_jdate*exact_age_chick + 
+      peeped_chick_count + (1|brood_id) + (1|subject) + 
+      offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
     family = nbinom2(link = "log"))
@@ -123,8 +134,10 @@ model_date_interaction <-
 global_model_sex <- 
   glmmTMB(
     feeding ~ 
-      sex*exact_age_chick + peeped_chick_count + std_jdate + habitat +
-      (1|brood_id) + (1|subject) + offset(log(usable_video)), 
+      sex*I(exact_age_chick^2) + 
+      sex*exact_age_chick + 
+      peeped_chick_count + std_jdate + habitat + (1|brood_id) + (1|subject) + 
+      offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
     family = nbinom2(link = "log"))
@@ -133,8 +146,10 @@ global_model_sex <-
 global_model_date <- 
   glmmTMB(
     feeding ~ 
-      std_jdate*exact_age_chick + peeped_chick_count + std_jdate + habitat +
-      (1|brood_id) + (1|subject) + offset(log(usable_video)), 
+      std_jdate*I(exact_age_chick^2) + 
+      std_jdate*exact_age_chick + 
+      peeped_chick_count + habitat + (1|brood_id) + (1|subject) + 
+      offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
     family = nbinom2(link = "log"))
@@ -149,7 +164,6 @@ ICtab(
   model_sex_env,
   model_sex_interaction,
   model_date_interaction,
-  model_date_interaction2,
   global_model_sex,
   global_model_date,
   type = c("AIC"), 
