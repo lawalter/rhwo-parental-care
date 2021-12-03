@@ -71,16 +71,15 @@ behaviors <-
         video_number == "117" ~ "904",
         TRUE ~ start_time)) %>% 
   mutate(start_time = as.numeric(start_time)) %>% 
+  # To eliminate the warnings from glmmTMB
+  # "non-integer counts in a truncated_nbinom1 model"
+  # Run the following mutate, but it is not needed -- it's fine as dbl
   mutate(brooding_min = as.integer(round(brooding_min)))
 
 
 # aside -------------------------------------------------------------------
 
 # Notes from LPB:
-# To eliminate the warnings from glmmTMB
-# "non-integer counts in a truncated_nbinom1 model"
-# Run the following mutate, but it is not needed -- it's fine as dbl
-# mutate(brooding_min = as.integer(round(brooding_min)))
 
 # Replace few missing values for video start time with the mean:
 behaviors <- 
