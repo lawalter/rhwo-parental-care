@@ -42,11 +42,44 @@ library(bbmle)
 
 # read data ---------------------------------------------------------------
 
+# Distance and start time data 
+
+dist_start <-
+  read_csv("raw_data/provisioning_video_data.csv") %>%
+  filter(Letter == "a") %>%
+  select(
+    video_number = Video_number,
+    start_time = Start_time)
+
+# Behaviors by video
+
 behaviors <- 
   read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>%
   as_tibble() %>%
-  mutate(feeding = feeding_chicks) %>%
-  select(-feeding_chicks)
+  select(video_id, feeding_chicks, subject, sex, habitat, exact_age_chick,
+         peeped_chick_count, nest_id, brood_id, std_jdate, usable_video, 
+         video_number) %>%
+  # Feeding variable
+  rename(feeding = feeding_chicks) %>%
+  # Add video start time to dataset from previous datafame
+  left_join(dist_start, by = "video_number") %>%
+  mutate(
+    start_time =
+      case_when(
+        start_time == "na" ~ NA_character_,
+        video_number == "70" ~ "1100",
+        video_number == "117" ~ "904",
+        TRUE ~ start_time)) %>% 
+  mutate(start_time = as.numeric(start_time)) %>% 
+  # Add mean value to records w/ missing start time
+  mutate(
+    start_time = 
+      ifelse(
+        is.na(start_time), 
+        ave(start_time, FUN = function(x) mean(x, na.rm = TRUE)), 
+        start_time)) 
+
+behaviors$scTime <- scale(behaviors$start_time)
 
 # run models --------------------------------------------------------------
 
@@ -69,7 +102,7 @@ null_model <-
 base_model <-   
   glmmTMB(
     feeding ~ 
-      I(exact_age_chick^2) + exact_age_chick + peeped_chick_count + 
+      I(exact_age_chick^2) + exact_age_chick + peeped_chick_count + scTime +
       (1|brood_id) + (1|subject) + offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
@@ -80,7 +113,7 @@ model_sex <-
   glmmTMB(
     feeding ~ 
       I(exact_age_chick^2) + exact_age_chick + peeped_chick_count + sex + 
-      (1|brood_id) + (1|subject) + offset(log(usable_video)), 
+      scTime + (1|brood_id) + (1|subject) + offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
     family = nbinom2(link = "log"))
@@ -90,7 +123,8 @@ model_env <-
   glmmTMB(
     feeding ~ 
       I(exact_age_chick^2) + exact_age_chick + peeped_chick_count + habitat + 
-      std_jdate + (1|brood_id) + (1|subject) + offset(log(usable_video)), 
+      scTime + std_jdate + (1|brood_id) + (1|subject) + 
+      offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
     family = nbinom2(link = "log"))
@@ -100,7 +134,7 @@ model_sex_env <-
   glmmTMB(
     feeding ~ 
       I(exact_age_chick^2) + exact_age_chick + peeped_chick_count + sex + 
-      habitat + std_jdate + (1|brood_id) + (1|subject) + 
+      habitat + std_jdate + scTime + (1|brood_id) + (1|subject) + 
       offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
@@ -112,7 +146,7 @@ model_sex_interaction <-
     feeding ~ 
       sex*I(exact_age_chick^2) + 
       sex*exact_age_chick + 
-      peeped_chick_count + (1|brood_id) + (1|subject) + 
+      peeped_chick_count + scTime + (1|brood_id) + (1|subject) + 
       offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
@@ -124,7 +158,7 @@ model_date_interaction <-
     feeding ~ 
       std_jdate*I(exact_age_chick^2) + 
       std_jdate*exact_age_chick + 
-      peeped_chick_count + (1|brood_id) + (1|subject) + 
+      peeped_chick_count + scTime + (1|brood_id) + (1|subject) + 
       offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
@@ -136,7 +170,8 @@ global_model_sex <-
     feeding ~ 
       sex*I(exact_age_chick^2) + 
       sex*exact_age_chick + 
-      peeped_chick_count + std_jdate + habitat + (1|brood_id) + (1|subject) + 
+      peeped_chick_count + std_jdate + habitat + scTime + 
+      (1|brood_id) + (1|subject) + 
       offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
@@ -148,7 +183,7 @@ global_model_date <-
     feeding ~ 
       std_jdate*I(exact_age_chick^2) + 
       std_jdate*exact_age_chick + 
-      peeped_chick_count + habitat + (1|brood_id) + (1|subject) + 
+      peeped_chick_count + habitat + scTime + sex + (1|brood_id) + (1|subject) + 
       offset(log(usable_video)), 
     data = behaviors, 
     ziformula = ~1, 
@@ -166,7 +201,7 @@ ICtab(
   model_date_interaction,
   global_model_sex,
   global_model_date,
-  type = c("AIC"), 
+  type = c("AICc"), 
   weights = TRUE, delta = TRUE, base = TRUE, logLik = TRUE, sort = TRUE)
 
 summary(model_date_interaction) 
