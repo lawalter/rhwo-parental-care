@@ -172,7 +172,7 @@ global_model_sex <-
 
 # compare models ----------------------------------------------------------
 
-brooding_aic <- 
+#brooding_aic <- 
   ICtab(
     null_model,
     base_model,
@@ -184,7 +184,7 @@ brooding_aic <-
     type = c("AICc"), 
     weights = TRUE, delta = TRUE, base = TRUE, logLik = TRUE, sort = TRUE)
 
-write.csv(brooding_aic, "H:/brooding_aic_question.csv")
+#write.csv(brooding_aic, "H:/brooding_aic_question.csv")
 
 summary(model_sex_interaction) 
 
