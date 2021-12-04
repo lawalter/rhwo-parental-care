@@ -35,12 +35,12 @@ The following scripts are used to analyze incubation, brooding, provisioning, an
 
 #### Brooding
 
-1. Run `scripts/brooding/brooding_models.R` to follow the modeling process and see how the "top GLMM" was chosen.
+1. Run `scripts/brooding/new_brooding_models.R` to follow the modeling process and see how the "top GLMM" was chosen.
 2. Plot predictions using `scripts/brooding/brooding_plots.R`
 
 #### Provisioning
 
-1. Run `scripts/provisioning/provisioning_models.R` to follow the modeling process and see how the "top GLMM" was chosen.
+1. Run `scripts/provisioning/new_provisioning_models.R` to follow the modeling process and see how the "top GLMM" was chosen.
 2. Plot predictions using `scripts/provisioning/provisioning_plots.R`
 3. Plot individual variation in provisioning using `scripts/provisioning/provisioning_individuals.R`
 4. Run additional analyses on reasons for variation in female provisioning using `scripts/provisioning/provisioning_individuals_extra.R`
