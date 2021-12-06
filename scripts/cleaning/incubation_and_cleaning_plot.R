@@ -5,12 +5,8 @@
 
 # setup -------------------------------------------------------------------
 
-library(stringr)
 library(lubridate)
-library(reshape2)
-library(car)
 library(tidyverse)
-library(psych)
 
 # read rds ----------------------------------------------------------------
 
@@ -93,10 +89,6 @@ incubation_data <-
   filter(!str_detect(subject, 'unknown')) %>% 
   select(video_number, subject, sex, date, incubation_min)
 
-# Write incubation by video dataframe into csv
-#write.csv(behavior_data, "clean_data/incubation.csv", row.names = FALSE)
-
-
 # cleaning ----------------------------------------------------------------
 
 bbyvid <- 
@@ -112,10 +104,8 @@ bbyvid <-
 
 # plot --------------------------------------------------------------------
 
-# Cleaning
-
-cleaning_plot <- 
-  ggplot(
+# Cleaning (black & white)
+ggplot(
   bbyvid, 
   aes(x = sex, y = cleaning_rate_perchk, fill = NULL)) + 
   geom_boxplot() + 
@@ -133,9 +123,7 @@ cleaning_plot <-
 
 
 # Boxplot of incubation by sex (black & white)
-
-incubation_plot <- 
-  ggplot(
+ggplot(
   behavior_data, aes(x = sex, y = incubation_rate)) + 
   geom_boxplot() + 
   labs(x = "Sex", 
@@ -147,7 +135,60 @@ incubation_plot <-
         axis.title.y = element_text(size = 10),
         axis.text.y = element_text(size = 9),
         axis.text.x = element_text(size = 9),
-        legend.position = "none") 
+        legend.position = "none")
+
+
+# color plots -------------------------------------------------------------
+
+# Cleaning
+
+cleaning_plot <- 
+  bbyvid %>% 
+  mutate(
+    sex = 
+      case_when(
+        sex == "male" ~ "Male",
+        sex == "female" ~ "Female",
+        TRUE ~ NA_character_)) %>% 
+  ggplot(
+    aes(x = sex, y = cleaning_rate_perchk, fill = sex)) + 
+  geom_boxplot(alpha = 0.7) + 
+  labs(x = "Sex", 
+       y = "Cleaning rate (per chick per hr)") +
+  scale_fill_manual(values = c("Female" = "#C72841", "Male" = "#2841C7")) +
+  theme_classic() +
+  theme(axis.title.x = element_text(size = 13), 
+        axis.title.y = element_text(size = 13),
+        axis.text.y = element_text(size = 12),
+        axis.text.x = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 13),
+        legend.position = "none")
+
+
+# Boxplot of incubation by sex (black & white)
+
+incubation_plot <- 
+  behavior_data %>% 
+  mutate(
+    sex = 
+      case_when(
+        sex == "male" ~ "Male",
+        sex == "female" ~ "Female",
+        TRUE ~ NA_character_)) %>% 
+  ggplot(aes(x = sex, y = incubation_rate, fill = sex)) + 
+  geom_boxplot(alpha = 0.7) + 
+  labs(x = "Sex", 
+       y = "Incubation rate (min per hr)") +
+  scale_fill_manual(values = c("Female" = "#C72841", "Male" = "#2841C7")) +
+  theme_classic() +
+  theme(axis.title.x = element_text(size = 13), 
+        axis.title.y = element_text(size = 13),
+        axis.text.y = element_text(size = 12),
+        axis.text.x = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 13),
+        legend.position = "none")
 
 
 cowplot::plot_grid(incubation_plot, cleaning_plot, 
