@@ -11,7 +11,6 @@
 # libraries ---------------------------------------------------------------
 
 library(tidyverse)
-library(reshape2)
 library(glmmTMB)
 
 # data --------------------------------------------------------------------
@@ -98,40 +97,7 @@ brooding_predictions <-
       (predicted_brood_per_unit/usable_video)*60,
     brood_per_hr = (brooding_min/usable_video)*60)
 
-# colors ------------------------------------------------------------------
-
-# Set colors
-
-colors_sex <- c("female" = "#F47C89", "male" = "#7b758e")
-colors_bw <- c("Cool" = "#ABABAB", "Hot" = "#333333")
-
 # linear plots ------------------------------------------------------------
-
-# Final brooding plot - by sex (color)
-
-ggplot(brooding_predictions, 
-       aes(x = exact_age_chick, 
-           y = predicted_brood_per_hr, 
-           color = sex, 
-           fill = sex)) +
-  stat_smooth(method = glm, 
-              formula = y ~ x, 
-              aes(y = predicted_brood_per_hr, 
-                  color = as.factor(sex), 
-                  fill = as.factor(sex)), 
-              alpha = 0.2,
-              se = TRUE, 
-              level = 0.95, 
-              fullrange = TRUE) +
-  geom_point(aes(color = sex, shape = sex)) +
-  coord_cartesian(ylim = c(0,40)) + 
-  labs(x = "Chick age (day)", y = "Predicted brooding (min/hr)") + 
-  scale_fill_manual(values = colors_sex) +
-  scale_color_manual(values = colors_sex) + 
-  guides(color = guide_legend("Sex")) +
-  theme_classic() +
-  theme(legend.position = "bottom", 
-        text = element_text(size = 12)) 
 
 # Final brooding plot - by sex (black & white)
 
@@ -177,6 +143,59 @@ brooding_sex <-
   height = 3,
   units = "in",
   dpi = 300)
+
+
+# Final brooding plot - by sex (color)
+
+brooding_sex <-
+  brooding_predictions %>% 
+  mutate(
+    sex = 
+      case_when(
+        sex == "male" ~ "Male",
+        sex == "female" ~ "Female",
+        TRUE ~ NA_character_)) %>% 
+  ggplot(aes(x = exact_age_chick, 
+             y = predicted_brood_per_hr)) +
+  stat_smooth(
+    method = glm, 
+    formula = y ~ x, 
+    aes(y = predicted_brood_per_hr, 
+        linetype = sex,
+        color = sex,
+        fill = sex), 
+    size = 0.5, 
+    se = TRUE, 
+    level = 0.95, 
+    fullrange = TRUE) +
+  geom_point(aes(color = sex, shape = sex)) +
+  coord_cartesian(ylim = c(0, 40)) + 
+  labs(
+    #title = "Figure 3", 
+    x = "Chick age (day)", 
+    y = "Predicted brooding\n(min per hr)") + 
+  guides(color = guide_legend("Sex"), 
+         shape = guide_legend("Sex"),
+         linetype = guide_legend("Sex"),
+         fill = guide_legend("Sex")) +
+  scale_shape_manual(values = c(17, 1)) +
+  scale_color_manual(values = c("Female" = "#C72841", "Male" = "#2841C7")) +
+  scale_fill_manual(values = c("Female" = "#C72841", "Male" = "#2841C7")) +
+  theme_classic() +
+  theme(axis.title.x = element_text(size = 13), 
+        axis.title.y = element_text(size = 13),
+        axis.text.y = element_text(size = 12),
+        axis.text.x = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 13),
+        legend.position = "bottom") +
+  ggplot2::ggsave(
+    file = "fig3_brooding.png",
+    path ="plots/manuscript_plots/",
+    width = 3.5,
+    height = 3,
+    units = "in",
+    dpi = 300)
 
 # actual brooding data plot -----------------------------------------------
 
