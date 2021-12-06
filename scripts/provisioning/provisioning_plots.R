@@ -90,41 +90,41 @@ preddata <-
 
 # Predicted provisioning rate by chick age (black & white)
 
-age_plot <- 
-  ggplot(
-    preddata, 
-    aes(
-      x = exact_age_chick, 
-      y = predper_chkhr)) +
-  stat_smooth(
-    method = glm, 
-    formula = y ~ x + I(x^2), 
-    aes(y = predper_chkhr
-        #color = Date, fill = Date, linetype = Date
-        ), 
-    size = 0.5, 
-    color = "black",
-    se = TRUE, 
-    level = 0.95,
-    fullrange = TRUE) +
-  labs(
-    title = "Figure 4",
-    x = "Chick age (day)", 
-    y = "Predicted provisioning \n (per chick per hr)") + 
-  #guides(color = guide_legend("Date")) +
-  scale_y_continuous(limits = c(0, 4.5)) +
-  # scale_linetype_discrete(labels = c("early summer", "late summer")) +
-  # scale_shape_manual(values = c(17, 1), labels = c("early summer", "late summer")) +
-  # scale_color_manual(values = c("Early summer" = "black", "Late summer" = "black"), labels = c("early summer", "late summer")) +
-  # scale_fill_grey(start = 0.6, end = 0.6, labels = c("early summer", "late summer")) +
-  theme_classic() +
-  theme(axis.title.x = element_text(size = 10), 
-        axis.title.y = element_text(size = 10),
-        axis.text.y = element_text(size = 9),
-        axis.text.x = element_text(size = 9),
-        legend.text = element_text(size = 10),
-        legend.title = element_text(size = 10),
-        legend.position = "bottom") 
+# age_plot <- 
+#   ggplot(
+#     preddata, 
+#     aes(
+#       x = exact_age_chick, 
+#       y = predper_chkhr)) +
+#   stat_smooth(
+#     method = glm, 
+#     formula = y ~ x + I(x^2), 
+#     aes(y = predper_chkhr
+#         #color = Date, fill = Date, linetype = Date
+#         ), 
+#     size = 0.5, 
+#     color = "black",
+#     se = TRUE, 
+#     level = 0.95,
+#     fullrange = TRUE) +
+#   labs(
+#     title = "Figure 4",
+#     x = "Chick age (day)", 
+#     y = "Predicted provisioning \n (per chick per hr)") + 
+#   #guides(color = guide_legend("Date")) +
+#   scale_y_continuous(limits = c(0, 4.5)) +
+#   # scale_linetype_discrete(labels = c("early summer", "late summer")) +
+#   # scale_shape_manual(values = c(17, 1), labels = c("early summer", "late summer")) +
+#   # scale_color_manual(values = c("Early summer" = "black", "Late summer" = "black"), labels = c("early summer", "late summer")) +
+#   # scale_fill_grey(start = 0.6, end = 0.6, labels = c("early summer", "late summer")) +
+#   theme_classic() +
+#   theme(axis.title.x = element_text(size = 10), 
+#         axis.title.y = element_text(size = 10),
+#         axis.text.y = element_text(size = 9),
+#         axis.text.x = element_text(size = 9),
+#         legend.text = element_text(size = 10),
+#         legend.title = element_text(size = 10),
+#         legend.position = "bottom") 
 
 # Predicted provisioning rate by date (color)
 
@@ -139,21 +139,22 @@ date_plot <-
     formula = y ~ x + I(x^2), 
     aes(y = predper_chkhr, color = Season, fill = Season, linetype = Season), 
     size = 0.5, 
-    color = "black",
     se = TRUE, 
     level = 0.95,
     fullrange = TRUE) +
   labs(
-    title = "Figure 4",
     x = "Chick age (day)", 
     y = "Predicted provisioning \n (per chick per hr)") + 
-  guides(color = guide_legend("Sate")) +
+  guides(color = guide_legend("Season")) +
   scale_y_continuous(limits = c(0, 4.5)) +
   scale_linetype_discrete(labels = c("Early", "Late")) +
   scale_shape_manual(values = c(17, 1), labels = c("Early", "Late")) +
-  scale_color_manual(values = c("Early summer" = "black", "Late summer" = "black"), 
+  scale_color_manual(values = c("Early summer" = "#28C75F", 
+                                "Late summer" = "#C7AE28"), 
                      labels = c("Early", "Late")) +
-  scale_fill_grey(start = 0.6, end = 0.6, labels = c("Early", "Late")) +
+  scale_fill_manual(values = c("Early summer" = "#28C75F", 
+                               "Late summer" = "#C7AE28"), 
+                    labels = c("Early", "Late")) +
   theme_classic() +
   theme(axis.title.x = element_text(size = 13), 
         axis.title.y = element_text(size = 13),
@@ -166,15 +167,20 @@ date_plot <-
 # Predicted provisioning rate by brood size
 
 broodsize_plot <- 
+  preddata %>% 
+  mutate(peeped_chick_count = as.factor(peeped_chick_count)) %>% 
   ggplot(
-    preddata, 
     aes(
-      x = as.factor(peeped_chick_count), 
-      y = predper_hr)) +
+      x = peeped_chick_count, 
+      y = predper_hr,
+      fill = peeped_chick_count, 
+      color = peeped_chick_count)) +
   geom_violin(lwd = 0.5) +
   labs(x = "Brood size (number of chicks)", 
        y = "Predicted provisioning (per hr)") +
   theme_classic() +
+  scale_fill_manual(values = c("3" = "#8694E0", "2" = "#AFB8EA", "1" = "#D7DBF5")) +
+  scale_color_manual(values = c("3" = "#8694E0", "2" = "#AFB8EA", "1" = "#D7DBF5")) +
   theme(axis.title.x = element_text(size = 13), 
         axis.title.y = element_text(size = 13),
         axis.text.y = element_text(size = 12, color = 'black'),
@@ -182,8 +188,6 @@ broodsize_plot <-
         legend.text = element_text(size = 12),
         legend.title = element_text(size = 13),
         legend.position = "none")
-
-
 
 cowplot::plot_grid(date_plot, broodsize_plot, 
                    labels = 'AUTO',
