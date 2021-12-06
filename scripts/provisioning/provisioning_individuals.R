@@ -71,6 +71,7 @@ prov_prop <-
 # plot colors -------------------------------------------------------------
 
 colors_sex <- c("female" = "#F47C89", "male" = "#7b758e")
+new_colors <- c("female" = "#C72841", "male" = "#2841C7")
 colors_sex_bw <- c("female" = "#c4c6ce", "male" = "#888a90")
 
 # plots -------------------------------------------------------------------
@@ -179,15 +180,81 @@ ggplot(data = prov_prop_repeats,
                             "RB36alt_brd2_18" = "R",
                             "Noisy" = "S",
                             "N1718CA2_brd1" = "T",
+                            "NB18C4_18_brd1" = "U")) 
+  # ggsave(
+  #   file = "fig5_provisioning_proportions.tiff",
+  #   path ="plots/manuscript_plots/",
+  #   width = 3.5,
+  #   height = 4.5,
+  #   units = "in",
+  #   dpi = 300)
+
+
+# Individual provisioning plot (color)
+prov_prop_repeats %>% 
+  mutate(
+    sex = 
+      case_when(
+        sex == "male" ~ "Male",
+        sex == "female" ~ "Female",
+        TRUE ~ NA_character_)) %>% 
+  ggplot(
+    aes(x = reorder(brood_id, number), y = proportion, fill = sex)) +
+  geom_col(width = 0.75, color = 'white', alpha = 0.7) +
+  geom_text(
+    aes(label = repeat_m), 
+    size = 12, 
+    position = position_stack(vjust = 0),
+    hjust = 'right') +
+  geom_text(
+    aes(label = repeat_f), 
+    size = 12, 
+    position = position_stack(vjust = 1), 
+    hjust = 'left') +
+  geom_hline(yintercept = 0.50, linetype = "dashed") +
+  labs(y = "Provisioning proportion", 
+       x = "Brood") + 
+  theme_classic() +
+  theme(axis.title.x = element_text(size = 42), 
+        axis.title.y = element_text(size = 42),
+        axis.text.y = element_text(size = 36),
+        axis.text.x = element_text(size = 36),
+        legend.text = element_text(size = 36),
+        legend.title = element_text(size = 42),
+        legend.position = "bottom") +
+  coord_flip() + 
+  scale_fill_manual(
+    values =  c('Female' = '#C72841', #medium
+                'Male' = '#2841C7')) +
+  guides(fill = guide_legend('Sex', reverse = TRUE)) +
+  scale_x_discrete(labels=c("A3_brd2" = "A", 
+                            "Timber_brd1" = "B",
+                            "N17REC3_brd2" = "C",
+                            "NB5A4_brd1" = "D",
+                            "Timber_brd2" = "E",
+                            "N1718CA2_18" = "F",
+                            "N17REC2_brd1" = "G",
+                            "Gum" = "H",
+                            "Tonto_brd1" = "I",
+                            "REC1_brd1" = "J",
+                            "Houdini" = "K",
+                            "Tonto18_brd1" = "L",
+                            "18C_Catfish_brd1" = "M",
+                            "5A Cut_brd2" = "N",
+                            "RB23_brd2" = "O",
+                            "Cross" = "P",
+                            "NB5B5_brd1" = "Q",
+                            "RB36alt_brd2_18" = "R",
+                            "Noisy" = "S",
+                            "N1718CA2_brd1" = "T",
                             "NB18C4_18_brd1" = "U")) +
   ggsave(
-    file = "fig5_provisioning_proportions.tiff",
+    file = "fig5_provisioning_proportions.png",
     path ="plots/manuscript_plots/",
     width = 3.5,
     height = 4.5,
     units = "in",
     dpi = 300)
-
 
 # other plots -------------------------------------------------------------
 
