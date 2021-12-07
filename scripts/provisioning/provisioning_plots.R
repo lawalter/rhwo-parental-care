@@ -173,14 +173,17 @@ broodsize_plot <-
     aes(
       x = peeped_chick_count, 
       y = predper_hr,
-      fill = peeped_chick_count, 
-      color = peeped_chick_count)) +
-  geom_violin(lwd = 0.5) +
+      fill = peeped_chick_count,
+      color = peeped_chick_count
+      )) +
+  geom_violin(lwd = 0.5, alpha = 0.7) +
   labs(x = "Brood size (number of chicks)", 
        y = "Predicted provisioning (per hr)") +
   theme_classic() +
-  scale_fill_manual(values = c("3" = "#8694E0", "2" = "#AFB8EA", "1" = "#D7DBF5")) +
-  scale_color_manual(values = c("3" = "#8694E0", "2" = "#AFB8EA", "1" = "#D7DBF5")) +
+  scale_fill_manual(values = c("3" = "#C72841", "2" = "#C7AE28", "1" = "#2841C7")) +
+  scale_color_manual(values = c("3" = "#FFFFFF", "2" = "#FFFFFF", "1" = "#FFFFFF")) +
+  # scale_fill_manual(values = c("3" = "#8694E0", "2" = "#AFB8EA", "1" = "#D7DBF5")) +
+  # scale_color_manual(values = c("3" = "#8694E0", "2" = "#AFB8EA", "1" = "#D7DBF5")) +
   theme(axis.title.x = element_text(size = 13), 
         axis.title.y = element_text(size = 13),
         axis.text.y = element_text(size = 12, color = 'black'),
