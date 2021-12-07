@@ -1,9 +1,6 @@
-
 # libraries ---------------------------------------------------------------
 
 library(tidyverse)
-library(lubridate)
-library(reshape2)
 
 # import data -------------------------------------------------------------
 
@@ -26,7 +23,6 @@ video_data_initial %>%
     percent_chick_mortalities = number_chick_mortalities/max_number_chicks,
     proportion_fledged = chicks_fledged/max_number_chicks) %>%
   select(
-    subject, 
     brood_id, 
     proportion_hatched, 
     proportion_fledged, 
