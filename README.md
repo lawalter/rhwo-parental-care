@@ -2,30 +2,26 @@
 
 ## Introduction
 
-This repository contains data, code, analyses, and plots by L. Abigail Walter for research conducted with the [Bulluck Avian Ecology Lab](https://rampages.us/bullucklab) at Virginia Commonwealth University. 
+This repository contains data, code, analyses, and plots by L. Abigail Walter for research on Red-headed Woodpecker (RHWO) parental care behavior with the [Bulluck Avian Ecology Lab](https://rampages.us/bullucklab) at Virginia Commonwealth University. 
 
 ### Requirements
 
 - <b>R Version:</b> v3.5.2+
 - <b>Packages:</b> tidyverse, lubridate, reshape2, glmmTMB, AICtab, psych, cowplot
 
-## Data and R scripts overview
+## Data wrangling
 
-The R scripts included in this repository are for wrangling, tidying, analyzing, and plotting RHWO behavior data. Please note that it is not strictly necessary to complete Step 1; clean data files are already included in `/clean_data`. 
+Please note that it is not strictly necessary to run the following R scripts. Clean data files are already included in `/clean_data`. Their creation is nevertheless outlined below.
 
-### Step 1: Data wrangling
-
-Although the clean data files are already included in this repo, their creation is nevertheless outlined below for both incubation and post-hatch parental care.
-
-#### Incubation
+### Incubation
 
 - Run `scripts/incubation/wrangling_incubation.R` to wrangle and tidy the raw data into `clean_data/incubation.rds`.
 
-#### Brooding, provisioning, and nest cleaning
+### Brooding, provisioning, and nest cleaning
 
 - Run `scripts/wrangling_parentalcare.R` to wrangle and tidy the raw data into `clean_data/behaviors.csv`.
 
-### Step 2: Data analyses
+## Data analyses
 
 The following scripts are used to analyze incubation, brooding, provisioning, and nest cleaning behaviors using the clean data files (generated above).
 
@@ -63,6 +59,10 @@ Since some woodpeckers were GPS tagged for another part of our study, we checked
 
 - Summaries of fledge success can be found in `scripts/summary_stats.R`
 - Nest check analyses are in `scripts/nest_monitoring/nest_check_frequency.R`
+
+## Other files
+
+Coming soon.
 
 ## Acknowledgments
 
