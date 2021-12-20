@@ -32,13 +32,13 @@ The following scripts are used to analyze incubation, brooding, provisioning, an
 
 #### Brooding
 
-1. Run `scripts/brooding/new_brooding_models.R` to follow the modeling process and see how the "top GLMM" was chosen.
+1. Run `scripts/brooding/brooding_models.R` to follow the modeling process and see how the "top GLMM" was chosen.
 2. Plot predictions using `scripts/brooding/brooding_plots.R`
 3. View boxplots of brooding by sex with and without behavior classified as "poopsearch" (in cavity for any amount of time, emerge with fecal sac) with `scripts/brooding/poopsearch_justification.R`. Excluding those visits did not change male brooding mean duration.
 
 #### Provisioning
 
-1. Run `scripts/provisioning/new_provisioning_models.R` to follow the modeling process and see how the "top GLMM" was chosen.
+1. Run `scripts/provisioning/provisioning_models.R` to follow the modeling process and see how the "top GLMM" was chosen.
 2. Plot predictions using `scripts/provisioning/provisioning_plots.R`
 3. Plot individual variation in provisioning using `scripts/provisioning/provisioning_individuals.R`
 4. Run additional analyses on reasons for variation in female provisioning using `scripts/provisioning/provisioning_individuals_extra.R`
@@ -62,7 +62,7 @@ Since some woodpeckers were GPS tagged for another part of our study, we checked
 
 ## Other files
 
-Coming soon.
+Deprecated R scripts are moved to the `/archive` directory.
 
 ## Acknowledgments
 
