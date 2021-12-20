@@ -32,12 +32,13 @@ The following scripts are used to analyze incubation, brooding, provisioning, an
 #### Incubation
 
 - To analyze the incubation data, run `scripts/incubation/incubation_analysis.R`
+- To plot, run `scripts/cleaning/incubation_and_cleaning_plot.R`
 
 #### Brooding
 
 1. Run `scripts/brooding/new_brooding_models.R` to follow the modeling process and see how the "top GLMM" was chosen.
 2. Plot predictions using `scripts/brooding/brooding_plots.R`
-3. View boxplots of brooding by sex with and without behavior classified as "poopsearch" (in cavity for any amount of time, emerge with fecal sac) with `scripts/brooding/poopsearch_justification.R`. Excluding those visits did not change male brooding mean duration.
+3. View boxplots of brooding by sex with and without behavior classified as "poopsearch" (in cavity for any amount of time, emerge with fecal sac) with scripts/brooding/poopsearch_justification.R. Excluding those visits did not change male brooding mean duration.
 
 #### Provisioning
 
@@ -48,7 +49,8 @@ The following scripts are used to analyze incubation, brooding, provisioning, an
 
 #### Nest cleaning
 
-- Run `scripts/cleaning/cleaning_analysis.R` for analysis and plot.
+- Run `scripts/cleaning/cleaning_analysis.R` for analysis.
+- To plot, run `scripts/cleaning/incubation_and_cleaning_plot.R`
 
 #### GPS tags
 
@@ -59,7 +61,8 @@ Since some woodpeckers were GPS tagged for another part of our study, we checked
 
 #### Nest success
 
-- Summaries of fledge success can be found in `scripts/nest-success/nest_survival_summaries.R`
+- Summaries of fledge success can be found in `scripts/summary_stats.R`
+- Nest check analyses are in `scripts/nest_monitoring/nest_check_frequency.R`
 
 ## Acknowledgments
 
