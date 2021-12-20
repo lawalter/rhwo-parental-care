@@ -4,6 +4,14 @@
 
 This repository contains data, code, analyses, and plots by L. Abigail Walter for research on Red-headed Woodpecker (RHWO) parental care behavior with the [Bulluck Avian Ecology Lab](https://rampages.us/bullucklab) at Virginia Commonwealth University. 
 
+#### Field methods
+
+Please refer to our manuscript for a detailed summary of data collection (coming soon).
+
+#### Metadata
+
+Coming soon.
+
 #### Requirements
 
 - <b>R Version:</b> v3.5.2+
