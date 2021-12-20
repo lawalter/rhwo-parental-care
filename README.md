@@ -4,7 +4,7 @@
 
 This repository contains data, code, analyses, and plots by L. Abigail Walter for research on Red-headed Woodpecker (RHWO) parental care behavior with the [Bulluck Avian Ecology Lab](https://rampages.us/bullucklab) at Virginia Commonwealth University. 
 
-### Requirements
+#### Requirements
 
 - <b>R Version:</b> v3.5.2+
 - <b>Packages:</b> tidyverse, lubridate, reshape2, glmmTMB, AICtab, psych, cowplot
@@ -13,17 +13,17 @@ This repository contains data, code, analyses, and plots by L. Abigail Walter fo
 
 Please note that it is not strictly necessary to run the following R scripts. Clean data files are already included in `/clean_data`. Their creation is nevertheless outlined below.
 
-### Incubation
+#### Incubation
 
 - Run `scripts/incubation/wrangling_incubation.R` to wrangle and tidy the raw data into `clean_data/incubation.rds`.
 
-### Brooding, provisioning, and nest cleaning
+#### Brooding, provisioning, and nest cleaning
 
 - Run `scripts/wrangling_parentalcare.R` to wrangle and tidy the raw data into `clean_data/behaviors.csv`.
 
 ## Data analyses
 
-The following scripts are used to analyze incubation, brooding, provisioning, and nest cleaning behaviors using the clean data files (generated above).
+The following scripts are used to analyze incubation, brooding, provisioning, and nest cleaning behaviors using the clean data files (generated above). Also described are files used to check effects of GPS tags on RHWO behavior, summarize nest success, and calculate nest check frequency.
 
 #### Incubation
 
