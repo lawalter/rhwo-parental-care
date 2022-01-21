@@ -202,3 +202,119 @@ cowplot::plot_grid(date_plot, broodsize_plot,
     height = 7,
     units = "in",
     dpi = 300)
+
+
+# real provisioning plots -------------------------------------------------
+
+# Box
+behaviors %>% 
+  mutate(peeped_chick_count = as.factor(peeped_chick_count)) %>% 
+  ggplot(
+    aes(
+      x = peeped_chick_count, 
+      y = (feeding/usable_video)*60,
+      fill = peeped_chick_count,
+      color = peeped_chick_count
+    )) +
+  geom_boxplot(lwd = 0.5, alpha = 0.7) +
+  labs(x = "Brood size (number of chicks)", 
+       y = "Predicted provisioning (per hr)") +
+  #theme_classic() +
+  scale_fill_manual(values = c("3" = "#C72841", "2" = "#C7AE28", "1" = "#2841C7")) +
+  scale_color_manual(values = c("3" = "#FFFFFF", "2" = "#FFFFFF", "1" = "#FFFFFF")) +
+  # scale_fill_manual(values = c("3" = "#8694E0", "2" = "#AFB8EA", "1" = "#D7DBF5")) +
+  # scale_color_manual(values = c("3" = "#8694E0", "2" = "#AFB8EA", "1" = "#D7DBF5")) +
+  theme(axis.title.x = element_text(size = 13), 
+        axis.title.y = element_text(size = 13),
+        axis.text.y = element_text(size = 12, color = 'black'),
+        axis.text.x = element_text(size = 12, color = 'black'),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 13),
+        legend.position = "none")
+
+# Predicted provisioning rate by brood size
+
+behaviors %>% 
+  mutate(peeped_chick_count = as.factor(peeped_chick_count)) %>% 
+  ggplot(
+    aes(
+      x = peeped_chick_count, 
+      y = (feeding/usable_video)*60,
+      fill = peeped_chick_count,
+      color = peeped_chick_count
+    )) +
+  geom_violin(lwd = 0.5, alpha = 0.7) +
+  labs(x = "Brood size (number of chicks)", 
+       y = "Predicted provisioning (per hr)") +
+  theme_classic() +
+  scale_fill_manual(values = c("3" = "#C72841", "2" = "#C7AE28", "1" = "#2841C7")) +
+  scale_color_manual(values = c("3" = "#FFFFFF", "2" = "#FFFFFF", "1" = "#FFFFFF")) +
+  # scale_fill_manual(values = c("3" = "#8694E0", "2" = "#AFB8EA", "1" = "#D7DBF5")) +
+  # scale_color_manual(values = c("3" = "#8694E0", "2" = "#AFB8EA", "1" = "#D7DBF5")) +
+  theme(axis.title.x = element_text(size = 13), 
+        axis.title.y = element_text(size = 13),
+        axis.text.y = element_text(size = 12, color = 'black'),
+        axis.text.x = element_text(size = 12, color = 'black'),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 13),
+        legend.position = "none")
+
+# summaries of provisioning by brood size ---------------------------------
+
+# ONE PARENT
+behaviors %>% 
+  select(video_id, feeding, usable_video, peeped_chick_count) %>% 
+  distinct() %>% 
+  mutate(feeding_rate = (feeding/usable_video)*60) %>% 
+  group_by(peeped_chick_count) %>% 
+  summarize(
+    mean_feeding_perhr = mean(feeding_rate),
+    mean_feeding_perchkhr = mean(feeding_rate)/peeped_chick_count,
+    sample_size = n()) %>% 
+  ungroup() %>% 
+  distinct()
+
+one_parent <- 
+  behaviors %>% 
+  select(video_id, feeding, usable_video, peeped_chick_count) %>% 
+  distinct() %>% 
+  mutate(feeding_rate = (feeding/usable_video)*60,
+         feeding_rate_perchk = ((feeding/usable_video)*60)/peeped_chick_count) %>%  
+  distinct()
+
+describe(one_parent$feeding_rate)
+
+describe(one_parent$feeding_rate_perchk)
+
+# TOTAL VISITS TO NEST
+behaviors %>% 
+  select(video_number, feeding, usable_video, peeped_chick_count) %>% 
+  group_by(video_number, usable_video, peeped_chick_count) %>% 
+  mutate(feeding_sum = sum(feeding)) %>% 
+  ungroup() %>% 
+  select(-feeding) %>% 
+  distinct() %>% 
+  mutate(feeding_rate = (feeding_sum/usable_video)*60) %>% 
+  group_by(peeped_chick_count) %>% 
+  summarize(
+    mean_feeding_perhr = mean(feeding_rate),
+    mean_feeding_perchkhr = mean(feeding_rate)/peeped_chick_count,
+    sample_size = n()) %>% 
+  ungroup() %>% 
+  distinct()
+
+two_parent <- 
+  behaviors %>% 
+  select(video_number, feeding, usable_video, peeped_chick_count) %>% 
+  group_by(video_number, usable_video, peeped_chick_count) %>% 
+  mutate(feeding_sum = sum(feeding)) %>% 
+  ungroup() %>% 
+  select(-feeding) %>%
+  distinct() %>% 
+  mutate(feeding_rate = (feeding_sum/usable_video)*60,
+         feeding_rate_perchk = ((feeding_sum/usable_video)*60)/peeped_chick_count) %>%  
+  distinct()
+
+describe(two_parent$feeding_rate)
+
+describe(two_parent$feeding_rate_perchk)
