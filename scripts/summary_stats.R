@@ -10,7 +10,6 @@ library(psych)
 behaviors <- 
   read.csv("clean_data/behaviors.csv", stringsAsFactors = FALSE) %>% 
   as_tibble() %>%
-  select(-X) %>%
   mutate(
     cleaning_rate = (cleaning_nest/usable_video)*60,
     cleaning_rate_perchk = cleaning_rate/peeped_chick_count,
