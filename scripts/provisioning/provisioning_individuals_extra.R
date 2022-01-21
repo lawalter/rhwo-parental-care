@@ -25,8 +25,7 @@ b_sm <-
 # read bpk info -----------------------------------------------------------
 
 bpk_status <- 
-  read_csv("clean_data/bpk_status.csv") %>%
-  select(-X1)
+  read_csv("clean_data/bpk_status.csv")
 
 b_sm_bpk <-
   b_sm %>%
