@@ -517,3 +517,62 @@ ggplot(data = prov_prop,
                             "N1718CA2_brd1" = "18CA2_2017",
                             "NB18C4_18_brd1" = "NB18C4_2018")) +
   facet_grid(~age_group)
+
+# length of video plot ----------------------------------------------------
+
+vid_len_prov <-
+  bind_rows(cast_f_prop, cast_m_prop) %>%
+  left_join(cast_agemeans, by = 'brood_id') %>%
+  left_join(
+    bbyvid %>%
+      as_tibble() %>%
+      select(brood_id, subject, sex, usable_video) %>%
+      distinct() %>%
+      pivot_wider(names_from = sex, values_from = subject),
+    by = 'brood_id') %>%
+  mutate(
+    male = ifelse(sex == 'male', male, NA),
+    female = ifelse(sex =='female', female, NA),
+    parent = ifelse(!is.na(male), male, female)) %>%
+  select(-c(male, female)) %>% 
+  mutate(
+    vid_length = 
+      ifelse(usable_video > 174, 'More than 174 min', 'Less than 174 min'))
+
+ggplot(data = vid_len_prov, 
+       aes(
+         x = reorder(brood_id, number), 
+         y = proportion, 
+         fill = sex)) +
+  geom_col(width = 0.75) +
+  geom_hline(yintercept = 0.50, linetype = "dashed") +
+  labs(y = "Provisioning proportion", 
+       x = "Brood ID") + 
+  theme_classic() +
+  theme(legend.text = element_text(size = 10),
+        legend.position="bottom") +
+  coord_flip() + 
+  scale_fill_manual(values = colors_sex) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  scale_x_discrete(labels=c("A3_brd2" = "A3_2017", 
+                            "Timber_brd1" = "Timber_brood1_2018",
+                            "N17REC3_brd2" = "Rec3_2017",
+                            "NB5A4_brd1" = "NB5A4_2017",
+                            "Timber_brd2" = "Timber_brood2_2018",
+                            "N1718CA2_18" = "18CA2_2018",
+                            "N17REC2_brd1" = "Rec2_2017",
+                            "Gum" = "Gum_2018",
+                            "Tonto_brd1" = "Tonto_2017",
+                            "REC1_brd1" = "Rec1_2017",
+                            "Houdini" = "Houdini_2018",
+                            "Tonto18_brd1" = "Tonto_2018",
+                            "18C_Catfish_brd1" = "Catfish_2017",
+                            "5A Cut_brd2" = "Cut_2018",
+                            "RB23_brd2" = "RB23_2017",
+                            "Cross" = "Cross_2018",
+                            "NB5B5_brd1" = "NB5B5_2017",
+                            "RB36alt_brd2_18" = "RB36alt_2018",
+                            "Noisy" = "Noisy_2018",
+                            "N1718CA2_brd1" = "18CA2_2017",
+                            "NB18C4_18_brd1" = "NB18C4_2018")) +
+  facet_grid(~vid_length)
