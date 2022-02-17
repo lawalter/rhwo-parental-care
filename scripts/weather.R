@@ -42,6 +42,36 @@ brood <- read_csv("clean_data/behaviors.csv")
 
 # collinearity ------------------------------------------------------------
 
+inc_weather %>% 
+  ggplot() +
+  geom_jitter(aes(x = tmin, y = tmax)) +
+  stat_smooth(
+    aes(x = tmin, y = tmax), 
+    alpha = 0.3, method = "lm") +
+  labs(title = "Incubation") +
+  theme_classic()
+
+shapiro.test(inc_weather$tmax) #not normal
+shapiro.test(inc_weather$tmin) #not normal
+cor.test(inc_weather$tmax, inc_weather$tmin, method = "pearson") # p < 0.001, t = 10.2, df = 130
+cor.test(inc_weather$tmax, inc_weather$tmin, method = "spearman") # p < 0.001, rho = 0.719
+
+brood_weather %>% 
+  ggplot() +
+  geom_jitter(aes(x = tmin, y = tmax)) +
+  stat_smooth(
+    aes(x = tmin, y = tmax), 
+    alpha = 0.3, method = "lm") +
+  labs(title = "Brooding") +
+  theme_classic()
+
+shapiro.test(brood_weather$tmax) #not normal
+shapiro.test(brood_weather$tmin) #not normal
+cor.test(brood_weather$tmax, brood_weather$tmin, method = "pearson") # p < 0.001, t = 6.0, df = 112
+cor.test(brood_weather$tmax, brood_weather$tmin, method = "spearman") # p < 0.001, rho = 0.54
+
+# plots -------------------------------------------------------------------
+
 # Incubation
 inc_weather %>% 
   left_join(
