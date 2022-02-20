@@ -44,7 +44,7 @@ The following scripts are used to analyze incubation, brooding, provisioning, an
 2. Plot predictions using `scripts/brooding/brooding_plots.R`
 3. View boxplots of brooding by sex with and without behavior classified as "poopsearch" (in cavity for any amount of time, emerge with fecal sac) with `scripts/brooding/poopsearch_justification.R`. Excluding those visits did not change male brooding mean duration.
 4. Generate additional summary statistics pertaining to brooding durations using `scripts/brooding/brooding_duration.R`
-5. 
+
 #### Provisioning
 
 1. Run `scripts/provisioning/provisioning_models.R` to follow the modeling process and see how the "top GLMM" was chosen.
