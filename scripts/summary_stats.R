@@ -98,6 +98,44 @@ corr.test(behaviors$start_hr, behaviors$julian_date)
 summary(lm(julian_date ~ start_hr, data = behaviors)) # p = 0.4
 plot(behaviors$julian_date, behaviors$start_hr)
 
+# brooding summaries ------------------------------------------------------
+
+brooding_stats <- 
+  behaviors %>% 
+  select(brooding_count, brooding_min, sex, usable_video) %>%
+  mutate(
+    brooding_rate = (brooding_min/usable_video)*60,
+    brooding_n_hr = (brooding_count/usable_video)*60) 
+
+brm <-
+  brooding_stats %>% 
+  filter(sex == "male")
+
+brf <-
+  brooding_stats %>% 
+  filter(sex == "female")
+
+describe(brm$brooding_rate) # mean = 2.64, SD = 5.65, n = 44
+describe(brf$brooding_rate) # mean = 4.22, SD = 9.3, n = 44
+describe(brm$brooding_n_hr) # mean = 0.54, SD = 0.92, n = 44
+describe(brf$brooding_n_hr) # mean = 0.52, SD = 0.98, n = 44
+
+# See brooding_duration.R:
+
+# Male brooding duration
+# mean = 4.34
+# sd = 2.94
+# n = 53
+# se = 0.4
+# range = 1.02-15.07
+
+# Female brooding duration:
+# mean = 7.28
+# sd = 5.96
+# n = 62
+# se = 0.76
+# range = 1.04-30.21
+
 # distributions -----------------------------------------------------------
 
 # Chick age distribution
