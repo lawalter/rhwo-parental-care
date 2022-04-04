@@ -1,5 +1,4 @@
 # Red-headed Woodpecker Parental Care 
-## Data & Code Repository
 
 ## Introduction
 
