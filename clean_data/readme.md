@@ -2,7 +2,27 @@
 
 ### behaviors.csv
 
-Coming soon. 
+- `video_id` - row key
+- `brooding_count`
+- `cleaning_nest`
+- `feeding_chicks`
+- `visit_count`
+- `brooding_min`
+- `poopsearch_min`
+- `visit_min`
+- `video_number` - key to video session
+- `subject` - parent woodpecker ID created from color band combination
+- `sex` - sex of parent woodpecker
+- `habitat`
+- `exact_age_chick`
+- `peeped_chick_count`
+- `nest_id`
+- `brood_id`
+- `julian_date`
+- `std_jdate`
+- `usable_video`
+- `year`
+- `tmax`
 
 ### bpk_status.csv
 
