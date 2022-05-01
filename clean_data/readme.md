@@ -1,5 +1,7 @@
 ## Field definitions for clean data files
 
+In progress.
+
 ### behaviors.csv
 
 - `video_id` - row key
@@ -11,7 +13,7 @@
 - `poopsearch_min`
 - `visit_min`
 - `video_number` - key to video session
-- `subject` - parent woodpecker ID created from color band combination
+- `subject` - ID created from color band combination for each woodpecker parent 
 - `sex` - sex of parent woodpecker
 - `habitat`
 - `exact_age_chick`
@@ -35,4 +37,10 @@
 
 ### incubation.csv
 
-Coming soon.
+- `video_number` - key to video session
+- `subject` - ID created from color band combination for each woodpecker parent 
+- `sex` - sex of parent woodpecker
+- `date` - date (YYYY-MM-DD) that the video was recorded
+- `tmax` - maximum temperature for that date, in Celcius
+- `incubation_rate` - 
+- `usable_length_total` - minutes of video that behaviors were analyzed during
