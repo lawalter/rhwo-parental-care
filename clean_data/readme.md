@@ -1,7 +1,5 @@
 ## Field definitions for clean data files
 
-In progress.
-
 ### behaviors.csv
 
 - `video_id` - row key; each line is per parent per video
