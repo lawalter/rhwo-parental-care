@@ -29,17 +29,49 @@ In progress.
     - `stretch` - woodpecker stretches their wings
     - `drumming` - woodpecker drums agains the nest snag
     - `excavating` - woodpecker pecks at the cavity in such a way that it is clear the woodpecker is attempting to remove wood or modify its shape
-    - `calling` - woodpecker makes a territorial call, such as "queer!"
+    - `calling` - woodpecker makes a territorial call, such as "queer!" or "chur-chur-chur"
 - `Behavior_type` 
     - `POINT` - a behavior that happens once; momentary
     - `STATE` - a behavior with a duration
-- `Start_sec` - seconds since start time of video that the behavior begins
-- `Stop_sec` - seconds since start time of video that the behavior ends
-- `Duration_sec` - length of time a behavior was exhibited
+- `Start_sec` - seconds since start time of video that the behavior begins, in seconds
+- `Stop_sec` - seconds since start time of video that the behavior ends, in seconds
+- `Duration_sec` - length of time a behavior was exhibited, in seconds
 
 ### boris_provisioning_preyproofed_bestdata.csv
 
+- `Observation_id_boris`
+- `Observation.id`
+- `Subject` - ID of the woodpecker that is exhibiting a behavior
+- `Behavior` - behavior that is being exhibited. types of behaviors include:
+    - `head in` - woodpecker puts their head into the cavity (while the body remains perched at the cavity entrance)
+    - `head out` - woodpecker puts their head out of the cavity (while the body remains perched inside)
+    - `in cavity` - woodpecker is entirely inside the nest cavity
+    - `stat` - woodpecker is visibly perched somewhere on the nest snag doing nothing
+    - `preening` - woodpecker is adjusting and/or cleaning body feathers
+    - `cleaning nest` - woodpecker takes fecal material out of the cavity
+    - `stretch` - woodpecker stretches their wings
+    - `drumming` - woodpecker drums agains the nest snag
+    - `calling` - woodpecker makes a territorial call, such as "queer!" or "chur-chur-chur"
+    - `feeding chicks` - woodpecker feeds fruit or animal matter to a nestling 
+- `Modifier_general` - more detailed description of `Behavior`
+    - `fruit` - food being brought to nestlings is identifiable as fruit (usually huckleberry, blueberry, or blackberry)
+    - `insect` - food being brught to nestlings is identifiable as an insect or arachnid, usually by legs, antennae, or other features
+    - `unidentified` - food is unidentifiable
+    - `None` - equivalent to NA
+    - `brooding` - sometimes assigned to `in cavity`, but not definitive, and should not be used to determine if an in cavity event was indeed brooding; largely a guess, but brooding was later defined using duration time using R code--please use clean_data/behaviors.csv to see summarized brooding data per video
+    - `chur-chur-chur` - type of call being made
+    - `queer` - type of call being made
+- `Modifier_specific` - when food item was identified as `fruit` or `insect`, a more specific descriptor of what the food item could be (e.g. blackberry, katydid, moth) or if it was `unidentified` the reason why (e.g. obscured, too small)
+- `Behavior_type` 
+    - `POINT` - a behavior that happens once; momentary
+    - `STATE` - a behavior with a duration
+- `Start_sec` - seconds since start time of video that the behavior begins, in seconds
+- `Stop_sec` - seconds since start time of video that the behavior ends, in seconds
+- `Duration_sec` - length of time a behavior was exhibited, in seconds
+
 ### brood_contents.csv
+
+
 
 ### incubation_video.csv
 
