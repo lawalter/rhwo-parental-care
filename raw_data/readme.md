@@ -71,9 +71,51 @@ In progress.
 
 ### brood_contents.csv
 
-
+- `Nest_ID` - ID for the nest snag (dead tree that contained the nest cavity)
+- `Brood_ID` - ID for the brood attempt
+- `Habitat` - "Savanna" or "CC" (Closed Canopy); for a description of how habitat type was determined, please refer to the publication
+- `found_date` - date that the nest was first discovered (M/D/Y)
+- `found_Julian` - Julian date that the nest was first discovered
+- `max_eggs` - maximum number of eggs observed at the nest
+- `max_chicks` - maximum number of chicks observed at the nest
+- `egg_to_chick` -
+- `chicks_fledged` -
+- `chick_to_fledge` -
+- `oldest_chick` -
+- `oldest_chick` -
+- `nest_fate` -
 
 ### incubation_video.csv
+
+- `Observation.id` -
+- `Sample_size` -
+- `Egg_count` -
+- `Usable_length` -
+- `Video_number` -
+- `Letter` -
+- `Part` -
+- `Date` -
+- `Month` -
+- `Day` -
+- `Year` -
+- `TA` -
+- `Selected` -
+- `Brood_ID` -
+- `Clutch_laid` -
+- `Hatch_date` -
+- `Priority` -
+- `Nest_ID` -
+- `Ref_combo_1` -
+- `Ref_combo_2` -
+- `With_bpk?` -
+- `Bpk_status_1` -
+- `Bpk_status_2` -
+- `Bpk_status_3` -
+- `Bpk_status_4` -
+- `Start_time` -
+- `Early_or_late` -
+- `BORIS_Observer` -
+- `Summary/Notes` -
 
 ### nest_checks_2018.csv
 
