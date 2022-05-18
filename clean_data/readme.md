@@ -13,7 +13,7 @@
 - `video_number` - key to video session
 - `subject` - ID created from color band combination for each woodpecker parent 
 - `sex` - sex of parent woodpecker
-- `habitat` - "Savanna" or "CC" (Closed Canopy)
+- `habitat` - "Savanna" or "CC" (Closed Canopy); for a description of how habitat type was determined, please refer to the publication
 - `exact_age_chick` - age of chicks in the nest at the time the video was recorded
 - `peeped_chick_count` - number of chicks in the nest at the time the video was recorded
 - `nest_id` - ID for the dead tree (snag) the nest was located in
