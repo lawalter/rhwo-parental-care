@@ -4,13 +4,18 @@ This repository contains data, code, analyses, and plots by L. Abigail Walter fo
 
 <div align = "center"><img src="images/prov_clip_1.gif" align="center" /></div>
 
+#### Publication
+
+You can <a href = "https://journal.afonet.org/vol93/iss2/art3/JFO-2022-89.pdf">read the paper as a pdf here</a>. :page_facing_up:
+
 #### Field methods
 
-Please refer to our manuscript for a detailed summary of data collection (coming soon).
+Please refer to our manuscript for a detailed summary of data collection. 
 
 #### Metadata
 
-Coming soon.
+- Field definitions for raw data: <a href = "https://github.com/lawalter/rhwo-parental-care/blob/master/raw_data/readme.md">raw_data/readme.md</a>
+- Field definitions for clean data: <a href = "https://github.com/lawalter/rhwo-parental-care/blob/master/clean_data/readme.md">clean_data/readme.md</a>
 
 #### Requirements
 
