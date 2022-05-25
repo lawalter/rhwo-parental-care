@@ -6,7 +6,7 @@ This repository contains data, code, analyses, and plots by L. Abigail Walter fo
 
 #### Publication
 
-You can <a href = "https://journal.afonet.org/vol93/iss2/art3/JFO-2022-89.pdf">read the paper as a pdf here</a>. :page_facing_up:
+You can <a href = "https://doi.org/10.5751/JFO-00089-930203">read the paper online</a> or <a href = "https://journal.afonet.org/vol93/iss2/art3/JFO-2022-89.pdf">download a pdf</a>. :page_facing_up:
 
 #### Field methods
 
