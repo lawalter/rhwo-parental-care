@@ -207,14 +207,26 @@ In progress.
 
 ### sex_data.csv
 
-- `Band_number` - 
-- `RR` -
-- `LL` -	
-- `Color_combo`	-
-- `Sex`	-
-- `Method` -
-- `Year Sent`	-
-- `2016_Roost_ID`	-
-- `2017_Nest_ID` -
-- `2018_Nest_ID` -
-- `2018_Resight` -
+- `Band_number` - number on the aluminum band
+- `RR` - right leg color combination
+    - `S` - aluminum
+    - `R` - red
+    - `O` - orange
+    - `Y` - yellow
+    - `G` - green
+    - `B` - brown
+    - `U` - blue
+    - `P` - pink
+    - `W` - white
+- `LL` - left leg color combination (see letter definitions above)
+- `Color_combo`	- 4-band color combination
+- `Sex`	- sex of woodpecker
+- `Method` - how sex of the woodpecker was determined
+    - `DNA` - feather DNA analysis
+    - `inferred` - a mate of a woodpecker that was sexed via DNA was assigned the opposite sex
+    - `na` - not available
+- `Year Sent` - year that the DNA sample was sent to the Animal Genetics lab
+- `2016_Roost_ID` - ID of the winter roost for this woodpecker in 2016
+- `2017_Nest_ID` - ID of the nest where this woodpecker was breeding in 2017
+- `2018_Nest_ID` - ID of the nest where this woodpecker was breeding in 2018; note that if the value is "vagrant", the woodpecker was a hatch year bird or did not belong in that area based on previous observations
+- `2018_Resight` - if resighted in 2018, ID of the nearest nest snag
