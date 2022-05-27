@@ -138,9 +138,25 @@ In progress.
 
 ### nest_checks_abbreviated_2018.csv
 
-
+- `Nest_ID`	- ID of the nest
+- `TA` - training area that the nest is located in
+- `date_1` - date the nest was checked
+- `observer_1` - observer that checked the nest
+- `obs_type_1` - how the nest was observed
+- `rank_1` 
+    - `0` - empty
+    - `1` - 1 woodpecker present
+    - `2` - 2 woodpeckers present
+    - `3` - excavating
+    - `4` - eggs
+    - `5` - chicks
+    - `6` - chicks fledged
+- `description_1` - description of the nest, often containing quantity of eggs or chicks, and/or other notes
+- `...` - fields `date` through `description` are repeated for each check
 
 ### provisioning_video_data.csv
+
+
 
 ### sex_data.csv
 
