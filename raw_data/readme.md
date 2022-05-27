@@ -156,54 +156,54 @@ In progress.
 
 ### provisioning_video_data.csv
 
-- `Observation.id`
-- `Video_number`
-- `Letter`
-- `Part`
-- `Date`
-- `Month`
-- `Day`
-- `Julian_date`
-- `Year`
-- `TA`
-- `Habitat`
-- `Nearest_neighbor`
-- `Distance_nearest_neighbor_m`
-- `Brood_ID`
-- `First_egg_Julian`
-- `Hatch_Julian`
-- `Fledge_Julian`
-- `Clutch_laid`
-- `Hatch_date`
-- `Fledge_date`
-- `Chick_week`
-- `Exact_age_chick`
-- `Peeped_chick_count`
-- `Max_number_eggs`
-- `Max_number_chicks`
-- `Number_chick_mortalities`
-- `Percent_chick_mortalities`
-- `Nest_fate`
-- `Nest_fate_certainty`
-- `Chicks_fledged`
-- `Proportion_fledged`
-- `Oldest_nestling`
-- `Priority`
-- `Nest_ID`
-- `Ref_combo_1`
-- `Ref_combo_2`
-- `Chicks_visible?`
-- `With_bpk?`
-- `Bpk_status_1`
-- `Bpk_status_2`
-- `Start_time`
-- `Early_or_late`
-- `Length_usable`
-- `Length_discrepancy?`
-- `BORIS_Observer`
-- `Length_each`
-- `Length_total`
-- `Summary/Notes`
+- `Observation.id` -
+- `Video_number` -
+- `Letter` -
+- `Part` -
+- `Date` -
+- `Month` -
+- `Day` -
+- `Julian_date` -
+- `Year` -
+- `TA` -
+- `Habitat` -
+- `Nearest_neighbor` -
+- `Distance_nearest_neighbor_m` -
+- `Brood_ID` -
+- `First_egg_Julian` -
+- `Hatch_Julian` -
+- `Fledge_Julian` -
+- `Clutch_laid` -
+- `Hatch_date` -
+- `Fledge_date` -
+- `Chick_week` -
+- `Exact_age_chick` -
+- `Peeped_chick_count` -
+- `Max_number_eggs` -
+- `Max_number_chicks` -
+- `Number_chick_mortalities` -
+- `Percent_chick_mortalities` -
+- `Nest_fate` -
+- `Nest_fate_certainty` -
+- `Chicks_fledged` -
+- `Proportion_fledged` -
+- `Oldest_nestling` -
+- `Priority` -
+- `Nest_ID` -
+- `Ref_combo_1` -
+- `Ref_combo_2` -
+- `Chicks_visible?` -
+- `With_bpk?` -
+- `Bpk_status_1` - 
+- `Bpk_status_2` -
+- `Start_time` -
+- `Early_or_late` -
+- `Length_usable` -
+- `Length_discrepancy?` -
+- `BORIS_Observer` -
+- `Length_each` -
+- `Length_total` -
+- `Summary/Notes` -
 
 ### sex_data.csv
 
