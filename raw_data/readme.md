@@ -156,54 +156,54 @@ In progress.
 
 ### provisioning_video_data.csv
 
-- `Observation.id` -
-- `Video_number` -
-- `Letter` -
-- `Part` -
-- `Date` -
-- `Month` -
-- `Day` -
-- `Julian_date` -
-- `Year` -
-- `TA` -
-- `Habitat` -
-- `Nearest_neighbor` -
-- `Distance_nearest_neighbor_m` -
-- `Brood_ID` -
-- `First_egg_Julian` -
-- `Hatch_Julian` -
-- `Fledge_Julian` -
-- `Clutch_laid` -
-- `Hatch_date` -
-- `Fledge_date` -
-- `Chick_week` -
-- `Exact_age_chick` -
-- `Peeped_chick_count` -
-- `Max_number_eggs` -
-- `Max_number_chicks` -
-- `Number_chick_mortalities` -
+- `Observation.id` - name of the video file
+- `Video_number` - videos were automatically split into roughly 64-minute parts by the video camera; this number is the identity of the video recording session, and indicates which video parts belong together.
+- `Letter` - identifies where in the series the video belongs, e.g. "b" indicates it's the 2nd part out of the video series (series are denoted in the `Video_number` column)
+- `Part` - identifies where in the series the video belongs, e.g. "2 of 8" indicates the video part is #2 out of 8 parts total
+- `Date` - date the video was recorded (M/D/Y)
+- `Month` - month the video was recorded
+- `Day` - day the video was recorded
+- `Julian_date` - Julian date for the day the video was recorded
+- `Year` - year the video was recorded
+- `TA` - training area in which the video was recorded
+- `Habitat` - "Savanna" or "CC" (Closed Canopy); for a description of how habitat type was determined, please refer to the publication
+- `Nearest_neighbor` - identity of the nearest known active Red-headed Woodpecker nest snag 
+- `Distance_nearest_neighbor_m` - distance (in meters) to the nearest known active Red-headed Woodpecker nest snag
+- `Brood_ID` - identity of the brood being recorded; multiple broods were sometimes attempted in the same nest cavity during a breeding season
+- `First_egg_Julian` - Julian date of when the first egg was laid (this column was left blank)
+- `Hatch_Julian` - Julian date of when the first egg hatched (this column was left blank)
+- `Fledge_Julian` - Julian date of when the first chick fledged (this column was left blank)
+- `Clutch_laid` - date of when the first egg was laid
+- `Hatch_date` - date of when the first egg hatched
+- `Fledge_date` - date of when the first chick fledged
+- `Chick_week` - a rough estimate in terms of how old nestlings were, since Red-headed Woodpeckers typically take 26 days to fledge; a chick week of 1 means that the nest is in the first week since hatching, whereas a chick week of 3 indicates nestlings are 18+ days old
+- `Exact_age_chick` - age of chicks (in days since hatching) on the day the video was recorded
+- `Peeped_chick_count` - number of chicks in the nest on the day the video was recorded
+- `Max_number_eggs` - maximum number of eggs that were ever laid for this brood
+- `Max_number_chicks` - maximum number of chicks that were ever counted for this brood
+- `Number_chick_mortalities` - 
 - `Percent_chick_mortalities` -
-- `Nest_fate` -
-- `Nest_fate_certainty` -
-- `Chicks_fledged` -
-- `Proportion_fledged` -
-- `Oldest_nestling` -
-- `Priority` -
-- `Nest_ID` -
-- `Ref_combo_1` -
-- `Ref_combo_2` -
-- `Chicks_visible?` -
-- `With_bpk?` -
+- `Nest_fate` - 
+- `Nest_fate_certainty` - 
+- `Chicks_fledged` - 
+- `Proportion_fledged` - 
+- `Oldest_nestling` - 
+- `Priority` - 
+- `Nest_ID` - 
+- `Ref_combo_1` - 
+- `Ref_combo_2` - 
+- `Chicks_visible?` - 
+- `With_bpk?` - 
 - `Bpk_status_1` - 
-- `Bpk_status_2` -
-- `Start_time` -
-- `Early_or_late` -
-- `Length_usable` -
-- `Length_discrepancy?` -
-- `BORIS_Observer` -
-- `Length_each` -
-- `Length_total` -
-- `Summary/Notes` -
+- `Bpk_status_2` - 
+- `Start_time` - 
+- `Early_or_late` - 
+- `Length_usable` - 
+- `Length_discrepancy?` - 
+- `BORIS_Observer` - 
+- `Length_each` - 
+- `Length_total` - 
+- `Summary/Notes` - 
 
 ### sex_data.csv
 
