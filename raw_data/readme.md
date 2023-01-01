@@ -78,44 +78,44 @@ In progress.
 - `found_Julian` - Julian date that the nest was first discovered
 - `max_eggs` - maximum number of eggs observed at the nest
 - `max_chicks` - maximum number of chicks observed at the nest
-- `egg_to_chick` -
-- `chicks_fledged` -
-- `chick_to_fledge` -
-- `oldest_chick` -
-- `oldest_chick` -
-- `nest_fate` -
+- `egg_to_chick` - proportion of eggs that hatched
+- `chicks_fledged` - number of chicks that fledged
+- `chick_to_fledge` - proportion of chicks that fledged
+- `oldest_chick` - age in days that the chicks grew to be before the nest fledged or failed
+- `oldest_chick` - see above, this is a repeated column with NAs instead of 0s and some age values filled out that are missing from the other column
+- `nest_fate` - fate of the nest; "fledge" indicates chicks were confirmed to have fledged, "fail" indicates the nest became empty before chicks could have viably left the nest (assumed depredation), "in progress" indicates the nest was still active at the end of the field season, and "uncertain" indicates lack of information to determine fledge or fail
 
 ### incubation_video.csv
 
-- `Observation.id` -
-- `Sample_size` -
-- `Egg_count` -
-- `Usable_length` -
-- `Video_number` -
-- `Letter` -
-- `Part` -
-- `Date` -
-- `Month` -
-- `Day` -
-- `Year` -
-- `TA` -
-- `Selected` -
-- `Brood_ID` -
-- `Clutch_laid` -
-- `Hatch_date` -
-- `Priority` -
-- `Nest_ID` -
-- `Ref_combo_1` -
-- `Ref_combo_2` -
-- `With_bpk?` -
-- `Bpk_status_1` -
-- `Bpk_status_2` -
-- `Bpk_status_3` -
-- `Bpk_status_4` -
-- `Start_time` -
-- `Early_or_late` -
-- `BORIS_Observer` -
-- `Summary/Notes` -
+- `Observation.id` - the file name of the video segment
+- `Sample_size` - an ID for the video event
+- `Egg_count` - number of eggs being incubated
+- `Usable_length` - length of video that can be used for analysis in BORIS
+- `Video_number` - an ID for the video event
+- `Letter` - sequential alphabetical ID for the video segments within a video event
+- `Part` - identifies which video out of the video event a segment covers, e.g. "2 of 3" means it's the second video out of three parts
+- `Date` - date (M/D/Y) that the video was recorded
+- `Month` - month that the video was recorded
+- `Day` - day that the video was recorded
+- `Year` - year that the video was recorded
+- `TA` - training area in which the nest snag in the video is located
+- `Selected` - 
+- `Brood_ID` - ID for the brood being incubated (used to differentiate between different nesting attempts by a pair during one season)
+- `Clutch_laid` - date that the clutch was laid
+- `Hatch_date` - date that the first egg hatched
+- `Priority` - field to indicate quality of the video
+- `Nest_ID` - ID for the nest snag where the brood is being incubated
+- `Ref_combo_1` - colorband combination of one Red-headed Woodpecker parent at the nest
+- `Ref_combo_2` - colorband combination of the second Red-headed Woodpecker parent at the nest; if "unbanded" then the mate was not banded
+- `With_bpk?` - field to indicate if one of the two parents GPS tagged at the time the video was recorded; "1" indicates yes, "0" indicates no
+- `Bpk_status_1` - status of the first Red-headed Woodpecker in relation to wearing a GPS tag; a "_before" suffix indicates the bird was GPS tagged on a date after this video was recorded, "_with" indicates the bird is wearing a GPS tag during the video, "_after" indicates the video was recorded on a date after the GPS tag was retrieved from the bird; if NA then neither adult woodpecker was ever GPS tagged
+- `Bpk_status_2` - status of the second Red-headed Woodpecker at the time the video was recorded
+- `Bpk_status_3` - NA
+- `Bpk_status_4` - NA
+- `Start_time` - time that the video recording commenced 
+- `Early_or_late` - was the video recording "early" (started before 11am) or "late" (started after 11am)
+- `BORIS_Observer` - initials of the person that analyzed the video in BORIS
+- `Summary/Notes` - notes about the video
 
 ### nest_checks_2018.csv
 
