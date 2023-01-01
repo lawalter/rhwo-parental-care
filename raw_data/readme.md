@@ -1,7 +1,5 @@
 ## Field definitions for raw data files
 
-In progress.
-
 ### NOAA_weather_data.csv
 
 - `STATION	NAME` -	the name of the weather station
@@ -39,8 +37,8 @@ In progress.
 
 ### boris_provisioning_preyproofed_bestdata.csv
 
-- `Observation_id_boris`
-- `Observation.id`
+- `Observation_id_boris` - the name of the BORIS file
+- `Observation.id` - the name of the video segment file
 - `Subject` - ID of the woodpecker that is exhibiting a behavior
 - `Behavior` - behavior that is being exhibited. types of behaviors include:
     - `head in` - woodpecker puts their head into the cavity (while the body remains perched at the cavity entrance)
