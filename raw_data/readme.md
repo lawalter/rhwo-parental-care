@@ -107,13 +107,19 @@ In progress.
 - `Nest_ID` - ID for the nest snag where the brood is being incubated
 - `Ref_combo_1` - colorband combination of one Red-headed Woodpecker parent at the nest
 - `Ref_combo_2` - colorband combination of the second Red-headed Woodpecker parent at the nest; if "unbanded" then the mate was not banded
-- `With_bpk?` - field to indicate if one of the two parents GPS tagged at the time the video was recorded; "1" indicates yes, "0" indicates no
-- `Bpk_status_1` - status of the first Red-headed Woodpecker in relation to wearing a GPS tag; a "_before" suffix indicates the bird was GPS tagged on a date after this video was recorded, "_with" indicates the bird is wearing a GPS tag during the video, "_after" indicates the video was recorded on a date after the GPS tag was retrieved from the bird; if NA then neither adult woodpecker was ever GPS tagged
+- `With_bpk?` - field to indicate if one of the two parents GPS tagged at the time the video was recorded; `1` indicates yes, `0` indicates no
+- `Bpk_status_1` - status of the first Red-headed Woodpecker in relation to wearing a GPS tag
+    - `_before` suffix - the bird was GPS tagged on a date after this video was recorded
+    - `_with` suffix - the bird is wearing a GPS tag during the video
+    - `_after` suffix - the video was recorded on a date after the GPS tag was retrieved from the bird
+    - `NA` - neither adult woodpecker was ever GPS tagged
 - `Bpk_status_2` - status of the second Red-headed Woodpecker at the time the video was recorded
 - `Bpk_status_3` - NA
 - `Bpk_status_4` - NA
 - `Start_time` - time that the video recording commenced 
-- `Early_or_late` - was the video recording "early" (started before 11am) or "late" (started after 11am)
+- `Early_or_late` 
+    - `early` - started before 11:00 am
+    - `late` - started after 11:00 am
 - `BORIS_Observer` - initials of the person that analyzed the video in BORIS
 - `Summary/Notes` - notes about the video
 
