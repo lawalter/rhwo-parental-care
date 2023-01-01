@@ -94,7 +94,7 @@ In progress.
 - `Observation.id` - the file name of the video segment
 - `Sample_size` - an ID for the video event
 - `Egg_count` - number of eggs being incubated
-- `Usable_length` - length of video that can be used for analysis in BORIS
+- `Usable_length` - length of video (in minutes) that can be used for analysis in BORIS
 - `Video_number` - an ID for the video event
 - `Letter` - sequential alphabetical ID for the video segments within a video event
 - `Part` - identifies which video out of the video event a segment covers, e.g. "2 of 3" means it's the second video out of three parts
@@ -103,7 +103,7 @@ In progress.
 - `Day` - day that the video was recorded
 - `Year` - year that the video was recorded
 - `TA` - training area in which the nest snag in the video is located
-- `Selected` - 
+- `Selected` - `No` response coincides with nests lacking an exact egg count
 - `Brood_ID` - ID for the brood being incubated (used to differentiate between different nesting attempts by a pair during one season)
 - `Clutch_laid` - date that the clutch was laid
 - `Hatch_date` - date that the first egg hatched
@@ -191,29 +191,41 @@ In progress.
 - `Peeped_chick_count` - number of chicks in the nest on the day the video was recorded
 - `Max_number_eggs` - maximum number of eggs that were ever laid for this brood
 - `Max_number_chicks` - maximum number of chicks that were ever counted for this brood
-- `Number_chick_mortalities` - 
-- `Percent_chick_mortalities` -
-- `Nest_fate` - 
-- `Nest_fate_certainty` - 
-- `Chicks_fledged` - 
-- `Proportion_fledged` - 
-- `Oldest_nestling` - 
-- `Priority` - 
-- `Nest_ID` - 
-- `Ref_combo_1` - 
-- `Ref_combo_2` - 
-- `Chicks_visible?` - 
-- `With_bpk?` - 
-- `Bpk_status_1` - 
-- `Bpk_status_2` - 
-- `Start_time` - 
-- `Early_or_late` - 
-- `Length_usable` - 
-- `Length_discrepancy?` - 
-- `BORIS_Observer` - 
-- `Length_each` - 
-- `Length_total` - 
-- `Summary/Notes` - 
+- `Number_chick_mortalities` - number of chicks that vanished (assumed depredated or deceased)
+- `Percent_chick_mortalities` - empty
+- `Nest_fate`- fate of the nest
+    - `fledge` - chicks were confirmed to have fledged
+    - `fail` - nest became empty before chicks could have viably left the nest (assumed depredation)
+- `Nest_fate_certainty` - degree to which `Nest_fate` is assumed to be correct
+    - `Certain` - the fate of the nest is known with conviction
+    ` `Uncertain` - due to circumstances surrounding the nest fate, it's possible the fate could be incorrect
+- `Chicks_fledged` - number of chicks that fledged from the nest
+- `Proportion_fledged` - empty
+- `Oldest_nestling` - age in days of the oldest nestling before the nest's conclusion
+- `Priority` - quality description of the video
+- `Nest_ID` - ID of the nest snag at which the video was recorded
+- `Ref_combo_1` - colorband combination of one Red-headed Woodpecker parent at the nest
+- `Ref_combo_2` - colorband combination of the second Red-headed Woodpecker parent at the nest; if "unbanded" then the mate was not banded
+- `Chicks_visible?` - field to indicate if a chick can be seen looking out of the nest cavity in the video; `1` indicates yes, `0` indicates no
+- `With_bpk?` - field to indicate if one of the two parents GPS tagged at the time the video was recorded; `1` indicates yes, `0` indicates no
+- `Bpk_status_1` - status of the first Red-headed Woodpecker in relation to wearing a GPS tag
+    - `_before` suffix - the bird was GPS tagged on a date after this video was recorded
+    - `_with` suffix - the bird is wearing a GPS tag during the video
+    - `_after` suffix - the video was recorded on a date after the GPS tag was retrieved from the bird
+    - `NA` - neither adult woodpecker was ever GPS tagged
+- `Bpk_status_2` - status of the second Red-headed Woodpecker at the time the video was recorded
+- `Start_time` - time that the video recording commenced 
+- `Early_or_late` 
+    - `early` - started before 11:00 am
+    - `late` - started after 11:00 am
+- `Length_usable` - length of video (in minutes) that can be used for analysis in BORIS
+- `Length_discrepancy?` 
+    - `Shorter` - if `Length_usable` is shorter than `Length_each`
+    - `Equal` - if `Length_usable` is equal to `Length_each`
+- `BORIS_Observer` - initials of the person that analyzed the video in BORIS
+- `Length_each` - length (in minutes) of the video part
+- `Length_total` - length (in minutes) of the total video event (the sum of all video parts, which are typically 64 minutes or less each)
+- `Summary/Notes` - notes about the video
 
 ### sex_data.csv
 
