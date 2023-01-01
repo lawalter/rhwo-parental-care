@@ -83,7 +83,11 @@ In progress.
 - `chick_to_fledge` - proportion of chicks that fledged
 - `oldest_chick` - age in days that the chicks grew to be before the nest fledged or failed
 - `oldest_chick` - see above, this is a repeated column with NAs instead of 0s and some age values filled out that are missing from the other column
-- `nest_fate` - fate of the nest; "fledge" indicates chicks were confirmed to have fledged, "fail" indicates the nest became empty before chicks could have viably left the nest (assumed depredation), "in progress" indicates the nest was still active at the end of the field season, and "uncertain" indicates lack of information to determine fledge or fail
+- `nest_fate` - fate of the nest
+    - `fledge` - chicks were confirmed to have fledged
+    - `fail` - nest became empty before chicks could have viably left the nest (assumed depredation)
+    - `in progress` - the nest was still active at the end of the field season
+    - `uncertain` - lack of information to determine fledge or fail
 
 ### incubation_video.csv
 
